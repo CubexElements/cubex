@@ -1,0 +1,69 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../fort-list/fort-li.html">
+<link rel="import" href="../fort-icon/fort-icon.html">
+<link rel="import" href="../fort-behavior/fort-iterator-behavior.html">
+<link rel="import" href="../fort-behavior/fort-i18n-behavior.html">
+<link rel="import" href="../fort-app/fort-app-definition.html">
+<link rel="import" href="../fort-time/fort-time.html">
+<link rel="import" href="fortifi-notification-state.html">
+<link rel="import" href="fortifi-notification-definition.html">
+
+<dom-module id="fortifi-notification" attributes="notification">
+  <template>
+    <fort-notification-definition notification="[[notification]]"
+                                  definition="{{definition}}"></fort-notification-definition>
+
+    <fort-li multi-line unread="[[notification.unread]]">
+      <fort-icon>[[definition.Icon]]</fort-icon>
+      [[i18n_c4t(definition.ID,'_name')]]
+      <div secondary>
+        <relative-time datetime$="[[_dateTime(notification)]]">[[_dateTime(notification)]]</relative-time>
+        by Tom Kay
+      </div>
+      <fort-action>
+        <fort-notification-state notification="[[notification]]"></fort-notification-state>
+      </fort-action>
+    </fort-li>
+  </template>
+
+  <script>
+    Polymer(
+      {
+        is:         'fortifi-notification',
+        properties: {
+          notification: {type: Object},
+          definition:   {type: Object, observer: '_resetResources'},
+          resources:    {type: Object, value: this._resetResources}
+        },
+
+        _dateTime: function (n)
+                   {
+                     if(n.percentage < 100)
+                     {
+                       return (new Date(n.startTime * 1000)).toISOString();
+                     }
+                     return (new Date(n.endTime * 1000)).toISOString();
+                   },
+
+        _resetResources: function (def)
+                         {
+                           var self = this,
+                             res = {};
+
+                           if(def)
+                           {
+                             res = self.hydrateResources(res, def.ID + '_name', def.Name);
+                             res = self.hydrateResources(res, def.ID + '_description', def.Description);
+                           }
+
+                           this.resources = res;
+                         },
+
+        behaviors: [
+          Polymer.FortIteratorBehavior,
+          Polymer.FortI18nBehavior
+        ]
+      }
+    );
+  </script>
+</dom-module>
