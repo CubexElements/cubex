@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>fort-drawer Demo</title>
+  <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
+  <link rel="import" href="../fortifi-drawer/fortifi-drawer.html">
+</head>
+<body unresolved>
+
+
+<fort-drawer id="drawer" hover-popout swipe-open min-state="1">
+  <fort-drawer-content>
+    <div>drawer content here</div>
+    <fort-action id="close">close</fort-action>
+  </fort-drawer-content>
+  <fort-action id="open">open</fort-action>
+  main content here
+</fort-drawer>
+
+<script>
+  document.getElementById('close').addEventListener(
+    'click', function ()
+    {
+      document.getElementById('drawer').close();
+    }
+  );
+  document.getElementById('open').addEventListener(
+    'click', function ()
+    {
+      document.getElementById('drawer').open();
+    }
+  );
+</script>
+
+</body>
+</html>
