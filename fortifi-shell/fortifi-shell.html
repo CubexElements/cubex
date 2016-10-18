@@ -1,6 +1,4 @@
 <link rel="import" href="../../polymer/polymer.html">
-<link rel="import" href="../../fort-theme/fort-theme.html">
-<link rel="import" href="../../fort-theme/fort-theme-style.html">
 <link rel="import" href="../../app-layout/app-header/app-header.html">
 <link rel="import" href="../../paper-styles/typography.html">
 
@@ -17,12 +15,14 @@
 <link rel="import" href="../fortifi-pinned-apps/fortifi-pinned-apps.html">
 <link rel="import" href="../fortifi-search/fortifi-search.html">
 <link rel="import" href="../fortifi-toolbar/fortifi-toolbar.html">
+<link rel="import" href="../fortifi-theme/fortifi-theme.html">
+<link rel="import" href="../fortifi-theme/fortifi-theme-style.html">
 
 <dom-module id="fortifi-shell" attributes="drawerOpened">
   <template>
     <style is="custom-style">
 
-      fort-theme::before {
+      fortifi-theme::before {
         display: block;
         position: absolute;
         width: 100%;
@@ -110,7 +110,7 @@
         display: none;
       }
     </style>
-    <fort-theme primary="fortifi-navy" accent="fortifi-blue" theme="light">
+    <fortifi-theme primary="fortifi-navy" accent="fortifi-blue" theme="light">
       <app-drawer-layout fullbleed force-narrow>
         <app-drawer id="drawer" opened="{{drawerOpened}}">
           <fortifi-shell-drawer>
@@ -148,7 +148,7 @@
       <div id="content">
       </div>
 
-    </fort-theme>
+    </fortifi-theme>
   </template>
   <script>
     Polymer(

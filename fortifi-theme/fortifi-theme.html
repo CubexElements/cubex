@@ -1,0 +1,97 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="fortifi-theme-style.html">
+
+<!--
+An element to set the page theme
+
+Example:
+
+    <fortifi-theme primary="fortifi-blue" accent="fortifi-navy" theme="dark"></fortifi-theme>
+
+@demo demo/index.html
+-->
+
+<dom-module id="fortifi-theme">
+  <template>
+    <content></content>
+  </template>
+  <script>
+    Polymer(
+      {
+        is:             'fortifi-theme',
+        properties:     {
+          primary: {type: String, observer: '_updatePrimary'},
+          accent:  {type: String, observer: '_updateAccent'},
+          theme:   {type: String, observer: '_updateTheme'}
+        },
+        _doc:           (function ()
+        {
+          var script = document._currentScript || document.currentScript;
+          return script && script.ownerDocument || document;
+        }()),
+        _regex:         /[^a-z0-9\-]/,
+        _import:        function (type, name)
+                        {
+                          var dom = Polymer.dom(this),
+                            doc = this._doc,
+                            prefix = 'fortifi-theme-' + type,
+                            e = dom.querySelector('#' + prefix),
+                            fullName = prefix + '-' + name;
+
+                          if(e)
+                          {
+                            if(e.getAttribute('include') === fullName)
+                            {
+                              return;
+                            }
+                            e.parentNode.removeChild(e);
+                          }
+
+                          e = document.createElement('style', 'custom-style');
+                          e.id = prefix;
+                          e.setAttribute('include', fullName);
+
+                          if(!isElementRegistered(fullName))
+                          {
+                            this.importHref(
+                              this.resolveUrl('styles/' + type + '/' + fullName + '.html'),
+                              function ()
+                              {
+                                dom.appendChild(e);
+                              }, null, true
+                            );
+                          }
+                          else
+                          {
+                            dom.appendChild(e);
+                          }
+
+                          function isElementRegistered(elementId)
+                          {
+                            var modules = doc.querySelectorAll('dom-module');
+                            for(var i = modules.length - 1, m; i >= 0 && (m = modules[i]); i--)
+                            {
+                              if(m.id == elementId)
+                              {
+                                return true;
+                              }
+                            }
+                            return false;
+                          }
+                        },
+        _updatePrimary: function (v)
+                        {
+                          this._import('primary', v.replace(this._regex, ''));
+                        },
+        _updateAccent:  function (v)
+                        {
+                          this._import('accent', v.replace(this._regex, ''));
+                        },
+        _updateTheme:   function (v)
+                        {
+                          this._import('theme', v.replace(this._regex, ''));
+                        }
+      }
+    );
+  </script>
+</dom-module>
