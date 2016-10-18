@@ -69,10 +69,10 @@
         width: 100%;
       }
     </style>
+    <fortifi-search-overlay with-backdrop id="overlay"></fortifi-search-overlay>
     <paper-input no-label-float label="Find products and features" id="search">
       <fort-icon prefix>icons:search</fort-icon>
     </paper-input>
-    <fortifi-search-overlay with-backdrop id="overlay"></fortifi-search-overlay>
   </template>
   <script>
     Polymer(
@@ -84,18 +84,19 @@
                         {
                           "--iron-overlay-backdrop": "top: 64px;"
                         }
-                      )
+                      );
                     },
         listeners:  {
           'tap': "_onTap"
         },
         _onTap:     function (e)
                     {
-                      //e.stopPropagation();
+                      this.$.overlay._focusedChild = this.$.search.inputElement;
+                      this.$.overlay.open();
                     },
         _onFocus:   function (e)
                     {
-                      //this.$.overlay.open();
+
                     },
         _onBlur:    function (e)
                     {
