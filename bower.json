@@ -1,0 +1,23 @@
+{
+  "name": "fortifi",
+  "version": "0.1.0",
+  "main": "fortifi.html",
+  "ignore": [
+    "/.*"
+  ],
+  "dependencies": {
+    "polymer": "polymer/polymer#1.7.0",
+    "app-elements": "PolymerElements/app-elements#0.9.0",
+    "iron-elements": "PolymerElements/iron-elements#1.0.10",
+    "paper-elements": "PolymerElements/paper-elements#1.0.7",
+    "fort-elements": "ssh://git@github.com/FortifiElements/fort-elements.git"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "^4.0.0"
+  },
+  "resolutions": {
+    "app-elements": "^0.10.0",
+    "app-layout": "^0.10.0"
+  }
+}

@@ -1,0 +1,209 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../fort-theme/fort-theme.html">
+<link rel="import" href="../../fort-theme/fort-theme-style.html">
+<link rel="import" href="../../app-layout/app-header/app-header.html">
+<link rel="import" href="../../paper-styles/typography.html">
+
+<link rel="import" href="../../app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../../app-layout/app-drawer-layout/app-drawer-layout.html">
+
+<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+
+<link rel="import" href="../../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
+
+<link rel="import" href="../fortifi-shell-drawer/fortifi-shell-drawer.html">
+<link rel="import" href="../fortifi-shell-drawer/fortifi-shell-drawer-panel.html">
+
+<link rel="import" href="../fortifi-pinned-apps/fortifi-pinned-apps.html">
+<link rel="import" href="../fortifi-search/fortifi-search.html">
+<link rel="import" href="../fortifi-toolbar/fortifi-toolbar.html">
+
+<dom-module id="fortifi-shell" attributes="drawerOpened">
+  <template>
+    <style is="custom-style">
+
+      fort-theme::before {
+        display: block;
+        position: absolute;
+        width: 100%;
+        height: 236px;
+        content: "";
+        background: var(--theme-400-color);
+        z-index: -1;
+      }
+
+      #content {
+        margin-top: 64px;
+      }
+
+      @media screen and (max-width: 320px) {
+        :root {
+          --app-drawer-width: 256px;
+        }
+      }
+
+      app-drawer {
+        top: 64px;
+        --app-drawer-content-container: {
+          @apply --primary-700;
+          @apply --shadow-elevation-8dp;
+          top: -184px;
+        };
+      }
+
+      app-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 64px;
+        line-height: 64px;
+        @apply --primary-800;
+      }
+
+      app-header paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+
+      #flex-toolbar {
+        @apply --layout-horizontal;
+        width: 100%;
+        transition: 0.2s ease !important;
+        overflow: hidden;
+        transition-property: background-color, transform, left, margin !important;
+        @apply --primary-700;
+      }
+
+      #flex-toolbar paper-icon-button {
+        @apply --primary-700-text-secondary;
+      }
+
+      #flex-toolbar paper-icon-button:hover {
+        @apply --primary-700-text;
+      }
+
+      :host([drawer-opened]) #flex-toolbar {
+        @apply --primary-800;
+        margin-left: var(--app-drawer-width, 268px) !important;
+      }
+
+      #flex-toolbar #search {
+        text-align: center;
+      }
+
+      .spread {
+        @apply --layout-flex;
+      }
+
+      #toolbar {
+        text-align: right;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: flex-end;
+        padding-right: 12px;
+      }
+
+      :host([drawer-opened]) #burger,
+      :host([drawer-opened]) #search,
+      :host([drawer-opened]) #toolbar {
+        display: none;
+      }
+    </style>
+    <fort-theme primary="fortifi-navy" accent="fortifi-blue" theme="light">
+      <app-drawer-layout fullbleed force-narrow>
+        <app-drawer id="drawer" opened="{{drawerOpened}}">
+          <fortifi-shell-drawer>
+            <fortifi-shell-drawer-panel>
+              Apps Panel
+            </fortifi-shell-drawer-panel>
+            <fortifi-shell-drawer-panel>
+              Panel 2
+            </fortifi-shell-drawer-panel>
+          </fortifi-shell-drawer>
+        </app-drawer>
+
+        <app-header-layout>
+          <app-header fixed>
+            <div id="flex-toolbar">
+              <div id="burger">
+                <paper-icon-button icon="menu" on-tap="_toggleDrawer"></paper-icon-button>
+              </div>
+              <div id="pinned-apps">
+                <fortifi-pinned-apps></fortifi-pinned-apps>
+              </div>
+              <div class="spread"></div>
+              <div id="search">
+                <fortifi-search></fortifi-search>
+              </div>
+              <div class="spread"></div>
+              <div id="toolbar">
+                <fortifi-toolbar></fortifi-toolbar>
+              </div>
+            </div>
+          </app-header>
+        </app-header-layout>
+      </app-drawer-layout>
+
+      <div id="content">
+      </div>
+
+    </fort-theme>
+  </template>
+  <script>
+    Polymer(
+      {
+        is:               'fortifi-shell',
+        behaviors:        [
+          Polymer.IronA11yKeysBehavior
+        ],
+        properties:       {
+          drawerOpened: {
+            type:               Boolean,
+            reflectToAttribute: true
+          }
+        },
+        keyBindings:      {
+          '.': '_openDrawer'
+        },
+        attached:         function ()
+                          {
+                            this.keyEventTarget = document.body;
+                            document.querySelector('body').removeAttribute('shellunloaded');
+                          },
+        _setupClose:      false,
+        _toggleDrawer:    function ()
+                          {
+                            var drawer = this.$.drawer;
+                            drawer.toggle();
+                            if(!this._setupClose)
+                            {
+                              this.$$('fortifi-shell-drawer').addEventListener(
+                                'closeParent', function (e)
+                                {
+                                  drawer.close();
+                                }
+                              );
+                              this._setupClose = true;
+                            }
+                          },
+        _openDrawer:      function (e)
+                          {
+                            if(this._isValidKeyPress(e))
+                            {
+                              this.$.drawer.toggle();
+                              e.preventDefault();
+                            }
+                          },
+        _isValidKeyPress: function (e)
+                          {
+                            if(e && e.detail && e.detail.keyboardEvent)
+                            {
+                              return e.detail.keyboardEvent.target.tagName == 'BODY';
+                            }
+                            return true;
+                          }
+      }
+    );
+  </script>
+</dom-module>
