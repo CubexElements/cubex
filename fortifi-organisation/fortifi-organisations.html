@@ -1,0 +1,50 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../fort-websocket/fort-websocket.html">
+<link rel="import" href="../../app-route/app-location.html">
+<link rel="import" href="../../app-route/app-route.html">
+
+<!--
+An element providing a solution to no problem in particular.
+
+Example:
+
+    <fortifi-organisation organisation="{{organisation}}"></fortifi-organisation>
+
+@demo demo/index.html
+-->
+
+<dom-module id="fortifi-organisation" attributes="organisation organisations">
+  <template>
+    <app-location route="{{route}}"></app-location>
+    <app-route route="{{route}}" pattern="/:org" data="{{routeData}}"></app-route>
+    <fort-websocket vendor="fortifi" app="organisations" auto
+                    on-subscribe="_orgSubscribed" on-message="_orgUpdate"></fort-websocket>
+  </template>
+  <script>
+    Polymer(
+      {
+        is:             'fortifi-organisation',
+        properties:     {
+          organisation:  {type: Object, notify: true},
+          organisations: {type: Object, notify: true, readOnly: true}
+        },
+        observers:      ['_orgChanged(organisations,routeData.org)'],
+        _orgSubscribed: function (e, message)
+                        {
+                          this._setOrganisations(JSON.parse(message).organisations);
+                        },
+        _orgUpdate:     function (e, message)
+                        {
+                          if(message.action == 'create')
+                          {
+                            this.set('organisations.' + message.payload.id, message.payload);
+                          }
+                        },
+        _orgChanged:    function (orgs, orgId)
+                        {
+                          this.set('organisation', orgs[orgId]);
+                        }
+      }
+    );
+  </script>
+</dom-module>
