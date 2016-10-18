@@ -1,0 +1,70 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../fort-dropdown/fort-dropdown.html">
+<link rel="import" href="../../fort-action/fort-action.html">
+<link rel="import" href="../../fort-list/fort-list-menu.html">
+<link rel="import" href="../../fort-list/fort-li.html">
+<link rel="import" href="../../fort-icon/fort-icon.html">
+<link rel="import" href="../../fortifi-theme/fortifi-theme-style.html">
+
+<dom-module id="fortifi-quick-actions" attributes="organisation actions">
+  <template>
+    <style>
+      :host fort-action {
+        @apply --primary-700-text-secondary;
+      }
+
+      :host fort-action:hover {
+        @apply --primary-700-text;
+      }
+    </style>
+
+    <template restamp is="dom-if" if="{{actions}}">
+      <div id="quick-actions">
+        <fort-dropdown horizontal-align="right">
+          <fort-action class="dropdown-trigger">icons:add</fort-action>
+          <fort-list-menu class="dropdown-content">
+            <template is="dom-repeat" items="{{actions}}">
+              <fort-li href$="/{{organisation.id}}/{{item.GlobalAppID}}/{{item.Path}}" title="{{item.Name}}">
+                <fort-icon item-icon>{{item.Icon}}</fort-icon>
+                {{i18n_c4t(item.ID, '_name')}}
+              </fort-li>
+            </template>
+          </fort-list-menu>
+        </fort-dropdown>
+      </div>
+    </template>
+  </template>
+
+  <script>
+    Polymer(
+      {
+        is: 'fortifi-quick-actions',
+
+        properties: {
+          actions:   {type: Object, notify: true, observer: '_resetResources'},
+          resources: {type: Object, value: this._resetResources}
+        },
+
+        _resetResources: function ()
+                         {
+                           var self = this,
+                             res = {};
+
+                           this.iterate(
+                             this.actions, function (action)
+                             {
+                               res = self.hydrateResources(res, action.ID + '_name', action.Name);
+                             }
+                           );
+
+                           this.resources = res;
+                         },
+
+        behaviors: [
+          Polymer.FortIteratorBehavior,
+          Polymer.FortI18nBehavior
+        ]
+      }
+    );
+  </script>
+</dom-module>
