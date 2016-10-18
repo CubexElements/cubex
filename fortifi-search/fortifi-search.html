@@ -50,12 +50,18 @@
 
       fort-icon {
         margin: 0 12px;
+        pointer-events: none;
       }
 
       :host([focus-search]) {
         display: block;
-        min-width: 300px;
-        max-width: 512px;
+        width: 295px
+      }
+
+      @media screen and (min-width: 530px) {
+        :host([focus-search]) {
+          width: 512px
+        }
       }
 
       @media screen and (min-width: 800px) {
@@ -104,28 +110,32 @@
         _onTap:     function (e)
                     {
                       e.preventDefault();
-                      this.focus();
+                      if(!this.$.overlay.opened)
+                      {
+                        this.focus();
+                      }
+                      else
+                      {
+                        e.stopPropagation();
+                      }
                     },
         focus:      function ()
                     {
+                      this.$.search.focus();
                       this.$.overlay._focusedChild = this.$.search.inputElement;
                       this.$.overlay.open();
-                      this.$.search.focus();
-                    },
-        _onFocus:   function (e)
-                    {
-                      console.log("OnFocus")
                     },
         _onBlur:    function (e)
                     {
-                      console.log("OnBlur")
-                      this.fire('blur');
                       this.$.search.value = "";
+                      this.$.search.inputElement.blur();
+                      this.$.overlay._focusedChild = null;
+                      this.$.overlay.close();
+                      this.fire('blur');
                     },
         attached:   function ()
                     {
                       this.listen(this.$.search, 'blur', '_onBlur');
-                      this.listen(this.$.search, 'focus', '_onFocus');
                       this.listen(this.$.overlay, 'iron-overlay-opened', '_onOverlay');
                     }
       }
