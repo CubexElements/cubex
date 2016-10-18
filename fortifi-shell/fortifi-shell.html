@@ -18,7 +18,7 @@
 <link rel="import" href="../fortifi-theme/fortifi-theme.html">
 <link rel="import" href="../fortifi-theme/fortifi-theme-style.html">
 
-<dom-module id="fortifi-shell" attributes="drawerOpened">
+<dom-module id="fortifi-shell" attributes="drawerOpened focus-search">
   <template>
     <style is="custom-style">
       :host, #flex-toolbar {
@@ -96,6 +96,16 @@
         margin: 12px 0;
       }
 
+      #search-shortcut {
+        display: none;
+      }
+
+      @media screen and (max-width: 800px) {
+        #search-shortcut {
+          display: block;
+        }
+      }
+
       .spread {
         @apply --layout-flex;
       }
@@ -109,7 +119,12 @@
         padding-right: 12px;
       }
 
+      :host([focus-search]) #burger,
+      :host([focus-search]) #search-shortcut,
+      :host([focus-search]) fortifi-pinned-apps,
+      :host([focus-search]) fortifi-toolbar,
       :host([drawer-opened]) #burger,
+      :host([drawer-opened]) #search-shortcut,
       :host([drawer-opened]) fortifi-search,
       :host([drawer-opened]) fortifi-toolbar {
         display: none;
@@ -136,8 +151,11 @@
               </div>
               <fortifi-pinned-apps></fortifi-pinned-apps>
               <div class="spread"></div>
-              <fortifi-search></fortifi-search>
+              <fortifi-search id="search" focus-search="[[focusSearch]]"></fortifi-search>
               <div class="spread"></div>
+              <div id="search-shortcut">
+                <paper-icon-button icon="search" on-tap="_searchFocus"></paper-icon-button>
+              </div>
               <fortifi-toolbar></fortifi-toolbar>
             </div>
           </app-header>
@@ -160,6 +178,10 @@
           drawerOpened: {
             type:               Boolean,
             reflectToAttribute: true
+          },
+          focusSearch:  {
+            type:               Boolean,
+            reflectToAttribute: true
           }
         },
         keyBindings:      {
@@ -171,6 +193,17 @@
                             document.querySelector('body').removeAttribute('shellunloaded');
                           },
         _setupClose:      false,
+        _blurSearch:      function ()
+                          {
+                            this.focusSearch = false;
+                            this.unlisten(this.$.search, 'blur', '_blurSearch');
+                          },
+        _searchFocus:     function ()
+                          {
+                            this.focusSearch = true;
+                            this.$.search.focus();
+                            this.listen(this.$.search, 'blur', '_blurSearch');
+                          },
         _toggleDrawer:    function ()
                           {
                             var drawer = this.$.drawer;
