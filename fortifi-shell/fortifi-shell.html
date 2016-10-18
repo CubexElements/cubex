@@ -21,11 +21,15 @@
 <dom-module id="fortifi-shell" attributes="drawerOpened">
   <template>
     <style is="custom-style">
+      :host, #flex-toolbar {
+        min-width: 320px;
+      }
 
       fortifi-theme::before {
         display: block;
         position: absolute;
-        width: 100%;
+        right: 0;
+        left: 0;
         height: 236px;
         content: "";
         background: var(--theme-400-color);
@@ -57,6 +61,7 @@
         left: 0;
         width: 100%;
         height: 64px;
+        overflow: hidden;
         line-height: 64px;
         @apply --primary-800;
       }
@@ -66,10 +71,10 @@
       }
 
       #flex-toolbar {
+        z-index: 1000;
         @apply --layout-horizontal;
         width: 100%;
         transition: 0.2s ease !important;
-        overflow: hidden;
         transition-property: background-color, transform, left, margin !important;
         @apply --primary-700;
       }
@@ -87,15 +92,15 @@
         margin-left: var(--app-drawer-width, 268px) !important;
       }
 
-      #flex-toolbar #search {
-        text-align: center;
+      #flex-toolbar fortifi-search {
+        margin: 12px 0;
       }
 
       .spread {
         @apply --layout-flex;
       }
 
-      #toolbar {
+      fortifi-toolbar {
         text-align: right;
         position: relative;
         overflow: hidden;
@@ -105,8 +110,8 @@
       }
 
       :host([drawer-opened]) #burger,
-      :host([drawer-opened]) #search,
-      :host([drawer-opened]) #toolbar {
+      :host([drawer-opened]) fortifi-search,
+      :host([drawer-opened]) fortifi-toolbar {
         display: none;
       }
     </style>
@@ -133,13 +138,11 @@
                 <fortifi-pinned-apps></fortifi-pinned-apps>
               </div>
               <div class="spread"></div>
-              <div id="search">
-                <fortifi-search></fortifi-search>
-              </div>
+              <fortifi-search></fortifi-search>
               <div class="spread"></div>
-              <div id="toolbar">
-                <fortifi-toolbar></fortifi-toolbar>
-              </div>
+
+              <fortifi-toolbar></fortifi-toolbar>
+
             </div>
           </app-header>
         </app-header-layout>

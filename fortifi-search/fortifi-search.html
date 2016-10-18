@@ -1,16 +1,112 @@
 <link href="../../polymer/polymer.html" rel="import">
+<link rel="import" href="../../paper-input/paper-input.html">
+<link rel="import" href="../../paper-styles/shadow.html">
+<link rel="import" href="../../fort-icon/fort-icon.html">
+<link rel="import" href="fortifi-search-overlay.html">
 
 <dom-module id="fortifi-search">
   <template>
     <style>
+      :host {
+        margin: 0 12px;
+        display: none;
+        line-height: 18px;
+        --paper-input-container-underline: {
+          display: none;
+        };
+        --paper-input-container-underline-focus: {
+          display: none;
+        };
 
+        --iron-overlay-backdrop: {
+          top: 64px;
+        };
+
+        --iron-overlay-backdrop-background-color: red;
+        --iron-overlay-backdrop-opened: {
+          display: none;
+        };
+      }
+
+      paper-input {
+        text-align: left;
+        --paper-input-container: {
+          background: rgba(255, 255, 255, 0.1);
+        };
+      }
+
+      paper-input:not([focused]) ::content label {
+        display: none;
+      }
+
+      paper-input[focused] {
+        @apply --shadow-elevation-2dp;
+        background: var(--theme-100-color);
+      }
+
+      paper-input[focused] fort-icon {
+        color: var(--theme-text-secondary);
+      }
+
+      fort-icon {
+        margin: 0 12px;
+      }
+
+      @media screen and (min-width: 800px) {
+        :host {
+          max-width: 300px;
+          display: block;
+        }
+      }
+
+      @media screen and (min-width: 1000px) {
+        :host {
+          max-width: 512px;
+        }
+      }
+
+      :host, input {
+        width: 100%;
+      }
     </style>
-    SEARCH
+    <paper-input no-label-float label="Find products and features" id="search">
+      <fort-icon prefix>icons:search</fort-icon>
+    </paper-input>
+    <fortifi-search-overlay with-backdrop id="overlay"></fortifi-search-overlay>
   </template>
   <script>
     Polymer(
       {
-        is: 'fortifi-search'
+        is:         'fortifi-search',
+        _onOverlay: function (e)
+                    {
+                      this.$.overlay.backdropElement.updateStyles(
+                        {
+                          "--iron-overlay-backdrop": "top: 64px;"
+                        }
+                      )
+                    },
+        listeners:  {
+          'tap': "_onTap"
+        },
+        _onTap:     function (e)
+                    {
+                      //e.stopPropagation();
+                    },
+        _onFocus:   function (e)
+                    {
+                      //this.$.overlay.open();
+                    },
+        _onBlur:    function (e)
+                    {
+                      this.$.search.value = "";
+                    },
+        attached:   function ()
+                    {
+                      this.listen(this.$.search, 'blur', '_onBlur');
+                      this.listen(this.$.search, 'focus', '_onFocus');
+                      this.listen(this.$.overlay, 'iron-overlay-opened', '_onOverlay');
+                    }
       }
     );
   </script>
