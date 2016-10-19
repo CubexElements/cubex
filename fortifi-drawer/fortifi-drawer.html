@@ -133,20 +133,25 @@ Example:
       width: var(--fortifi-drawer-width, 256px);
     }
 
-    :host([state="1"][position="left"]) > #content {
-      padding-left: var(--fortifi-drawer-peek-width, 50px);
+    :host([state="1"][position="left"]) {
+      --fortifi-drawer-offset-left: var(--fortifi-drawer-peek-width, 50px);
     }
 
-    :host([state="2"][position="left"]) > #content {
-      padding-left: var(--fortifi-drawer-width, 256px);
+    :host([state="2"][position="left"]) {
+      --fortifi-drawer-offset-left: var(--fortifi-drawer-width, 256px);
     }
 
-    :host([state="1"][position="right"]) > #content {
-      padding-right: var(--fortifi-drawer-peek-width, 50px);
+    :host([state="1"][position="right"]) {
+      --fortifi-drawer-offset-right: var(--fortifi-drawer-peek-width, 50px);
     }
 
-    :host([state="2"][position="right"]) > #content {
-      padding-right: var(--fortifi-drawer-width, 256px);
+    :host([state="2"][position="right"]) {
+      --fortifi-drawer-offset-right: var(--fortifi-drawer-width, 256px);
+    }
+
+    :host > #content {
+      padding-left: var(--fortifi-drawer-offset-left, 0px);
+      padding-right: var(--fortifi-drawer-offset-right, 0px);
     }
 
   </style>
@@ -171,7 +176,7 @@ Example:
         position:      {type: String, value: 'left', reflectToAttribute: true},
         transitioning: {type: Boolean, value: false, reflectToAttribute: true},
         isOpen:        {type: Boolean, value: false, reflectToAttribute: true},
-        state:         {type: Number, readOnly: true, value: 0, reflectToAttribute: true},
+        state:         {type: Number, readOnly: true, value: 0, reflectToAttribute: true, observer: '_stateChanged'},
         minState:      {type: Number, value: 0, reflectToAttribute: true, observer: 'refreshState'},
         maxState:      {type: Number, value: 2, reflectToAttribute: true, observer: 'refreshState'}
       },
@@ -327,6 +332,15 @@ Example:
                        {
                          this._setState(Math.max(this.minState, Math.min(this._preferredState, this.maxState)));
                          this.updateStyles();
+                       },
+      _stateChanged:   function ()
+                       {
+                         this.updateStyles(
+                           {
+                             '--fortifi-drawer-left-offset':  getComputedStyle(this.$.content)['padding-left'],
+                             '--fortifi-drawer-right-offset': getComputedStyle(this.$.content)['padding-right']
+                           }
+                         );
                        },
       _DRAWER_STATE:   {
         CLOSED: 0,

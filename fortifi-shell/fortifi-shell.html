@@ -58,17 +58,13 @@
         z-index: -1;
       }
 
-      #content {
-        margin-top: var(--fortifi-drawer-offset-top);
-      }
-
       @media screen and (max-width: 320px) {
         :root {
           --app-drawer-width: 256px;
         }
       }
 
-      app-drawer-layout {
+      app-header-layout {
         z-index: 1000;
       }
 
@@ -273,8 +269,7 @@
           </app-header>
         </app-header-layout>
         <div id="waterfall"></div>
-      </app-drawer-layout>
-      <div id="content">
+
         <fortifi-drawer id="userDrawer" swipe-open="[[_touchEnabled()]]"
                         max-state="[[_userDrawerMaxState]]"
                         position="right">
@@ -308,7 +303,7 @@
           <fortifi-app-loader route="{{route}}"></fortifi-app-loader>
         </fortifi-drawer>
 
-      </div>
+      </app-drawer-layout>
 
     </fortifi-theme>
   </template>

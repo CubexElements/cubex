@@ -1,0 +1,27 @@
+<link rel="import" href="../../polymer/polymer.html"/>
+
+<dom-module id="fortifi-breadcrumb-item">
+  <template>
+    <style>
+      :host(:first-of-type) i {
+        display: none;
+      }
+
+      :host i {
+        padding: 0 5px;
+        cursor: pointer;
+      }
+
+      ::content a {
+        text-decoration: none;
+        text-transform: capitalize;
+        color: var(--accent-400-color);
+      }
+    </style>
+    <i>/</i>
+    <content></content>
+  </template>
+  <script>
+    Polymer({is: 'fortifi-breadcrumb-item'});
+  </script>
+</dom-module>

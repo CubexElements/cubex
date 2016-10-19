@@ -1,0 +1,87 @@
+<link rel="import" href="../../polymer/polymer.html"/>
+<link rel="import" href="../../iron-flex-layout/iron-flex-layout.html"/>
+<link rel="import" href="fortifi-breadcrumb-item.html"/>
+
+<dom-module id="fortifi-breadcrumb">
+  <template>
+    <style>
+      :host {
+        @apply --layout-horizontal;
+        padding: 0 24px;
+        height: 60px;
+        line-height: 60px;
+        box-sizing: border-box;
+        @apply --fortifi-breadcrumb-style;
+      }
+
+      :host ::content fort-action {
+        padding: 0;
+      }
+
+      .left-column {
+        @apply --layout-start;
+      }
+
+      .right-column {
+        @apply --layout-flex-auto;
+        text-align: right;
+      }
+    </style>
+
+    <div class="left-column">
+      <fortifi-breadcrumb-item><a href="/">Home</a></fortifi-breadcrumb-item>
+      <template id="crumbList" is="dom-repeat" items="[[crumbs]]">
+        <fortifi-breadcrumb-item><a href="[[item.href]]">[[item.name]]</a></fortifi-breadcrumb-item>
+      </template>
+    </div>
+    <div class="right-column">
+      <content select="fort-action"></content>
+    </div>
+  </template>
+
+  <script>
+    Polymer(
+      {
+        is:            'fortifi-breadcrumb',
+        properties:    {
+          crumbs: {
+            type:     Array,
+            readOnly: true,
+            notify:   true,
+            value:    []
+          },
+          color:  {
+            type:     String,
+            readOnly: true,
+            notify:   true,
+            observer: '_colorChanged'
+          }
+        },
+        clearColor:    function ()
+                       {
+                         this.setColor('');
+                       },
+        setColor:      function (color)
+                       {
+                         this._setColor(color);
+                       },
+        _colorChanged: function ()
+                       {
+                         this.updateStyles({'--fortifi-breadcrumb-background': this.color});
+                       },
+        clearCrumbs:   function ()
+                       {
+                         this.splice('crumbs', 0);
+                       },
+        addCrumb:      function (crumb)
+                       {
+                         this.push('crumbs', crumb);
+                       },
+        attached:      function ()
+                       {
+                         this._colorChanged();
+                       }
+      }
+    );
+  </script>
+</dom-module>
