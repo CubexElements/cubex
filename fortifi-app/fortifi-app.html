@@ -1,0 +1,181 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../fortifi-drawer/fortifi-drawer.html">
+<link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../iron-media-query/iron-media-query.html">
+<link rel="import" href="../../fort-behavior/fort-touch-enabled-behavior.html">
+<link rel="import" href="../../fort-behavior/fort-service-behavior.html">
+<link rel="import" href="../../app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../../app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../../app-layout/app-header/app-header.html">
+<link rel="import" href="../../app-layout/app-toolbar/app-toolbar.html">
+
+
+<!--
+An element providing a solution to no problem in particular.
+
+Example:
+
+    <fortifi-app>
+    </fortifi-app>
+
+
+@demo demo/index.html
+@hero hero.svg
+-->
+
+<dom-module id="fortifi-app" attributes="vendor app app-data">
+  <template>
+    <style>
+      :host {
+        display: block;
+        --fortifi-drawer-peek-width: 56px;
+      }
+
+      app-header-layout {
+        margin: 24px;
+      }
+
+      .app-content {
+        margin: 40px;
+      }
+
+      :host app-header {
+        margin-top: var(--fortifi-drawer-offset-top, 0);
+        transition: left ease 0.2s !important;
+      }
+
+      :host app-toolbar {
+        padding: 0;
+      }
+
+      :host #appDrawer[state="1"] app-header {
+        left: var(--fortifi-drawer-peek-width, 50px) !important;
+      }
+
+      :host #appDrawer[state="2"] app-header {
+        left: var(--fortifi-drawer-width, 256px) !important;
+      }
+
+      :host-context(#userDrawer[state="1"]) app-header {
+        right: var(--fortifi-drawer-peek-width, 50px) !important;
+      }
+
+      :host-context(#userDrawer[state="2"]) app-header {
+        right: var(--fortifi-drawer-width, 256px) !important;
+      }
+
+      :host([drawer-disabled]) {
+        --fortifi-drawer-peek-width: 0;
+        --fortifi-drawer-width: 0;
+      }
+    </style>
+    <iron-media-query query="(max-width: 600px)" query-matches="{{narrow}}"></iron-media-query>
+    <iron-media-query query="(min-width: 1200px)" query-matches="{{_peek}}"></iron-media-query>
+    <iron-media-query query="(min-width: 1400px)" query-matches="{{_lock}}"></iron-media-query>
+
+    <fortifi-app-definition vendor="{{vendor}}" app="{{app}}" app-data="{{appData}}"></fortifi-app-definition>
+
+    <fortifi-drawer id="appDrawer" hover-popout swipe-open position="left">
+      <content select="fortifi-drawer-content"></content>
+      <app-header-layout>
+        <app-header reveals effects="waterfall">
+          <app-toolbar>
+            <content select="fortifi-app-header"></content>
+          </app-toolbar>
+        </app-header>
+        <div class="app-content">
+          <content></content>
+        </div>
+      </app-header-layout>
+    </fortifi-drawer>
+
+  </template>
+  <script>
+    Polymer(
+      {
+        is:              'fortifi-app',
+        behaviors:       [Polymer.FortTouchEnabledBehavior, Polymer.FortServiceBehavior],
+        properties:      {
+          narrow:         {type: Boolean, value: true, reflectToAttribute: true, observer: '_updateMaxState'},
+          vendor:         {type: String},
+          app:            {type: String},
+          appData:        {type: Object, notify: true},
+          drawerDisabled: {
+            type:               Boolean,
+            value:              false,
+            reflectToAttribute: true
+          }
+        },
+        observers:       [
+          '_viewChanged(_lock,_peek)',
+          '_updateDrawer(appData)'
+        ],
+        _updateDrawer:   function (appData)
+                         {
+                           this.drawerDisabled = !(appData && appData.Navigation && appData.Navigation.length);
+                           Polymer.updateStyles();
+                         },
+        _lock:           false,
+        _peek:           false,
+        ready:           function ()
+                         {
+                           this.async(
+                             function ()
+                             {
+                               this._viewChanged(this._lock, this._peek);
+                             }
+                           );
+                         },
+        _viewChanged:    function (lock, peek)
+                         {
+                           var drawer = this.drawer;
+                           if(drawer)
+                           {
+                             if(!this._touchEnabled())
+                             {
+                               drawer.minState = 1;
+                             }
+                             else
+                             {
+                               drawer.minState = 0;
+                             }
+
+                             if(lock)
+                             {
+                               drawer.setState(2);
+                             }
+                             else if(peek)
+                             {
+                               drawer.setState(1);
+                             }
+                           }
+                         },
+        _updateMaxState: function (narrow)
+                         {
+                           if(this.drawer)
+                           {
+                             this.drawer.maxState = narrow ? 1 : 2;
+                           }
+                         },
+        setDrawerState:  function (state)
+                         {
+                           var drawer = this.drawer;
+                           drawer.setState(state);
+                           if(state == 1)
+                           {
+                             drawer.close();
+                           }
+                         },
+
+        /**
+         * Retrieve the drawer element for this app
+         * @returns {Element}
+         */
+        get drawer()
+        {
+          return this.querySelector('#appDrawer') || this.root.querySelector('#appDrawer');
+        }
+      }
+    )
+  </script>
+</dom-module>

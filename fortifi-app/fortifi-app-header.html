@@ -1,0 +1,190 @@
+<link href="../../polymer/polymer.html" rel="import">
+<link rel="import" href="../../fort-action/fort-action.html">
+<link rel="import" href="../fortifi-theme/fortifi-theme.html">
+<link rel="import" href="../../fort-icon/fort-icon.html">
+<link rel="import" href="../../fort-dropdown/fort-dropdown.html">
+<link rel="import" href="../../paper-styles/typography.html">
+<link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
+
+<dom-module id="fortifi-app-header" attributes="icon show-back">
+  <template strip-whitespace>
+    <style>
+      :host {
+        @apply --layout-horizontal;
+        position: relative;
+        height: 64px;
+        width: 100%;
+        background: var(--theme-50-color);
+        padding-left: 24px;
+        border-bottom: 1px solid var(--theme-600-color);
+        line-height: 64px;
+        overflow: hidden;
+      }
+
+      :host([show-back]) {
+        padding-left: 72px;
+      }
+
+      :host #app-back {
+        color: var(--accent-400-color);
+        margin: 12px;
+        left: -9px;
+        top: 0;
+        bottom: 0;
+        position: absolute;
+      }
+
+      .flexchild {
+        @apply --layout-flex;
+      }
+
+      :host([show-back]) > fort-icon {
+        margin: 12px 16px 12px 0;
+        overflow: hidden;
+        z-index: 0;
+        min-width: 40px;
+        border-radius: 100px;
+        display: inline-block;
+      }
+
+      :host ::content h1 {
+        @apply --paper-font-title;
+        margin: 0;
+        padding: 0;
+        line-height: 64px;
+      }
+
+      :host fort-dropdown {
+        display: inline-block;
+        height: 64px;
+      }
+
+      :host fort-dropdown .dropdown-trigger {
+        height: 64px;
+      }
+
+      :host #actions ::content fort-action:hover fort-icon,
+      :host #actions fort-action:hover fort-icon {
+        opacity: 1;
+      }
+
+      :host #actions ::content fort-action,
+      :host #actions fort-action {
+        color: var(--text-color-secondary);
+      }
+
+      :host #actions ::content fort-action,
+      :host #actions fort-action {
+        display: inline-block;
+        padding: 17px 20px;
+        line-height: normal;
+      }
+
+      :host #actions ::content fort-action:before,
+      :host #actions fort-action:before {
+        content: '';
+        display: block;
+        background: var(--theme-200-color);
+        border-left: 1px solid var(--theme-600-color);
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+      }
+
+      :host #actions ::content #more-actions fort-icon,
+      :host #actions #more-actions fort-icon {
+        opacity: 1;
+      }
+
+      :host #actions {
+        display: -webkit-inline-flex;
+        display: inline-flex;
+        -webkit-flex-direction: row;
+        flex-direction: row;
+      }
+
+      :host #actions #more-actions {
+        @apply --accent-400-text;
+      }
+
+      :host #actions #more-actions:before {
+        @apply --accent-400;
+      }
+
+      :host #actions #more-actions:hover:before {
+        @apply --accent-200;
+      }
+
+      :host #actions ::content fort-action:hover:before,
+      :host #actions fort-action:hover:before {
+        background: var(--theme-50-color);
+      }
+
+      :host #actions .dropdown-content {
+        height: 64px;
+        margin-top: 1px;
+        border-bottom: 1px solid var(--theme-600-color);
+      }
+
+      :host #actions .dropdown-content fort-action[primary-alt],
+      :host #actions .dropdown-content ::content fort-action[primary-alt] {
+        display: none;
+      }
+
+      @media all and (max-width: 700px) {
+        :host #header-icon,
+        :host #actions fort-action[primary],
+        :host #actions ::content fort-action[primary] {
+          display: none;
+        }
+
+        :host #actions .dropdown-content fort-action[primary-alt],
+        :host #actions .dropdown-content ::content fort-action[primary-alt] {
+          display: inline-block;
+        }
+      }
+    </style>
+
+    <content select="fortifi-app-title"></content>
+    <template is="dom-if" if="{{showBack}}" strip-whitespace>
+      <fort-action id="app-back">icons:arrow-back</fort-action>
+    </template>
+    <template is="dom-if" if="{{icon}}" strip-whitespace>
+      <fort-icon size="40" id="header-icon">[[icon]]</fort-icon>
+    </template>
+    <content select="h1"></content>
+    <div class="flexchild"></div>
+    <div id="actions">
+      <content select="fort-action[primary]"></content>
+      <template is="dom-if" if="{{_hasAdditionalActions()}}" strip-whitespace>
+        <fort-dropdown>
+          <fort-action class="dropdown-trigger" id="more-actions">icons:more-vert</fort-action>
+          <div class="dropdown-content">
+            <content select="fort-action[primary-alt]"></content>
+            <content select="fort-action"></content>
+          </div>
+        </fort-dropdown>
+      </template>
+    </div>
+  </template>
+  <script>Polymer(
+    {
+      is:                    'fortifi-app-header',
+      _hasAdditionalActions: function ()
+                             {
+                               return this.queryEffectiveChildren('fort-action:not([primary])');
+                             },
+      properties:            {
+        showBack: {
+          type:               Boolean,
+          value:              true,
+          reflectToAttribute: true
+        }
+      }
+    }
+  )</script>
+</dom-module>

@@ -30,7 +30,7 @@
 <link rel="import" href="../fortifi-drawer/fortifi-user-drawer.html">
 <link rel="import" href="../fortifi-drawer/fortifi-user-drawer-items.html">
 <link rel="import" href="../fortifi-drawer/fortifi-drawer-content.html">
-
+<link rel="import" href="../fortifi-app/fortifi-app-loader.html">
 <link rel="import" href="../../iron-pages/iron-pages.html">
 
 <dom-module id="fortifi-shell" attributes="drawerOpened focus-search">
@@ -66,6 +66,10 @@
         :root {
           --app-drawer-width: 256px;
         }
+      }
+
+      app-drawer-layout {
+        z-index: 1000;
       }
 
       app-drawer {
@@ -301,7 +305,7 @@
               </fortifi-user-drawer-items>
             </fortifi-user-drawer>
           </fortifi-drawer-content>
-          Main Content Here
+          <fortifi-app-loader route="{{route}}"></fortifi-app-loader>
         </fortifi-drawer>
 
       </div>
