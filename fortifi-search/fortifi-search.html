@@ -35,8 +35,10 @@
         };
       }
 
-      paper-input:not([focused]) ::content label {
-        display: none;
+      paper-input:not([focused]) {
+        --paper-input-container-label: {
+          display: none;
+        }
       }
 
       paper-input[focused] {
@@ -89,14 +91,6 @@
     Polymer(
       {
         is:         'fortifi-search',
-        _onOverlay: function (e)
-                    {
-                      this.$.overlay.backdropElement.updateStyles(
-                        {
-                          "--iron-overlay-backdrop": "top: 64px;"
-                        }
-                      );
-                    },
         properties: {
           focusSearch: {
             type:               Boolean,
@@ -115,13 +109,16 @@
                       {
                         e.preventDefault();
                       }
+                      this.updateStyles();
                     },
         _onTap:     function (e)
                     {
                       e.preventDefault();
                       if(!this.$.overlay.opened)
                       {
-                        this.focus();
+                        this.updateStyles();
+                        this.$.overlay._focusedChild = this.$.search.inputElement;
+                        this.$.overlay.open();
                       }
                       else
                       {
@@ -133,6 +130,7 @@
                       this.$.search.focus();
                       this.$.overlay._focusedChild = this.$.search.inputElement;
                       this.$.overlay.open();
+                      this.updateStyles();
                     },
         _onBlur:    function ()
                     {
@@ -141,6 +139,16 @@
                       this.$.overlay._focusedChild = null;
                       this.$.overlay.close();
                       this.fire('blur');
+                      this.updateStyles();
+                    },
+        _onOverlay: function (e)
+                    {
+                      this.updateStyles();
+                      this.$.overlay.backdropElement.updateStyles(
+                        {
+                          "--iron-overlay-backdrop": "top: 64px;"
+                        }
+                      );
                     },
         attached:   function ()
                     {
