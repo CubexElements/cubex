@@ -6,21 +6,43 @@
 <link rel="import" href="../../app-layout/app-drawer-layout/app-drawer-layout.html">
 
 <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../fort-behavior/fort-touch-enabled-behavior.html">
+<link rel="import" href="../../app-route/app-location.html">
 
 <link rel="import" href="../../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
 
+<link rel="import" href="../../iron-media-query/iron-media-query.html">
+<link rel="import" href="../../fort-behavior/fort-iterator-behavior.html">
+
 <link rel="import" href="../fortifi-shell-drawer/fortifi-shell-drawer.html">
 <link rel="import" href="../fortifi-shell-drawer/fortifi-shell-drawer-panel.html">
+
+<link rel="import" href="../fortifi-theme/styles/primary/fortifi-theme-primary-fortifi-navy.html">
+<link rel="import" href="../fortifi-theme/styles/accent/fortifi-theme-accent-fortifi-blue.html">
+<link rel="import" href="../fortifi-theme/styles/theme/fortifi-theme-theme-light.html">
 
 <link rel="import" href="../fortifi-pinned-apps/fortifi-pinned-apps.html">
 <link rel="import" href="../fortifi-search/fortifi-search.html">
 <link rel="import" href="../fortifi-toolbar/fortifi-toolbar.html">
 <link rel="import" href="../fortifi-theme/fortifi-theme.html">
 <link rel="import" href="../fortifi-theme/fortifi-theme-style.html">
+<link rel="import" href="../fortifi-drawer/fortifi-drawer.html">
+<link rel="import" href="../fortifi-drawer/fortifi-user-drawer.html">
+<link rel="import" href="../fortifi-drawer/fortifi-user-drawer-items.html">
+<link rel="import" href="../fortifi-drawer/fortifi-drawer-content.html">
+
+<link rel="import" href="../../iron-pages/iron-pages.html">
 
 <dom-module id="fortifi-shell" attributes="drawerOpened focus-search">
   <template>
     <style is="custom-style">
+      :host {
+        --app-drawer-width: 320px;
+        --fortifi-drawer-offset-top: 64px;
+        --fortifi-drawer-peek-width: 56px;
+        --fortifi-drawer-width: 256px;
+      }
+
       :host, #flex-toolbar {
         min-width: 320px;
       }
@@ -37,7 +59,7 @@
       }
 
       #content {
-        margin-top: 64px;
+        margin-top: var(--fortifi-drawer-offset-top);
       }
 
       @media screen and (max-width: 320px) {
@@ -47,7 +69,7 @@
       }
 
       app-drawer {
-        top: 64px;
+        top: var(--fortifi-drawer-offset-top);
         --app-drawer-content-container: {
           @apply --primary-700;
           @apply --shadow-elevation-8dp;
@@ -55,15 +77,32 @@
         };
       }
 
+      #waterfall {
+        z-index: 2;
+        position: fixed;
+        right: 0;
+        top: var(--fortifi-drawer-offset-top);
+        left: 0;
+        width: 100%;
+        height: 5px;
+        content: "";
+        transition: opacity 0.4s;
+        pointer-events: none;
+        box-shadow: inset 0 5px 3px -3px rgba(0, 0, 0, 0.2);
+        will-change: opacity;
+        @apply(--app-header-shadow);
+      }
+
       app-header {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
-        height: 64px;
-        overflow: hidden;
-        line-height: 64px;
-        @apply --primary-800;
+      }
+
+      app-header, #flex-toolbar {
+        height: var(--fortifi-drawer-offset-top);
+        line-height: var(--fortifi-drawer-offset-top);
       }
 
       app-header paper-icon-button {
@@ -119,6 +158,10 @@
         padding-right: 12px;
       }
 
+      :host([drawer-opened]) fortifi-pinned-apps {
+        padding-left: 12px;
+      }
+
       :host([focus-search]) #burger,
       :host([focus-search]) #search-shortcut,
       :host([focus-search]) fortifi-pinned-apps,
@@ -129,7 +172,66 @@
       :host([drawer-opened]) fortifi-toolbar {
         display: none;
       }
+
+      #user-panel-action:hover {
+        @apply --text-primary;
+      }
+
+      #user-panel-action {
+        --fort-icon-color: var(--primary-700-text-color);
+        @apply --text-secondary;
+        position: relative;
+        margin-top: 12px;
+        margin-right: 6px;
+      }
+
+      #user-panel-action:before,
+      #user-panel-action:after {
+        content: '';
+        display: inline-block;
+        border: 5px solid transparent;
+        position: absolute;
+        top: 16px;
+      }
+
+      :host(:not([user-drawer-opened])) #user-panel-action:before {
+        border-right-color: var(--primary-700-text-color);
+        left: -2px;
+      }
+
+      :host([user-drawer-opened]) #user-panel-action:after {
+        border-left-color: var(--primary-700-text-color);
+        right: -2px;
+      }
+
+      #lockUserDrawer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        color: var(--text-color-secondary);
+        cursor: pointer;
+      }
+
+      #lockUserDrawer[hidden] {
+        display: none;
+      }
+
+      #lockSessionAction {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        padding: 16px;
+      }
+
+      fort-action[hidden] {
+        display: none;
+      }
+
     </style>
+    <app-location route="{{route}}"></app-location>
+    <iron-media-query query="(min-width: 1000px)" query-matches="{{_peek}}"></iron-media-query>
+    <iron-media-query query="(max-width: 375px)" query-matches="{{_narrow}}"></iron-media-query>
+
     <fortifi-theme primary="fortifi-navy" accent="fortifi-blue" theme="light">
       <app-drawer-layout fullbleed force-narrow>
         <app-drawer id="drawer" opened="{{drawerOpened}}">
@@ -147,7 +249,7 @@
           <app-header fixed>
             <div id="flex-toolbar">
               <div id="burger">
-                <paper-icon-button icon="menu" on-tap="_toggleDrawer"></paper-icon-button>
+                <paper-icon-button icon="menu" on-tap="_openDrawer"></paper-icon-button>
               </div>
               <fortifi-pinned-apps></fortifi-pinned-apps>
               <div class="spread"></div>
@@ -157,12 +259,50 @@
                 <paper-icon-button icon="search" on-tap="_searchFocus"></paper-icon-button>
               </div>
               <fortifi-toolbar></fortifi-toolbar>
+              <div>
+                <fort-action hidden="[[_narrow]]" id="user-panel-action" size="23" on-tap="_toggleUserDrawer">
+                  icons:chrome-reader-mode
+                </fort-action>
+              </div>
             </div>
           </app-header>
         </app-header-layout>
+        <div id="waterfall"></div>
       </app-drawer-layout>
-
       <div id="content">
+        <fortifi-drawer id="userDrawer" swipe-open="[[_touchEnabled()]]"
+                        max-state="[[_userDrawerMaxState]]"
+                        position="right">
+          <fortifi-drawer-content>
+            <fortifi-user-drawer>
+              <iron-pages id="userPages" selected="none" attr-for-selected="data-page-id">
+                <div data-page-id="none">nun :(</div>
+                <div data-page-id="phone">PHONE Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto
+                                          autem
+                                          consequatur dignissimos doloremque doloribus nihil porro rem sed similique
+                                          sit!
+                                          Accusamus earum harum hic impedit, maiores quas repellat ut vel?
+                </div>
+                <div data-page-id="email">EMAIL Lorem ipsum dolor sit amet, consectetur adipisicing elit. Blanditiis
+                                          commodi
+                                          consequatur deleniti dolorem dolores doloribus in inventore, placeat porro
+                                          quisquam quos
+                                          repellat sequi sint? Assumenda eum itaque perferendis perspiciatis quisquam!
+                </div>
+              </iron-pages>
+              <fort-action id="lockUserDrawer" on-tap="_lockUserDrawer">
+                icons:chrome-reader-mode
+              </fort-action>
+              <fortifi-user-drawer-items>
+                <fort-action on-tap="_openUserDrawerApp" data-page-id="phone">communication:phone</fort-action>
+                <fort-action on-tap="_openUserDrawerApp" data-page-id="email">communication:email</fort-action>
+                <fort-action id="lockSessionAction">icons:lock</fort-action>
+              </fortifi-user-drawer-items>
+            </fortifi-user-drawer>
+          </fortifi-drawer-content>
+          Main Content Here
+        </fortifi-drawer>
+
       </div>
 
     </fortifi-theme>
@@ -170,11 +310,13 @@
   <script>
     Polymer(
       {
-        is:               'fortifi-shell',
-        behaviors:        [
-          Polymer.IronA11yKeysBehavior
+        is:                   'fortifi-shell',
+        behaviors:            [
+          Polymer.IronA11yKeysBehavior,
+          Polymer.FortTouchEnabledBehavior,
+          Polymer.FortIteratorBehavior
         ],
-        properties:       {
+        properties:           {
           drawerOpened: {
             type:               Boolean,
             reflectToAttribute: true
@@ -184,74 +326,187 @@
             reflectToAttribute: true
           }
         },
-        keyBindings:      {
-          '.': '_openDrawer',
+        _userDrawerMaxState:  2,
+        observers:            [
+          '_viewChanged(_peek,_narrow)'
+        ],
+        keyBindings:          {
+          '.': '_toggleDrawer',
           '/': '_launchSearch'
         },
-        attached:         function ()
-                          {
-                            this.keyEventTarget = document.body;
-                            document.querySelector('body').removeAttribute('shellunloaded');
-                          },
-        _setupClose:      false,
-        _blurSearch:      function ()
-                          {
-                            this.focusSearch = false;
-                            this.unlisten(this.$.search, 'blur', '_blurSearch');
-                          },
-        _searchFocus:     function ()
-                          {
-                            this.focusSearch = true;
-                            this.$.search.focus();
-                            this.listen(this.$.search, 'blur', '_blurSearch');
-                          },
-        _launchSearch:    function (e)
-                          {
-                            if(this._isValidKeyPress(e))
-                            {
-                              this.$.drawer.close();
-                              e.preventDefault();
-                              if(this.$.search.getComputedStyleValue('display') == 'block')
+        attached:             function ()
                               {
-                                this.$.search.focus();
-                              }
-                              else
+                                this.keyEventTarget = document.body;
+                                document.querySelector(
+                                  'body'
+                                )
+                                        .removeAttribute(
+                                          'shellunloaded'
+                                        );
+                              },
+        _viewChanged:         function (peek, narrow)
                               {
-                                this._searchFocus();
-                              }
-                            }
-                          },
-        _toggleDrawer:    function ()
-                          {
-                            var drawer = this.$.drawer;
-                            drawer.toggle();
-                            if(!this._setupClose)
-                            {
-                              this.$$('fortifi-shell-drawer').addEventListener(
-                                'closeParent', function (e)
+                                if(narrow)
                                 {
-                                  drawer.close();
+                                  this.$.userDrawer.maxState = 1;
                                 }
-                              );
-                              this._setupClose = true;
-                            }
-                          },
-        _openDrawer:      function (e)
-                          {
-                            if(this._isValidKeyPress(e))
-                            {
-                              this.$.drawer.open();
-                              e.preventDefault();
-                            }
-                          },
-        _isValidKeyPress: function (e)
-                          {
-                            if(e && e.detail && e.detail.keyboardEvent)
-                            {
-                              return e.detail.keyboardEvent.target.tagName == 'BODY';
-                            }
-                            return true;
-                          }
+                                else
+                                {
+                                  this.$.userDrawer.minState = 0;
+                                  this.$.userDrawer.maxState = 2;
+
+                                  if(peek && this.$.userDrawer.state == 0)
+                                  {
+                                    this.$.userDrawer.setState(1);
+                                    this.setAttribute('user-drawer-opened', true);
+                                  }
+                                }
+
+                                this.updateStyles();
+                              },
+        _setupClose:          false,
+        _blurSearch:          function ()
+                              {
+                                this.focusSearch = false;
+                                this.unlisten(
+                                  this.$.search,
+                                  'blur',
+                                  '_blurSearch'
+                                );
+                              },
+        _searchFocus:         function ()
+                              {
+                                this.focusSearch = true;
+                                this.$.search.focus();
+                                this.listen(
+                                  this.$.search,
+                                  'blur',
+                                  '_blurSearch'
+                                );
+                              },
+        _launchSearch:        function (e)
+                              {
+                                if(this._isValidKeyPress(
+                                    e
+                                  ))
+                                {
+                                  this.$.drawer.close();
+                                  e.preventDefault();
+                                  if(this.$.search.getComputedStyleValue(
+                                      'display'
+                                    ) == 'block')
+                                  {
+                                    this.$.search.focus();
+                                  }
+                                  else
+                                  {
+                                    this._searchFocus();
+                                  }
+                                }
+                              },
+        _prepareDrawer:       function ()
+                              {
+                                if(!this._setupClose)
+                                {
+                                  this.$$(
+                                    'fortifi-shell-drawer'
+                                  )
+                                      .addEventListener(
+                                        'closeParent',
+                                        function (e)
+                                        {
+                                          drawer.close();
+                                        }
+                                      );
+                                  this._setupClose = true;
+                                }
+                              },
+        _toggleDrawer:        function (e)
+                              {
+                                this._prepareDrawer();
+                                if(this._isValidKeyPress(
+                                    e
+                                  ))
+                                {
+                                  var drawer = this.$.drawer;
+                                  drawer.toggle();
+                                  e.preventDefault();
+                                }
+
+                              },
+        _openDrawer:          function ()
+                              {
+                                this._prepareDrawer();
+                                this.$.drawer.open();
+                              },
+        _isValidKeyPress:     function (e)
+                              {
+                                if(e && e.detail && e.detail.keyboardEvent)
+                                {
+                                  return e.detail.keyboardEvent.target.tagName == 'BODY';
+                                }
+                                return true;
+                              },
+        _toggleUserDrawer:    function ()
+                              {
+                                var newState = this.$.userDrawer.state ? 0 : (this._userDrawerPrevState ? this._userDrawerPrevState : 1);
+                                if(newState == 0)
+                                {
+                                  this._userDrawerPrevState = this.$.userDrawer.state;
+                                  this.$.userDrawer.close();
+                                  this.removeAttribute('user-drawer-opened');
+                                }
+                                else
+                                {
+                                  this.setAttribute('user-drawer-opened', true);
+                                }
+                                this.$.userDrawer.setState(newState);
+                              },
+        _lockUserDrawer:      function ()
+                              {
+                                this.$.userDrawer.maxState = this.$.userDrawer.state == 2 ? 1 : 2;
+                                this.$.userDrawer.setState(
+                                  this.$.userDrawer.maxState
+                                );
+                                this._userDrawerPrevState = this.$.userDrawer.state;
+                              },
+        _userDrawerPrevState: 0,
+        _openUserDrawerApp:   function (e)
+                              {
+                                this.iterate(
+                                  this.root.querySelectorAll('fortifi-user-drawer-items [active]'),
+                                  function (e)
+                                  {
+                                    e.removeAttribute('active');
+                                  }
+                                );
+                                e.currentTarget.setAttribute('active', true);
+                                var page = e.currentTarget.getAttribute('data-page-id');
+                                if(this.$.userPages.selected == page)
+                                {
+                                  if(this.$.userDrawer.state == 2)
+                                  {
+                                    this._userDrawerPrevState = 2;
+                                    this.$.userDrawer.maxState = 1;
+                                    this.$.userDrawer.setState(this.$.userDrawer.maxState);
+                                  }
+                                  this.$.userDrawer.toggle();
+                                  if(!this.$.userDrawer.isOpen)
+                                  {
+                                    e.currentTarget.removeAttribute('active');
+                                  }
+                                }
+                                else
+                                {
+                                  this.$.userPages.select(page);
+                                  this.$.userDrawer.open();
+                                }
+                                if(this.$.userDrawer.isOpen && this._userDrawerPrevState > 0)
+                                {
+                                  this.$.userDrawer.maxState = this._userDrawerPrevState;
+                                  this.$.userDrawer.setState(this.$.userDrawer.maxState);
+                                }
+                              }
       }
     );
   </script>
