@@ -104,8 +104,18 @@
           }
         },
         listeners:  {
-          'tap': "_onTap"
+          'tap':       "_onTap",
+          'mousedown': '_md'
         },
+        _md:        function (e)
+                    {
+                      if(this.$.overlay.opened
+                        && e.path.indexOf(this) !== -1 //Clicking search icon should prevent blur
+                        && e.path.indexOf(this.$.search.inputElement) == -1) //Selecting within input is valid
+                      {
+                        e.preventDefault();
+                      }
+                    },
         _onTap:     function (e)
                     {
                       e.preventDefault();
@@ -124,7 +134,7 @@
                       this.$.overlay._focusedChild = this.$.search.inputElement;
                       this.$.overlay.open();
                     },
-        _onBlur:    function (e)
+        _onBlur:    function ()
                     {
                       this.$.search.value = "";
                       this.$.search.inputElement.blur();
