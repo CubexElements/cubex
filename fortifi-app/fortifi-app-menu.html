@@ -155,7 +155,7 @@
 
     <template restamp is="dom-if" if="{{appData.Name}}">
       <fortifi-app-title icon="{{appData.Icon}}" title="{{i18n('app_name')}}" vendor="{{appData.Vendor}}"
-                      trusted-vendor="{{appData.TrustedVendor}}"></fortifi-app-title>
+                         trusted-vendor="{{appData.TrustedVendor}}"></fortifi-app-title>
     </template>
 
     <template restamp is="dom-if" if="{{appData.Navigation.length}}">
@@ -202,7 +202,7 @@
                                this.iterate(
                                  this.getPath(this), function (parent)
                                  {
-                                   if(parent.tagName == 'fortifi-app')
+                                   if(parent.tagName == 'FORTIFI-APP')
                                    {
                                      app = parent;
                                      return false;
