@@ -62,16 +62,9 @@ Example:
         padding: 0;
       }
 
-      :host {
-        margin-left: var(--fortifi-drawer-offset-left);
-        margin-right: var(--fortifi-drawer-offset-right);
-      }
-
       :host app-header {
         margin-top: var(--fortifi-drawer-offset-top, 0);
-        transition: left ease 0.2s !important;
-        left: calc(24px + var(--fortifi-drawer-offset-left)) !important;
-        right: calc(24px + var(--fortifi-drawer-offset-right)) !important;
+        transition: left ease 0.2s, right ease 0.2s !important;
       }
 
       :host([drawer-disabled]) {
@@ -89,7 +82,7 @@ Example:
     <fortifi-drawer id="appDrawer" hover-popout swipe-open position="left">
       <content select="fortifi-drawer-content"></content>
       <app-header-layout>
-        <app-header condenses reveals effects="waterfall">
+        <app-header id="ah" condenses reveals effects="waterfall">
           <fortifi-breadcrumb></fortifi-breadcrumb>
           <app-toolbar sticky>
             <fortifi-app-header>Test Header</fortifi-app-header>
@@ -186,7 +179,9 @@ Example:
             type:               Boolean,
             value:              false,
             reflectToAttribute: true
-          }
+          },
+          _lock:          {type: Boolean, value: false},
+          _peek:          {type: Boolean, value: false}
         },
         observers:       [
           '_viewChanged(_lock,_peek)',
@@ -196,10 +191,21 @@ Example:
                          {
                            this.drawerDisabled = !(appData && appData.Navigation && appData.Navigation.length);
                          },
-        _lock:           false,
-        _peek:           false,
         ready:           function ()
                          {
+                           document.addEventListener(
+                             'fortifi-drawer-state-changed', function (e)
+                             {
+                               if(e.detail.position == 'left')
+                               {
+                                 this.$.ah.style.left = (e.detail.offset + 24) + 'px';
+                               }
+                               else if(e.detail.position == 'right')
+                               {
+                                 this.$.ah.style.right = (e.detail.offset + 24) + 'px';
+                               }
+                             }.bind(this)
+                           );
                            this.async(
                              function ()
                              {

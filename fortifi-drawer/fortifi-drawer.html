@@ -91,10 +91,6 @@ Example:
       max-width: var(--fortifi-drawer-peek-width, 50px);
     }
 
-    :host > #content {
-      transition: 0.2s ease padding;
-    }
-
     :host([position="left"]) > #drawerContentContainer > #drawerContent {
       margin-right: 2px;
     }
@@ -133,25 +129,24 @@ Example:
       width: var(--fortifi-drawer-width, 256px);
     }
 
-    :host([state="1"][position="left"]) {
-      --fortifi-drawer-offset-left: var(--fortifi-drawer-peek-width, 50px);
+    :host([state="1"][position="left"]) > #content {
+      padding-left: var(--fortifi-drawer-peek-width, 50px);
     }
 
-    :host([state="2"][position="left"]) {
-      --fortifi-drawer-offset-left: var(--fortifi-drawer-width, 256px);
+    :host([state="2"][position="left"]) > #content {
+      padding-left: var(--fortifi-drawer-width, 256px);
     }
 
-    :host([state="1"][position="right"]) {
-      --fortifi-drawer-offset-right: var(--fortifi-drawer-peek-width, 50px);
+    :host([state="1"][position="right"]) > #content {
+      padding-right: var(--fortifi-drawer-peek-width, 50px);
     }
 
-    :host([state="2"][position="right"]) {
-      --fortifi-drawer-offset-right: var(--fortifi-drawer-width, 256px);
+    :host([state="2"][position="right"]) > #content {
+      padding-right: var(--fortifi-drawer-width, 256px);
     }
 
     :host > #content {
-      padding-left: var(--fortifi-drawer-offset-left, 0px);
-      padding-right: var(--fortifi-drawer-offset-right, 0px);
+      transition: 0.2s ease padding;
     }
 
   </style>
@@ -171,183 +166,222 @@ Example:
 
   <script>Polymer(
     {
-      is:              'fortifi-drawer',
-      properties:      {
-        position:      {type: String, value: 'left', reflectToAttribute: true},
-        transitioning: {type: Boolean, value: false, reflectToAttribute: true},
-        isOpen:        {type: Boolean, value: false, reflectToAttribute: true},
-        state:         {type: Number, readOnly: true, value: 0, reflectToAttribute: true, observer: '_stateChanged'},
-        minState:      {type: Number, value: 0, reflectToAttribute: true, observer: 'refreshState'},
-        maxState:      {type: Number, value: 2, reflectToAttribute: true, observer: 'refreshState'}
+      is:            'fortifi-drawer',
+      properties:    {
+        position:       {type: String, value: 'left', reflectToAttribute: true},
+        transitioning:  {type: Boolean, value: false, reflectToAttribute: true},
+        isOpen:         {type: Boolean, value: false, reflectToAttribute: true},
+        state:          {type: Number, readOnly: true, value: 0, reflectToAttribute: true, observer: '_stateChanged'},
+        minState:       {type: Number, readOnly: true, value: 0, reflectToAttribute: true},
+        maxState:       {type: Number, readOnly: true, value: 2, reflectToAttribute: true},
+        preferredState: {type: Number, readOnly: true, value: 0}
       },
-      listeners:       {
+      observers:     [
+        '_refreshState(minState,maxState,preferredState)'
+      ],
+      listeners:     {
         'down':  '_down',
         'track': '_track'
       },
-      attached:        function ()
+      attached:      function ()
+                     {
+                       if(!this._touchEnabled())
                        {
-                         if(!this._touchEnabled())
-                         {
-                           this.listen(this.$.drawerContentContainer, 'mouseenter', '_mouseEnter');
-                           this.listen(this.$.drawerContentContainer, 'mouseleave', '_mouseLeave');
-                         }
-                         this.listen(document, 'down', '_autoClose');
-                       },
-      _mouseEnter:     function ()
+                         this.listen(this.$.drawerContentContainer, 'mouseenter', '_mouseEnter');
+                         this.listen(this.$.drawerContentContainer, 'mouseleave', '_mouseLeave');
+                       }
+                       this.listen(document, 'down', '_autoClose');
+                     },
+      _mouseEnter:   function ()
+                     {
+                       this.setAttribute('hovered', '');
+                     },
+      _mouseLeave:   function ()
+                     {
+                       this.removeAttribute('hovered');
+                     },
+      _autoClose:    function (event)
+                     {
+                       var path = event.path || this.getPath(event.target);
+                       if(path.indexOf(this.$.drawerContentContainer) == -1)
                        {
-                         this.setAttribute('hovered', '');
-                       },
-      _mouseLeave:     function ()
+                         this.close();
+                       }
+                     },
+      _down:         function (event)
+                     {
+                       var path = event.path || this.getPath(event.target);
+                       if(path.indexOf(this.$.dragHandle) > -1)
                        {
-                         this.removeAttribute('hovered');
-                       },
-      _autoClose:      function (event)
+                         event.preventDefault();
+                       }
+                     },
+      _track:        function (event)
+                     {
+                       // Disable user selection on desktop.
+                       var path = event.path || this.getPath(event.target);
+                       if(path.indexOf(this.$.dragHandle) > -1)
                        {
-                         var path = event.path || this.getPath(event.target);
-                         if(path.indexOf(this.$.drawerContentContainer) == -1)
-                         {
-                           this.close();
-                         }
-                       },
-      _preferredState: 0,
-      _down:           function (event)
-                       {
-                         var path = event.path || this.getPath(event.target);
-                         if(path.indexOf(this.$.dragHandle) > -1)
+                         if(this.state != 2 && this.minState != 2)
                          {
                            event.preventDefault();
+                           switch(event.detail.state)
+                           {
+                             case 'start':
+                               this._trackStart(event);
+                               break;
+                             case 'track':
+                               this._trackMove(event);
+                               break;
+                             case 'end':
+                               this._trackEnd(event);
+                               break;
+                           }
                          }
-                       },
-      _track:          function (event)
+                       }
+                     },
+      _trackStart:   function (event)
+                     {
+                       if(Math.abs(event.detail.dx) > Math.abs(event.detail.dy))
                        {
-                         // Disable user selection on desktop.
-                         var path = event.path || this.getPath(event.target);
-                         if(path.indexOf(this.$.dragHandle) > -1)
+                         this.transitioning = true;
+                         this.$.drawerContentContainer.style.transition = 'none';
+                       }
+                     },
+      _trackMove:    function (event)
+                     {
+                       if(this.transitioning)
+                       {
+                         var maxWidth = this._getMaxWidth(), x;
+                         if(this.position === 'left')
                          {
-                           if(this.state != 2 && this.minState != 2)
-                           {
-                             event.preventDefault();
-                             switch(event.detail.state)
-                             {
-                               case 'start':
-                                 this._trackStart(event);
-                                 break;
-                               case 'track':
-                                 this._trackMove(event);
-                                 break;
-                               case 'end':
-                                 this._trackEnd(event);
-                                 break;
-                             }
-                           }
+                           x = Math.max(0, Math.min(maxWidth, event.detail.x));
                          }
-                       },
-      _trackStart:     function (event)
-                       {
-                         if(Math.abs(event.detail.dx) > Math.abs(event.detail.dy))
+                         else
                          {
-                           this.transitioning = true;
-                           this.$.drawerContentContainer.style.transition = 'none';
+                           x = Math.max(Math.min(event.detail.x - window.innerWidth, 0), -maxWidth);
                          }
-                       },
-      _trackMove:      function (event)
-                       {
-                         if(this.transitioning)
-                         {
-                           var maxWidth = this._getMaxWidth(), x;
-                           if(this.position === 'left')
-                           {
-                             x = Math.max(0, Math.min(maxWidth, event.detail.x));
-                           }
-                           else
-                           {
-                             x = Math.max(Math.min(event.detail.x - window.innerWidth, 0), -maxWidth);
-                           }
-                           this.$.drawerContentContainer.style.width = Math.abs(x) + 'px';
-                           this.updateStyles();
-                         }
-                       },
-      _trackEnd:       function (event)
-                       {
-                         if(this.transitioning)
-                         {
-                           this.transitioning = false;
-                           this.close();
-                           var width = this._getWidth();
-                           if(width >= this._getMaxWidth() / 2)
-                           {
-                             if(this.state != this._DRAWER_STATE.LOCKED)
-                             {
-                               this.open();
-                             }
-                           }
-                           else if(width >= this._getPeekWidth())
-                           {
-                             this.setState(this._DRAWER_STATE.PEEK);
-                           }
-                           else
-                           {
-                             this.setState(this._DRAWER_STATE.CLOSED);
-                           }
-                           this.$.drawerContentContainer.style.transition = '0.2s ease width';
-                           this.$.drawerContentContainer.style.width = '';
-                         }
-                       },
-      _getWidth:       function ()
-                       {
-                         return parseInt(getComputedStyle(this.$.drawerContentContainer)['width']);
-                       },
-      _getPeekWidth:   function ()
-                       {
-                         return parseInt(getComputedStyle(this.$.sizzler)['width']);
-                       },
-      _getMaxWidth:    function ()
-                       {
-                         return parseInt(getComputedStyle(this.$.sizzler)['maxWidth']);
-                       },
-      open:            function ()
-                       {
-                         this.toggle(true);
-                       },
-      close:           function ()
-                       {
-                         this.toggle(false);
-                         this.removeAttribute('hovered');
-                       },
-      toggle:          function (state)
-                       {
-                         if(state == undefined)
-                         {
-                           state = !this.isOpen;
-                         }
-                         this.isOpen = state;
+                         this.$.drawerContentContainer.style.width = Math.abs(x) + 'px';
                          this.updateStyles();
-                       },
-      setState:        function (state)
+                       }
+                     },
+      _trackEnd:     function (event)
+                     {
+                       if(this.transitioning)
                        {
-                         this._preferredState = state;
-                         this.refreshState();
-                       },
-      refreshState:    function ()
-                       {
-                         this._setState(Math.max(this.minState, Math.min(this._preferredState, this.maxState)));
-                         this.updateStyles();
-                       },
-      _stateChanged:   function ()
-                       {
-                         this.updateStyles(
+                         this.transitioning = false;
+                         this.close();
+                         var width = this._getWidth();
+                         if(width >= this._getMaxWidth() / 2)
+                         {
+                           if(this.state != this._DRAWER_STATE.LOCKED)
                            {
-                             '--fortifi-drawer-left-offset':  getComputedStyle(this.$.content)['padding-left'],
-                             '--fortifi-drawer-right-offset': getComputedStyle(this.$.content)['padding-right']
+                             this.open();
                            }
-                         );
-                       },
-      _DRAWER_STATE:   {
+                         }
+                         else if(width >= this._getPeekWidth())
+                         {
+                           this.setState(this._DRAWER_STATE.PEEK);
+                         }
+                         else
+                         {
+                           this.setState(this._DRAWER_STATE.CLOSED);
+                         }
+                         this.$.drawerContentContainer.style.transition = '0.2s ease width';
+                         this.$.drawerContentContainer.style.width = '';
+                       }
+                     },
+      _getWidth:     function ()
+                     {
+                       return parseInt(getComputedStyle(this.$.drawerContentContainer)['width']);
+                     },
+      _getPeekWidth: function ()
+                     {
+                       return parseInt(getComputedStyle(this.$.sizzler)['width']);
+                     },
+      _getMaxWidth:  function ()
+                     {
+                       return parseInt(getComputedStyle(this.$.sizzler)['maxWidth']);
+                     },
+      open:          function ()
+                     {
+                       this.toggle(true);
+                     },
+      close:         function ()
+                     {
+                       this.toggle(false);
+                       this.removeAttribute('hovered');
+                     },
+      toggle:        function (state)
+                     {
+                       if(state == undefined)
+                       {
+                         state = !this.isOpen;
+                       }
+                       this.isOpen = state;
+                       this.updateStyles();
+                     },
+      setMinState:   function (value)
+                     {
+                       if(this.minState !== value)
+                       {
+                         this._setMinState(value);
+                       }
+                     },
+      setMaxState:   function (value)
+                     {
+                       if(this.maxState !== value)
+                       {
+                         this._setMaxState(value);
+                       }
+                     },
+      setState:      function (value)
+                     {
+                       if(this.preferredState !== value)
+                       {
+                         this._setPreferredState(value);
+                       }
+                     },
+      _refreshState: function (minState, maxState, preferred)
+                     {
+                       this._setState(Math.max(minState, Math.min(preferred, maxState)));
+                     },
+      _stateChanged: function ()
+                     {
+                       Polymer.RenderStatus.whenReady(
+                         function ()
+                         {
+                           var offset = 0;
+                           if(this.state == 1)
+                           {
+                             offset = this._getPeekWidth();
+                           }
+                           else if(this.state == 2)
+                           {
+                             offset = this._getMaxWidth();
+                           }
+                           document.dispatchEvent(
+                             new CustomEvent(
+                               'fortifi-drawer-state-changed', {
+                                 detail: {
+                                   state:    this.state,
+                                   position: this.position,
+                                   offset:   offset
+                                 }
+                               }
+                             )
+                           );
+                         }.bind(this)
+                       );
+                     },
+
+      _DRAWER_STATE: {
         CLOSED: 0,
         PEEK:   1,
         LOCKED: 2
       },
-      behaviors:       [Polymer.FortElementPathBehavior, Polymer.FortTouchEnabledBehavior]
+
+      behaviors: [Polymer.FortElementPathBehavior, Polymer.FortTouchEnabledBehavior]
     }
   )</script>
 </dom-module>

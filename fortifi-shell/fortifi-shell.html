@@ -358,12 +358,12 @@
                               {
                                 if(narrow)
                                 {
-                                  this.$.userDrawer.maxState = 1;
+                                  this.$.userDrawer.setMaxState(1);
                                 }
                                 else
                                 {
-                                  this.$.userDrawer.minState = 0;
-                                  this.$.userDrawer.maxState = 2;
+                                  this.$.userDrawer.setMinState(0);
+                                  this.$.userDrawer.setMaxState(2);
 
                                   if(peek && this.$.userDrawer.state == 0)
                                   {
@@ -474,10 +474,8 @@
                               },
         _lockUserDrawer:      function ()
                               {
-                                this.$.userDrawer.maxState = this.$.userDrawer.state == 2 ? 1 : 2;
-                                this.$.userDrawer.setState(
-                                  this.$.userDrawer.maxState
-                                );
+                                this.$.userDrawer.setMaxState(this.$.userDrawer.state == 2 ? 1 : 2);
+                                this.$.userDrawer.setState(this.$.userDrawer.maxState);
                                 this._userDrawerPrevState = this.$.userDrawer.state;
                               },
         _userDrawerPrevState: 0,
@@ -497,7 +495,7 @@
                                   if(this.$.userDrawer.state == 2)
                                   {
                                     this._userDrawerPrevState = 2;
-                                    this.$.userDrawer.maxState = 1;
+                                    this.$.userDrawer.setMaxState(1);
                                     this.$.userDrawer.setState(this.$.userDrawer.maxState);
                                   }
                                   this.$.userDrawer.toggle();
@@ -513,7 +511,7 @@
                                 }
                                 if(this.$.userDrawer.isOpen && this._userDrawerPrevState > 0)
                                 {
-                                  this.$.userDrawer.maxState = this._userDrawerPrevState;
+                                  this.$.userDrawer.setMaxState(this._userDrawerPrevState);
                                   this.$.userDrawer.setState(this.$.userDrawer.maxState);
                                 }
                               }
