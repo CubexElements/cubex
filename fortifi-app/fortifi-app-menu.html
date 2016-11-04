@@ -21,8 +21,7 @@
         align-content: flex-start;
       }
 
-      :host fortifi-app-title,
-      :host ::content fortifi-app-title {
+      :host fortifi-app-title {
         align-self: flex-start;
         min-height: 64px;
       }
@@ -45,7 +44,6 @@
         min-height: 100px;
       }
 
-      :host ::content fort-li,
       .accent,
       :host fort-li {
         cursor: pointer;
@@ -58,25 +56,20 @@
         width: 100%;
       }
 
-      :host ::content fort-li,
       :host fort-li {
         color: var(--text-color-secondary);
       }
 
-      :host ::content fort-li:hover {
+      :host fort-li:hover {
         background: var(--theme-500-color);
       }
 
-      :host ::content fort-li:active,
-      :host ::content fort-li[active],
       :host fort-li:active,
       :host fort-li[active] {
         background: var(--accent-100-color) !important;
         color: var(--accent-700-color);
       }
 
-      :host ::content fort-li:active:before,
-      :host ::content fort-li[active]:before,
       :host fort-li:active:before,
       :host fort-li[active]:before {
         content: ' ';
@@ -162,9 +155,9 @@
     <template restamp is="dom-if" if="{{appData.Navigation.length}}">
       <fort-list>
         <template is="dom-repeat" items="{{appData.Navigation}}">
-          <fort-li href$="/{{routeData.org}}/{{appData.GlobalAppID}}/{{item.Path}}"
-                   primary="{{i18n_c4t('nav_', item.ID, '_name')}}">
-            <fort-icon icon="{{item.Icon}}" item-icon></fort-icon>
+          <fort-li href$="/{{routeData.org}}/{{appData.GlobalAppID}}/{{item.Path}}">
+            <fort-icon slot="icon" icon="[[item.Icon]]" item-icon></fort-icon>
+            [[i18n_c4t('nav_', item.ID, '_name')]]
           </fort-li>
         </template>
       </fort-list>
