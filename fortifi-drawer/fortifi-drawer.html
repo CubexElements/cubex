@@ -22,7 +22,7 @@ Example:
 <dom-module id="fortifi-drawer" attributes="hover-popout swipe-open position min-state max-state">
   <template>
     <style>
-      :host ::content fortifi-drawer-content {
+      :host #drawerContent ::slotted(*) {
         position: relative;
         min-width: 100%;
         min-height: 100%;
