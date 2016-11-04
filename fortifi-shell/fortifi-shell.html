@@ -329,12 +329,7 @@
         attached:             function ()
                               {
                                 this.keyEventTarget = document.body;
-                                document.querySelector(
-                                  'body'
-                                )
-                                        .removeAttribute(
-                                          'shellunloaded'
-                                        );
+                                document.querySelector('body').removeAttribute('shellunloaded');
                               },
         _keyboardHelp:        function (e)
                               {
@@ -369,11 +364,7 @@
         _blurSearch:          function ()
                               {
                                 this.focusSearch = false;
-                                this.unlisten(
-                                  this.$.search,
-                                  'blur',
-                                  '_blurSearch'
-                                );
+                                this.unlisten(this.$.search, 'blur', '_blurSearch');
                               },
         _searchFocus:         function ()
                               {
@@ -387,15 +378,11 @@
                               },
         _launchSearch:        function (e)
                               {
-                                if(this._isValidKeyPress(
-                                    e
-                                  ))
+                                if(this._isValidKeyPress(e))
                                 {
                                   this.$.drawer.close();
                                   e.preventDefault();
-                                  if(this.$.search.getComputedStyleValue(
-                                      'display'
-                                    ) == 'block')
+                                  if(this.$.search.getComputedStyleValue('display') == 'block')
                                   {
                                     this.$.search.focus();
                                   }
@@ -409,25 +396,16 @@
                               {
                                 if(!this._setupClose)
                                 {
-                                  this.$$(
-                                    'fortifi-shell-drawer'
-                                  )
-                                      .addEventListener(
-                                        'closeParent',
-                                        function (e)
-                                        {
-                                          drawer.close();
-                                        }
-                                      );
+                                  this.$$('fortifi-shell-drawer').addEventListener(
+                                    'closeParent', function (e) {drawer.close();}
+                                  );
                                   this._setupClose = true;
                                 }
                               },
         _toggleDrawer:        function (e)
                               {
                                 this._prepareDrawer();
-                                if(this._isValidKeyPress(
-                                    e
-                                  ))
+                                if(this._isValidKeyPress(e))
                                 {
                                   var drawer = this.$.drawer;
                                   drawer.toggle();
