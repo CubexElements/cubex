@@ -129,25 +129,7 @@ Example:
                          },
         ready:           function ()
                          {
-                           document.addEventListener(
-                             'fortifi-drawer-state-changed', function (e)
-                             {
-                               if(e.detail.position == 'left')
-                               {
-                                 this.$.ah.style.left = (e.detail.offset + 24) + 'px';
-                               }
-                               else if(e.detail.position == 'right')
-                               {
-                                 this.$.ah.style.right = (e.detail.offset + 24) + 'px';
-                               }
-                             }.bind(this)
-                           );
-                           this.async(
-                             function ()
-                             {
-                               this._viewChanged(this._lock, this._peek);
-                             }
-                           );
+                           this.async(function () {this._viewChanged(this._lock, this._peek);});
                          },
         _viewChanged:    function (lock, peek)
                          {
