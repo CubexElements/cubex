@@ -13,6 +13,11 @@ Example:
 
 <dom-module id="fortifi-theme">
   <template>
+    <style>:host {
+      display: block;
+      width: 100%;
+      height: 100%
+    }</style>
     <slot></slot>
   </template>
   <script>
@@ -20,9 +25,9 @@ Example:
       {
         is:             'fortifi-theme',
         properties:     {
-          primary: {type: String, observer: '_updatePrimary'},
-          accent:  {type: String, observer: '_updateAccent'},
-          theme:   {type: String, observer: '_updateTheme'}
+          primary: {type: String, value: 'fortifi-navy', observer: '_updatePrimary'},
+          accent:  {type: String, value: 'fortifi-blue', observer: '_updateAccent'},
+          theme:   {type: String, value: 'light', observer: '_updateTheme'}
         },
         _doc:           (function ()
         {
@@ -37,7 +42,6 @@ Example:
                             return;
                           }
                           var dom = this,
-                            doc = this._doc,
                             prefix = 'fortifi-theme-' + type,
                             cs = dom.querySelector('#' + prefix),
                             fullName = prefix + '-' + name;
@@ -68,6 +72,7 @@ Example:
                               s.setAttribute('include', fullName);
                               cs.appendChild(s);
                               CustomStyle.processHook(s);
+                              Polymer.updateStyles();
                             }, null, true
                           );
                         },
