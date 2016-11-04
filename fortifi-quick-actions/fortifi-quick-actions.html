@@ -23,12 +23,12 @@
     <template restamp is="dom-if" if="{{actions}}">
       <div id="quick-actions">
         <fort-dropdown horizontal-align="right">
-          <fort-action class="dropdown-trigger">icons:add</fort-action>
+          <fort-action icon="icons:add" class="dropdown-trigger"></fort-action>
           <fort-list-menu class="dropdown-content">
             <template is="dom-repeat" items="{{actions}}">
-              <fort-li href$="/{{organisation.id}}/{{item.GlobalAppID}}/{{item.Path}}" title="{{item.Name}}">
-                <fort-icon item-icon>{{item.Icon}}</fort-icon>
-                {{i18n_c4t(item.ID, '_name')}}
+              <fort-li href$="/{{organisation.id}}/{{item.GlobalAppID}}/{{item.Path}}" title="{{item.Name}}"
+                       primary="{{i18n_c4t(item.ID, '_name')}}">
+                <fort-icon icon="{{item.Icon}}" item-icon></fort-icon>
               </fort-li>
             </template>
           </fort-list-menu>

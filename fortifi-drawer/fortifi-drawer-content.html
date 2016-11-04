@@ -2,16 +2,15 @@
 <link href="fortifi-user-drawer.html" rel="import">
 
 <dom-module id="fortifi-drawer-content">
-  <style>
-    #contentContainer {
-      display: block;
-      width: var(--fortifi-drawer-width, 256px);
-    }
-  </style>
   <template>
-    <content select="fortifi-user-drawer"></content>
+    <style>
+      #contentContainer {
+        display: block;
+        width: var(--fortifi-drawer-width, 256px);
+      }
+    </style>
     <div id="contentContainer">
-      <content></content>
+      <slot></slot>
     </div>
   </template>
   <script>Polymer({is: 'fortifi-drawer-content'})</script>

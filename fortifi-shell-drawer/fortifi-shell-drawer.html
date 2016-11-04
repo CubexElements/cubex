@@ -1,148 +1,151 @@
 <link href="../../polymer/polymer.html" rel="import">
 <link href="../../iron-selector/iron-selector.html" rel="import">
 <link href="../../paper-button/paper-button.html" rel="import">
-<link href="../../iron-icons/iron-icons.html" rel="import">
 <link href="../../fort-animbg/fort-animbg.html"
       rel="import">
 
 <dom-module id="fortifi-shell-drawer">
-    <template>
-        <style is="content-style">
-            :host {
-                display: block;
-                overflow: auto;
-                height: 100%;
-            }
+  <template>
+    <style is="content-style">
+      :host {
+        display: block;
+        overflow: auto;
+        height: 100%;
+      }
 
-            fort-animbg {
-                @apply(--paper-font-body2);
-                color: var(--accent-700-text-color);
-                border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-            }
+      fort-animbg {
+        @apply(--paper-font-body2);
+        color: var(--accent-700-text-color);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+      }
 
-            fort-animbg strong,
-            fort-animbg span {
-                padding-left: 98px;
-                display: block;
-                padding-top: 26px;
-            }
+      fort-animbg strong,
+      fort-animbg span {
+        padding-left: 98px;
+        display: block;
+        padding-top: 26px;
+      }
 
-            fort-animbg span {
-                padding-top: 0;
-                opacity: var(--light-secondary-opacity);
-            }
+      fort-animbg span {
+        padding-top: 0;
+        opacity: var(--light-secondary-opacity);
+      }
 
-            fort-animbg img {
-                border-radius: 50%;
-                border: solid 3px rgba(255, 255, 255, 0.4);
-                width: 64px;
-                height: 64px;
-                position: absolute;
-                top: 17px;
-                left: 13px;
-            }
+      fort-animbg img {
+        border-radius: 50%;
+        border: solid 3px rgba(255, 255, 255, 0.4);
+        width: 64px;
+        height: 64px;
+        position: absolute;
+        top: 17px;
+        left: 13px;
+      }
 
-            paper-button.toggle {
+      paper-button.toggle {
 
-                display: block;
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                margin: 0;
-                padding: 0 16px;
-                cursor: pointer;
-                text-align: left;
+        display: block;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: 0;
+        padding: 0 16px;
+        cursor: pointer;
+        text-align: left;
 
-                -moz-user-select: none;
-                -webkit-user-select: none;
-                -ms-user-select: none;
-                user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
 
-                text-transform: none;
-                @apply(--paper-font-body2);
-                line-height: 56px;
-            }
+        text-transform: none;
+        @apply(--paper-font-body2);
+        line-height: 56px;
+      }
 
-            .toggle iron-icon {
-                float: right;
-                top: 18px;
-            }
+      .toggle iron-icon {
+        float: right;
+        top: 18px;
+      }
 
-            .closer {
-                position: absolute;
-                z-index: 100;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 56px;
-            }
+      .closer {
+        position: absolute;
+        z-index: 100;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 56px;
+      }
 
-            #drawerPanels {
-                height: 100%;
-                width: 100%;
-            }
+      #drawerPanels {
+        height: 100%;
+        width: 100%;
+      }
 
-            #drawerPanels ::content fortifi-shell-drawer-panel {
-                display: none;
-            }
+      #drawerPanels ::content fortifi-shell-drawer-panel {
+        display: none;
+      }
 
-            #drawerPanels ::content fortifi-shell-drawer-panel.iron-selected {
-                display: block;
-            }
+      #drawerPanels ::content fortifi-shell-drawer-panel.iron-selected {
+        display: block;
+      }
 
-            :root {
-                --fort-animbg-background-color: var(--accent-700-color);
-            }
-        </style>
-        <fort-animbg speed="2500" fixed-size size="70" style="width:100%;height:146px;">
-            <paper-button on-tap="_toggleParent" class="closer"></paper-button>
-            <img src="[[avatar]]">
-            <strong>[[name]]</strong>
-            <span>[[username]]</span>
-            <paper-button on-tap="toggleDrawer" class="toggle" selected-drawer$="{{selectedItem}}">
-                [[organisation]]
-                <iron-icon icon="[[icon]]"></iron-icon>
-            </paper-button>
-        </fort-animbg>
-        <div style="position: relative;">
-            <iron-selector selected="0" id="drawerPanels">
-                <content></content>
-            </iron-selector>
-        </div>
-    </template>
+      :root {
+        --fort-animbg-background-color: var(--accent-700-color);
+      }
+    </style>
+    <fort-animbg speed="2500" fixed-size size="70" style="width:100%;height:146px;">
+      <paper-button on-tap="_toggleParent" class="closer"></paper-button>
+      <img src="[[avatar]]">
+      <strong>[[name]]</strong>
+      <span>[[username]]</span>
+      <paper-button on-tap="toggleDrawer" class="toggle" selected-drawer="{{selectedItem}}">
+        [[organisation]]
+        <iron-icon icon="[[icon]]"></iron-icon>
+      </paper-button>
+    </fort-animbg>
+    <div style="position: relative;">
+      <iron-selector selected="0" id="drawerPanels">
+        <slot></slot>
+      </iron-selector>
+    </div>
+  </template>
 
-    <script>
-        Polymer(
-            {
-                is: 'fortifi-shell-drawer',
-                properties: {
-                    selectedItem: {
-                        type: Number,
-                        value: 0
-                    },
-                    icon: {
-                        type: String,
-                        value: "icons:arrow-drop-down"
-                    },
-                    headColor: {
-                        type: String
-                    }
-                },
-                _toggleParent: function () {
-                    this.fire('closeParent', {});
-                },
-                toggleDrawer: function () {
-                    this.$.drawerPanels.selectNext();
-                    this.selectedItem = this.$.drawerPanels.selected;
-                    if (this.selectedItem == 1) {
-                        this.icon = "icons:arrow-drop-up";
-                    }
-                    else if (this.selectedItem == 0) {
-                        this.icon = "icons:arrow-drop-down";
-                    }
-                }
-            }
-        );
-    </script>
+  <script>
+    Polymer(
+      {
+        is:            'fortifi-shell-drawer',
+        properties:    {
+          selectedItem: {
+            type:  Number,
+            value: 0
+          },
+          icon:         {
+            type:  String,
+            value: "icons:arrow-drop-down"
+          },
+          headColor:    {
+            type: String
+          }
+        },
+        _toggleParent: function ()
+                       {
+                         this.fire('closeParent', {});
+                       },
+        toggleDrawer:  function ()
+                       {
+                         this.$.drawerPanels.selectNext();
+                         this.selectedItem = this.$.drawerPanels.selected;
+                         if(this.selectedItem == 1)
+                         {
+                           this.icon = "icons:arrow-drop-up";
+                         }
+                         else if(this.selectedItem == 0)
+                         {
+                           this.icon = "icons:arrow-drop-down";
+                         }
+                       }
+      }
+    );
+  </script>
 </dom-module>

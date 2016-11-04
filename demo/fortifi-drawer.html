@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>fort-drawer Demo</title>
-  <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <link rel="import" href="../fortifi-drawer/fortifi-drawer.html">
 </head>
 <body unresolved>
 
 
 <fortifi-drawer id="drawer" hover-popout swipe-open min-state="1">
-  <fortifi-drawer-content>
+  <fortifi-drawer-content slot="drawer-content">
     <div>drawer content here</div>
     <fort-action id="close">close</fort-action>
   </fortifi-drawer-content>

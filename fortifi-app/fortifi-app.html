@@ -1,5 +1,6 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../fortifi-drawer/fortifi-drawer.html">
+<link rel="import" href="../fortifi-drawer/fortifi-drawer-content.html">
 <link rel="import" href="../fortifi-breadcrumb/fortifi-breadcrumb.html">
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../iron-media-query/iron-media-query.html">
@@ -81,85 +82,19 @@ Example:
     <fortifi-app-definition vendor="{{vendor}}" app="{{app}}" app-data="{{appData}}"></fortifi-app-definition>
 
     <fortifi-drawer id="appDrawer" hover-popout swipe-open position="left">
-      <content select="fortifi-drawer-content"></content>
+      <div slot="drawer-content">
+        <slot name="app-drawer-content"></slot>
+      </div>
       <app-header-layout>
         <app-header id="ah" condenses reveals effects="waterfall">
           <fortifi-breadcrumb></fortifi-breadcrumb>
           <app-toolbar sticky>
-            <fortifi-app-header>Test Header</fortifi-app-header>
-            <content select="fortifi-app-header"></content>
+            <slot name="app-header"></slot>
           </app-toolbar>
         </app-header>
         <div class="app-container">
           <div class="app-content">
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <p>some content</p>
-            <content></content>
+            <slot></slot>
           </div>
         </div>
       </app-header-layout>

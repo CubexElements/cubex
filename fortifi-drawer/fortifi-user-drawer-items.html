@@ -2,29 +2,29 @@
 <link href="../../fort-action/fort-action.html" rel="import">
 
 <dom-module id="fortifi-user-drawer-items">
-  <style>
-    :host {
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      width: 100%;
-      max-width: var(--fortifi-drawer-peek-width);
-      background: var(--primary-700-color);
-      color: white
-    }
-
-    :host ::content fort-action {
-      padding: calc(calc(var(--fortifi-drawer-peek-width) - 24px) / 2);
-    }
-
-    :host ::content fort-action[active] {
-      background: var(--theme-100-color);
-      color: var(--accent-700-color);
-    }
-  </style>
   <template>
-    <content></content>
+    <style>
+      :host {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        max-width: var(--fortifi-drawer-peek-width);
+        background: var(--primary-700-color);
+        color: white
+      }
+
+      :host ::content fort-action {
+        padding: calc(calc(var(--fortifi-drawer-peek-width) - 24px) / 2);
+      }
+
+      :host ::content fort-action[active] {
+        background: var(--theme-100-color);
+        color: var(--accent-700-color);
+      }
+    </style>
+    <slot></slot>
   </template>
   <script>Polymer({is: 'fortifi-user-drawer-items'})</script>
 </dom-module>

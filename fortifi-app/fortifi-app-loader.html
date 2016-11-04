@@ -11,7 +11,6 @@
 <link rel="import" href="../../app-route/app-route.html">
 <link rel="import" href="../../fort-behavior/fort-iterator-behavior.html">
 <link rel="import" href="../../fort-behavior/fort-service-behavior.html">
-<link rel="import" href="../../fort-organisation/fort-organisation.html">
 
 <dom-module id="fortifi-app-loader" attributes="route vendor app path app-data">
   <template strip-whitespace>
@@ -25,7 +24,7 @@
     <app-route id="route" route="{{route}}" pattern="/:org/:vendor/:app" data="{{routeData}}"
                tail="{{appPath}}" query-params="{{appQuery}}"></app-route>
     <fortifi-app id="app" vendor="{{routeData.vendor}}" app="{{routeData.app}}" app-data="{{appData}}">
-      <fortifi-drawer-content id="appDrawerContent">
+      <fortifi-drawer-content slot="app-drawer-content" id="appDrawerContent">
         <fortifi-app-menu app-data="{{appData}}"></fortifi-app-menu>
       </fortifi-drawer-content>
       <fort-loader></fort-loader>

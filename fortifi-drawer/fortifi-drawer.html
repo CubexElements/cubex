@@ -20,147 +20,147 @@ Example:
 -->
 
 <dom-module id="fortifi-drawer" attributes="hover-popout swipe-open position min-state max-state">
-  <style>
-    :host ::content fortifi-drawer-content {
-      position: relative;
-      min-width: 100%;
-      min-height: 100%;
-      display: block;
-    }
-
-    :host > #sizzler {
-      display: none;
-      top: var(--fortifi-drawer-offset-top, 0);
-      width: var(--fortifi-drawer-peek-width, 50px);
-      max-width: var(--fortifi-drawer-width, 256px);
-    }
-
-    :host > #drawerContentContainer {
-      position: fixed;
-      top: var(--fortifi-drawer-offset-top, 0);
-      right: auto;
-      height: 100%;
-      left: 0;
-      width: 0;
-      max-width: var(--fortifi-drawer-width, 256px);
-      transition: width ease 0.2s, max-width ease 0.2s;
-      padding: 0;
-      box-sizing: border-box;
-      border-bottom: var(--fortifi-drawer-offset-top, 0) solid var(--theme-100-color, transparent);
-      z-index: 1;
-    }
-
-    :host > #drawerContentContainer > #drawerContent {
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      overflow: hidden;
-
-      background: var(--theme-100-color, white);
-    }
-
-    :host([position=right]) > #drawerContentContainer {
-      right: 0;
-      left: auto;
-    }
-
-    :host > #drawerContentContainer > #dragHandle[hidden] {
-      display: none;
-    }
-
-    :host([swipe-open]:not([state="2"])) > #drawerContentContainer > #dragHandle {
-      visibility: visible;
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 100%;
-      width: 20%;
-      min-width: 20px;
-      max-width: 50px;
-      content: '';
-    }
-
-    :host([swipe-open][position=right]) > #drawerContentContainer > #dragHandle {
-      right: 100%;
-      left: auto;
-    }
-
-    :host([max-state="1"]:not([state="2"]):not([is-open])) > #drawerContentContainer {
-      max-width: var(--fortifi-drawer-peek-width, 50px);
-    }
-
-    :host([position="left"]) > #drawerContentContainer > #drawerContent {
-      margin-right: 2px;
-    }
-
-    :host([position="right"]) > #drawerContentContainer > #drawerContent {
-      margin-left: 2px;
-    }
-
-    :host([state="1"]) > #drawerContentContainer {
-      width: var(--fortifi-drawer-peek-width, 50px);
-    }
-
-    :host > #drawerContentContainer > #drawerContent {
-      box-shadow: 1px 0 2px 0 rgba(0, 0, 0, 0.05);
-    }
-
-    :host([hovered][hover-popout]:not([state="2"]):not([max-state="1"])) > #drawerContentContainer > #drawerContent,
-    :host([transitioning]) > #drawerContentContainer > #drawerContent,
-    :host([is-open]:not([state="2"])) > #drawerContentContainer > #drawerContent {
-      box-shadow: 2px 0 2px 0 rgba(0, 0, 0, 0.1);
-    }
-
-    :host([position="right"]) > #drawerContentContainer > #drawerContent {
-      box-shadow: -1px 0 2px 0 rgba(0, 0, 0, 0.05);
-    }
-
-    :host([position="right"][hovered][hover-popout]:not([state="2"]):not([max-state="1"])) > #drawerContentContainer > #drawerContent,
-    :host([position="right"][transitioning]) > #drawerContentContainer > #drawerContent,
-    :host([position="right"][is-open]:not([state="2"])) > #drawerContentContainer > #drawerContent {
-      box-shadow: -2px 0 2px 0 rgba(0, 0, 0, 0.1);
-    }
-
-    :host([hover-popout][state="1"][hovered]) > #drawerContentContainer,
-    :host([is-open]) > #drawerContentContainer,
-    :host([state="2"]) > #drawerContentContainer {
-      width: var(--fortifi-drawer-width, 256px);
-    }
-
-    :host([state="1"][position="left"]) > #content {
-      padding-left: var(--fortifi-drawer-peek-width, 50px);
-    }
-
-    :host([state="2"][position="left"]) > #content {
-      padding-left: var(--fortifi-drawer-width, 256px);
-    }
-
-    :host([state="1"][position="right"]) > #content {
-      padding-right: var(--fortifi-drawer-peek-width, 50px);
-    }
-
-    :host([state="2"][position="right"]) > #content {
-      padding-right: var(--fortifi-drawer-width, 256px);
-    }
-
-    :host > #content {
-      transition: 0.2s ease padding;
-    }
-
-  </style>
-
   <template>
+    <style>
+      :host ::content fortifi-drawer-content {
+        position: relative;
+        min-width: 100%;
+        min-height: 100%;
+        display: block;
+      }
+
+      :host > #sizzler {
+        display: none;
+        top: var(--fortifi-drawer-offset-top, 0);
+        width: var(--fortifi-drawer-peek-width, 50px);
+        max-width: var(--fortifi-drawer-width, 256px);
+      }
+
+      :host > #drawerContentContainer {
+        position: fixed;
+        top: var(--fortifi-drawer-offset-top, 0);
+        right: auto;
+        height: 100%;
+        left: 0;
+        width: 0;
+        max-width: var(--fortifi-drawer-width, 256px);
+        transition: width ease 0.2s, max-width ease 0.2s;
+        padding: 0;
+        box-sizing: border-box;
+        border-bottom: var(--fortifi-drawer-offset-top, 0) solid var(--theme-100-color, transparent);
+        z-index: 1;
+      }
+
+      :host > #drawerContentContainer > #drawerContent {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        overflow: hidden;
+
+        background: var(--theme-100-color, white);
+      }
+
+      :host([position=right]) > #drawerContentContainer {
+        right: 0;
+        left: auto;
+      }
+
+      :host > #drawerContentContainer > #dragHandle[hidden] {
+        display: none;
+      }
+
+      :host([swipe-open]:not([state="2"])) > #drawerContentContainer > #dragHandle {
+        visibility: visible;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 100%;
+        width: 20%;
+        min-width: 20px;
+        max-width: 50px;
+        content: '';
+      }
+
+      :host([swipe-open][position=right]) > #drawerContentContainer > #dragHandle {
+        right: 100%;
+        left: auto;
+      }
+
+      :host([max-state="1"]:not([state="2"]):not([is-open])) > #drawerContentContainer {
+        max-width: var(--fortifi-drawer-peek-width, 50px);
+      }
+
+      :host([position="left"]) > #drawerContentContainer > #drawerContent {
+        margin-right: 2px;
+      }
+
+      :host([position="right"]) > #drawerContentContainer > #drawerContent {
+        margin-left: 2px;
+      }
+
+      :host([state="1"]) > #drawerContentContainer {
+        width: var(--fortifi-drawer-peek-width, 50px);
+      }
+
+      :host > #drawerContentContainer > #drawerContent {
+        box-shadow: 1px 0 2px 0 rgba(0, 0, 0, 0.05);
+      }
+
+      :host([hovered][hover-popout]:not([state="2"]):not([max-state="1"])) > #drawerContentContainer > #drawerContent,
+      :host([transitioning]) > #drawerContentContainer > #drawerContent,
+      :host([is-open]:not([state="2"])) > #drawerContentContainer > #drawerContent {
+        box-shadow: 2px 0 2px 0 rgba(0, 0, 0, 0.1);
+      }
+
+      :host([position="right"]) > #drawerContentContainer > #drawerContent {
+        box-shadow: -1px 0 2px 0 rgba(0, 0, 0, 0.05);
+      }
+
+      :host([position="right"][hovered][hover-popout]:not([state="2"]):not([max-state="1"])) > #drawerContentContainer > #drawerContent,
+      :host([position="right"][transitioning]) > #drawerContentContainer > #drawerContent,
+      :host([position="right"][is-open]:not([state="2"])) > #drawerContentContainer > #drawerContent {
+        box-shadow: -2px 0 2px 0 rgba(0, 0, 0, 0.1);
+      }
+
+      :host([hover-popout][state="1"][hovered]) > #drawerContentContainer,
+      :host([is-open]) > #drawerContentContainer,
+      :host([state="2"]) > #drawerContentContainer {
+        width: var(--fortifi-drawer-width, 256px);
+      }
+
+      :host([state="1"][position="left"]) > #content {
+        padding-left: var(--fortifi-drawer-peek-width, 50px);
+      }
+
+      :host([state="2"][position="left"]) > #content {
+        padding-left: var(--fortifi-drawer-width, 256px);
+      }
+
+      :host([state="1"][position="right"]) > #content {
+        padding-right: var(--fortifi-drawer-peek-width, 50px);
+      }
+
+      :host([state="2"][position="right"]) > #content {
+        padding-right: var(--fortifi-drawer-width, 256px);
+      }
+
+      :host > #content {
+        transition: 0.2s ease padding;
+      }
+
+    </style>
+
     <div id="sizzler"></div>
     <div id="drawerContentContainer">
       <div id="dragHandle" hidden="[[!_touchEnabled()]]"></div>
       <div id="drawerContent">
-        <content select="fortifi-drawer-content"></content>
+        <slot name="drawer-content"></slot>
       </div>
     </div>
     <div id="content">
-      <content></content>
+      <slot></slot>
     </div>
   </template>
 
@@ -348,30 +348,25 @@ Example:
                      },
       _stateChanged: function ()
                      {
-                       Polymer.RenderStatus.whenReady(
-                         function ()
-                         {
-                           var offset = 0;
-                           if(this.state == 1)
-                           {
-                             offset = this._getPeekWidth();
+                       var offset = 0;
+                       if(this.state == 1)
+                       {
+                         offset = this._getPeekWidth();
+                       }
+                       else if(this.state == 2)
+                       {
+                         offset = this._getMaxWidth();
+                       }
+                       document.dispatchEvent(
+                         new CustomEvent(
+                           'fortifi-drawer-state-changed', {
+                             detail: {
+                               state:    this.state,
+                               position: this.position,
+                               offset:   offset
+                             }
                            }
-                           else if(this.state == 2)
-                           {
-                             offset = this._getMaxWidth();
-                           }
-                           document.dispatchEvent(
-                             new CustomEvent(
-                               'fortifi-drawer-state-changed', {
-                                 detail: {
-                                   state:    this.state,
-                                   position: this.position,
-                                   offset:   offset
-                                 }
-                               }
-                             )
-                           );
-                         }.bind(this)
+                         )
                        );
                      },
 

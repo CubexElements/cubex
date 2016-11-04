@@ -2,39 +2,39 @@
 <link href="fortifi-user-drawer-items.html" rel="import">
 
 <dom-module id="fortifi-user-drawer">
-  <style>
-    :host > #contentContainer {
-      display: block;
-      padding-right: var(--fortifi-drawer-peek-width);
-      width: calc(var(--fortifi-drawer-width) - var(--fortifi-drawer-peek-width) - 2px);
-      background: var(--theme-100-color);
-    }
-
-    :host ::content fortifi-user-drawer {
-      position: relative;
-      min-width: 100%;
-      min-height: 100%;
-      width: var(--fortifi-drawer-peek-width);
-      display: block;
-      padding-right: var(--fortifi-drawer-peek-width);
-    }
-
-    :host ::content fortifi-user-drawer-items {
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      width: 100%;
-      max-width: var(--fortifi-drawer-peek-width);
-      z-index: 1;
-      background: var(--primary-800-color);
-      color: white
-    }
-  </style>
   <template>
-    <content select="fortifi-user-drawer-items"></content>
+    <style>
+      :host > #contentContainer {
+        display: block;
+        padding-right: var(--fortifi-drawer-peek-width);
+        width: calc(var(--fortifi-drawer-width) - var(--fortifi-drawer-peek-width) - 2px);
+        background: var(--theme-100-color);
+      }
+
+      :host ::content fortifi-user-drawer {
+        position: relative;
+        min-width: 100%;
+        min-height: 100%;
+        width: var(--fortifi-drawer-peek-width);
+        display: block;
+        padding-right: var(--fortifi-drawer-peek-width);
+      }
+
+      :host ::content fortifi-user-drawer-items {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        max-width: var(--fortifi-drawer-peek-width);
+        z-index: 1;
+        background: var(--primary-800-color);
+        color: white
+      }
+    </style>
+    <slot select="drawer-items"></slot>
     <div id="contentContainer">
-      <content></content>
+      <slot></slot>
     </div>
   </template>
   <script>Polymer({is: 'fortifi-user-drawer'})</script>

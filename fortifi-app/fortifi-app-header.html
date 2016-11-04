@@ -1,12 +1,13 @@
 <link href="../../polymer/polymer.html" rel="import">
-<link rel="import" href="../../fort-action/fort-action.html">
 <link rel="import" href="../fortifi-theme/fortifi-theme.html">
+<link rel="import" href="../../fort-action/fort-action.html">
 <link rel="import" href="../../fort-icon/fort-icon.html">
 <link rel="import" href="../../fort-dropdown/fort-dropdown.html">
 <link rel="import" href="../../paper-styles/typography.html">
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../iron-media-query/iron-media-query.html">
 
-<dom-module id="fortifi-app-header" attributes="icon show-back">
+<dom-module id="fortifi-app-header" attributes="icon show-back actions">
   <template strip-whitespace>
     <style>
       :host {
@@ -19,6 +20,11 @@
         border-bottom: 1px solid var(--theme-600-color);
         line-height: 64px;
         overflow: hidden;
+      }
+
+      :host #iconSlot::slotted(*) {
+        width: 40px;
+        height: 40px;
       }
 
       :host([show-back]) {
@@ -76,7 +82,7 @@
       :host #actions ::content fort-action,
       :host #actions fort-action {
         display: inline-block;
-        padding: 17px 20px;
+        padding: 20px;
         line-height: normal;
       }
 
@@ -125,7 +131,6 @@
       }
 
       :host #actions .dropdown-content {
-        height: 64px;
         margin-top: 1px;
         border-bottom: 1px solid var(--theme-600-color);
       }
@@ -144,47 +149,87 @@
 
         :host #actions .dropdown-content fort-action[primary-alt],
         :host #actions .dropdown-content ::content fort-action[primary-alt] {
-          display: inline-block;
+          display: inline-flex;
         }
       }
     </style>
 
-    <content select="fortifi-app-title"></content>
-    <template is="dom-if" if="{{showBack}}" strip-whitespace>
-      <fort-action id="app-back">icons:arrow-back</fort-action>
+    <iron-media-query query="(max-width: 700px)" query-matches="{{_small}}"></iron-media-query>
+    <template is="dom-if" if="[[showBack]]" strip-whitespace>
+      <fort-action icon="icons:arrow-back" id="app-back"></fort-action>
     </template>
-    <template is="dom-if" if="{{icon}}" strip-whitespace>
-      <fort-icon size="40" id="header-icon">[[icon]]</fort-icon>
-    </template>
-    <content select="h1"></content>
+    <slot id="iconSlot" name="icon"></slot>
+
+    <slot name="header"></slot>
+
     <div class="flexchild"></div>
     <div id="actions">
-      <content select="fort-action[primary]"></content>
-      <template is="dom-if" if="{{_hasAdditionalActions()}}" strip-whitespace>
-        <fort-dropdown>
-          <fort-action class="dropdown-trigger" id="more-actions">icons:more-vert</fort-action>
-          <div class="dropdown-content">
-            <content select="fort-action[primary-alt]"></content>
-            <content select="fort-action"></content>
-          </div>
-        </fort-dropdown>
+      <template is="dom-repeat" items="[[actions]]" filter="{{_filter(_small,1)}}" sort="_sort" observe="primary">
+        <fort-action icon="[[item.icon]]"></fort-action>
       </template>
+      <fort-dropdown hidden$="[[!_hasDropdownActions(_small)}}">
+        <fort-action icon="icons:more-vert" class="dropdown-trigger" id="more-actions"></fort-action>
+        <div class="dropdown-content">
+          <fort-list-menu>
+            <template is="dom-repeat" items="[[actions]]" filter="{{_filter(_small,0)}}" sort="_sort" observe="primary">
+              <fort-li>
+                <fort-icon icon="[[item.icon]]"></fort-icon>
+              </fort-li>
+            </template>
+          </fort-list-menu>
+        </div>
+      </fort-dropdown>
     </div>
   </template>
+
   <script>Polymer(
     {
-      is:                    'fortifi-app-header',
-      _hasAdditionalActions: function ()
-                             {
-                               return this.queryEffectiveChildren('fort-action:not([primary])');
-                             },
-      properties:            {
+      is:         'fortifi-app-header',
+      properties: {
+        actions:  {
+          type: Array, value: [
+            {title: 'Email', icon: 'communication:email', primary: true},
+            {title: 'Phone', icon: 'communication:phone', primary: true},
+            {title: 'aspect', icon: 'icons:aspect-ratio'},
+            {title: 'alarm', icon: 'icons:alarm-add'},
+            {title: 'alarm2', icon: 'icons:alarm-add'}
+          ]
+        },
         showBack: {
           type:               Boolean,
           value:              true,
           reflectToAttribute: true
-        }
-      }
+        },
+        _small:   {type: Boolean}
+      },
+
+      _filter: function (small, position)
+               {
+                 small = !!small;
+                 position = !!position;
+                 return function (item)
+                 {
+                   var primary = item.hasOwnProperty('primary') && item.primary;
+                   if(position)
+                   { // primary
+                     return (!small) && primary;
+                   }
+                   else
+                   { // secondary
+                     return small || (!primary);
+                   }
+                 }
+               },
+
+      _sort: function (a, b)
+             {
+               return a.primary > b.primary;
+             },
+
+      _hasDropdownActions: function ()
+                           {
+                             return this.actions.slice(0).filter(this._filter(this._small, 0), this).length > 0;
+                           }
     }
   )</script>
 </dom-module>

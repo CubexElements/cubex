@@ -17,15 +17,9 @@
 <link rel="import" href="../fortifi-shell-drawer/fortifi-shell-drawer.html">
 <link rel="import" href="../fortifi-shell-drawer/fortifi-shell-drawer-panel.html">
 
-<link rel="import" href="../fortifi-theme/styles/primary/fortifi-theme-primary-fortifi-navy.html">
-<link rel="import" href="../fortifi-theme/styles/accent/fortifi-theme-accent-fortifi-blue.html">
-<link rel="import" href="../fortifi-theme/styles/theme/fortifi-theme-theme-light.html">
-
 <link rel="import" href="../fortifi-pinned-apps/fortifi-pinned-apps.html">
 <link rel="import" href="../fortifi-search/fortifi-search.html">
 <link rel="import" href="../fortifi-toolbar/fortifi-toolbar.html">
-<link rel="import" href="../fortifi-theme/fortifi-theme.html">
-<link rel="import" href="../fortifi-theme/fortifi-theme-style.html">
 <link rel="import" href="../fortifi-drawer/fortifi-drawer.html">
 <link rel="import" href="../fortifi-drawer/fortifi-user-drawer.html">
 <link rel="import" href="../fortifi-drawer/fortifi-user-drawer-items.html">
@@ -65,7 +59,7 @@
       }
 
       app-header-layout {
-        z-index: 1000;
+        z-index: 999;
       }
 
       app-drawer {
@@ -99,6 +93,7 @@
         top: 0;
         left: 0;
         width: 100%;
+        @apply --primary-800;
       }
 
       app-header, #flex-toolbar {
@@ -233,79 +228,75 @@
     <iron-media-query query="(min-width: 1000px)" query-matches="{{_peek}}"></iron-media-query>
     <iron-media-query query="(max-width: 375px)" query-matches="{{_narrow}}"></iron-media-query>
 
-    <fortifi-theme primary="fortifi-navy" accent="fortifi-blue" theme="light">
-      <app-drawer-layout fullbleed force-narrow>
-        <app-drawer id="drawer" opened="{{drawerOpened}}">
-          <fortifi-shell-drawer>
-            <fortifi-shell-drawer-panel>
-              Apps Panel
-            </fortifi-shell-drawer-panel>
-            <fortifi-shell-drawer-panel>
-              Panel 2
-            </fortifi-shell-drawer-panel>
-          </fortifi-shell-drawer>
-        </app-drawer>
+    <app-drawer-layout fullbleed force-narrow>
+      <app-drawer id="drawer" opened="{{drawerOpened}}">
+        <fortifi-shell-drawer>
+          <fortifi-shell-drawer-panel>
+            Apps Panel
+          </fortifi-shell-drawer-panel>
+          <fortifi-shell-drawer-panel>
+            Panel 2
+          </fortifi-shell-drawer-panel>
+        </fortifi-shell-drawer>
+      </app-drawer>
 
-        <app-header-layout>
-          <app-header fixed>
-            <div id="flex-toolbar">
-              <div id="burger">
-                <paper-icon-button icon="menu" on-tap="_openDrawer"></paper-icon-button>
-              </div>
-              <fortifi-pinned-apps></fortifi-pinned-apps>
-              <div class="spread"></div>
-              <fortifi-search id="search" focus-search="[[focusSearch]]"></fortifi-search>
-              <div class="spread"></div>
-              <div id="search-shortcut">
-                <paper-icon-button icon="search" on-tap="_searchFocus"></paper-icon-button>
-              </div>
-              <fortifi-toolbar id="toolbar"></fortifi-toolbar>
-              <div>
-                <fort-action hidden="[[_narrow]]" id="user-panel-action" size="23" on-tap="_toggleUserDrawer">
-                  icons:chrome-reader-mode
-                </fort-action>
-              </div>
+      <app-header-layout>
+        <app-header fixed>
+          <div id="flex-toolbar">
+            <div id="burger">
+              <paper-icon-button icon="menu" on-tap="_openDrawer"></paper-icon-button>
             </div>
-          </app-header>
-        </app-header-layout>
-        <div id="waterfall"></div>
+            <fortifi-pinned-apps></fortifi-pinned-apps>
+            <div class="spread"></div>
+            <fortifi-search id="search" focus-search="[[focusSearch]]"></fortifi-search>
+            <div class="spread"></div>
+            <div id="search-shortcut">
+              <paper-icon-button icon="search" on-tap="_searchFocus"></paper-icon-button>
+            </div>
+            <fortifi-toolbar id="toolbar"></fortifi-toolbar>
+            <div>
+              <fort-action icon="icons:chrome-reader-mode" hidden="[[_narrow]]" id="user-panel-action" size="23"
+                           on-tap="_toggleUserDrawer"></fort-action>
+            </div>
+          </div>
+        </app-header>
+      </app-header-layout>
+      <div id="waterfall"></div>
 
-        <fortifi-drawer id="userDrawer" swipe-open="[[_touchEnabled()]]"
-                        max-state="[[_userDrawerMaxState]]"
-                        position="right">
-          <fortifi-drawer-content>
-            <fortifi-user-drawer>
-              <iron-pages id="userPages" selected="none" attr-for-selected="data-page-id">
-                <div data-page-id="none">nun :(</div>
-                <div data-page-id="phone">PHONE Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto
-                                          autem
-                                          consequatur dignissimos doloremque doloribus nihil porro rem sed similique
-                                          sit!
-                                          Accusamus earum harum hic impedit, maiores quas repellat ut vel?
-                </div>
-                <div data-page-id="email">EMAIL Lorem ipsum dolor sit amet, consectetur adipisicing elit. Blanditiis
-                                          commodi
-                                          consequatur deleniti dolorem dolores doloribus in inventore, placeat porro
-                                          quisquam quos
-                                          repellat sequi sint? Assumenda eum itaque perferendis perspiciatis quisquam!
-                </div>
-              </iron-pages>
-              <fort-action id="lockUserDrawer" on-tap="_lockUserDrawer">
-                icons:chrome-reader-mode
-              </fort-action>
-              <fortifi-user-drawer-items>
-                <fort-action on-tap="_openUserDrawerApp" data-page-id="phone">communication:phone</fort-action>
-                <fort-action on-tap="_openUserDrawerApp" data-page-id="email">communication:email</fort-action>
-                <fort-action id="lockSessionAction">icons:lock</fort-action>
-              </fortifi-user-drawer-items>
-            </fortifi-user-drawer>
-          </fortifi-drawer-content>
-          <fortifi-app-loader route="{{route}}"></fortifi-app-loader>
-        </fortifi-drawer>
+      <fortifi-drawer id="userDrawer" swipe-open="[[_touchEnabled()]]"
+                      max-state="[[_userDrawerMaxState]]"
+                      position="right">
+        <fortifi-drawer-content slot="drawer-content">
+          <fortifi-user-drawer>
+            <iron-pages id="userPages" selected="none" attr-for-selected="data-page-id">
+              <div data-page-id="none">nun :(</div>
+              <div data-page-id="phone">PHONE Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto
+                                        autem
+                                        consequatur dignissimos doloremque doloribus nihil porro rem sed similique
+                                        sit!
+                                        Accusamus earum harum hic impedit, maiores quas repellat ut vel?
+              </div>
+              <div data-page-id="email">EMAIL Lorem ipsum dolor sit amet, consectetur adipisicing elit. Blanditiis
+                                        commodi
+                                        consequatur deleniti dolorem dolores doloribus in inventore, placeat porro
+                                        quisquam quos
+                                        repellat sequi sint? Assumenda eum itaque perferendis perspiciatis quisquam!
+              </div>
+            </iron-pages>
+            <fort-action icon="icons:chrome-reader-mode" id="lockUserDrawer" on-tap="_lockUserDrawer"></fort-action>
+            <fortifi-user-drawer-items slot="drawer-items">
+              <fort-action icon="communication:phone" on-tap="_openUserDrawerApp" data-page-id="phone"></fort-action>
+              <fort-action icon="communication:email" on-tap="_openUserDrawerApp" data-page-id="email"></fort-action>
+              <fort-action icon="icons:lock" id="lockSessionAction"></fort-action>
+            </fortifi-user-drawer-items>
+          </fortifi-user-drawer>
+        </fortifi-drawer-content>
 
-      </app-drawer-layout>
+        <fortifi-app-loader route="{{route}}"></fortifi-app-loader>
+      </fortifi-drawer>
 
-    </fortifi-theme>
+    </app-drawer-layout>
+
   </template>
   <script>
     Polymer(

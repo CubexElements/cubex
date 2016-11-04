@@ -1,5 +1,6 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../fort-list/fort-list.html">
+<link rel="import" href="../../fort-icon/fort-icon.html">
 <link rel="import" href="../../fort-behavior/fort-element-path-behavior.html">
 <link rel="import" href="../../fort-behavior/fort-iterator-behavior.html">
 <link rel="import" href="../../fort-behavior/fort-i18n-behavior.html">
@@ -161,9 +162,9 @@
     <template restamp is="dom-if" if="{{appData.Navigation.length}}">
       <fort-list>
         <template is="dom-repeat" items="{{appData.Navigation}}">
-          <fort-li href$="/{{routeData.org}}/{{appData.GlobalAppID}}/{{item.Path}}">
-            <fort-icon item-icon>{{item.Icon}}</fort-icon>
-            {{i18n_c4t('nav_', item.ID, '_name')}}
+          <fort-li href$="/{{routeData.org}}/{{appData.GlobalAppID}}/{{item.Path}}"
+                   primary="{{i18n_c4t('nav_', item.ID, '_name')}}">
+            <fort-icon icon="{{item.Icon}}" item-icon></fort-icon>
           </fort-li>
         </template>
       </fort-list>
@@ -171,18 +172,15 @@
 
     <div class="flex"></div>
 
-    <fort-li href$="[[configPath]]" id="configure" shown$="[[configPath]]">
-      <fort-icon item-icon>icons:settings</fort-icon>
-      {{i18n('configure')}}
+    <fort-li href$="[[configPath]]" id="configure" shown$="[[configPath]]" primary="{{i18n('configure')}}">
+      <fort-icon icon="icons:settings" item-icon></fort-icon>
     </fort-li>
 
-    <fort-li class="accent" id="collapse" on-tap="_collapseDrawer">
-      <fort-icon item-icon size="23">icons:chrome-reader-mode</fort-icon>
-      {{i18n('collapse')}}
+    <fort-li class="accent" id="collapse" on-tap="_collapseDrawer" primary="{{i18n('collapse')}}">
+      <fort-icon icon="icons:chrome-reader-mode" item-icon></fort-icon>
     </fort-li>
-    <fort-li class="accent" id="expand" on-tap="_expandDrawer">
-      <fort-icon item-icon size="23">icons:chrome-reader-mode</fort-icon>
-      {{i18n('keep_out')}}
+    <fort-li class="accent" id="expand" on-tap="_expandDrawer" primary="{{i18n('keep_out')}}">
+      <fort-icon icon="icons:chrome-reader-mode" item-icon></fort-icon>
     </fort-li>
   </template>
   <script>

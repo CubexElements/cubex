@@ -51,12 +51,12 @@
       <div class="dropdown-trigger">
         <fort-action>
           <paper-spinner-lite active="[[running]]"></paper-spinner-lite>
-          <fort-icon>social:notifications</fort-icon>
+          <fort-icon icon="social:notifications"></fort-icon>
         </fort-action>
       </div>
       <fort-list class="dropdown-content" custom>
         <template is="dom-repeat" items="[[notifications]]" sort="__sortNotifications">
-          <fort-notification notification="[[item]]"></fort-notification>
+          <fortifi-notification notification="[[item]]"></fortifi-notification>
         </template>
       </fort-list>
     </fort-dropdown>

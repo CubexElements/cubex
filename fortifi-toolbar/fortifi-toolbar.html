@@ -40,18 +40,18 @@
     <fortifi-quick-actions></fortifi-quick-actions>
 
     <fort-dropdown id="additional">
-      <fort-action class="dropdown-trigger">icons:more-vert</fort-action>
+      <fort-action icon="icons:more-vert" class="dropdown-trigger"></fort-action>
       <fort-list-menu class="dropdown-content">
         <fort-list-group>
-          <fort-li on-tap="openKeyboardHelp">{{i18n('keyboard_shortcuts')}}</fort-li>
+          <fort-li on-tap="openKeyboardHelp" primary="{{i18n('keyboard_shortcuts')}}"></fort-li>
         </fort-list-group>
         <fort-list-group>
-          <fort-li on-tap="_openTerms">{{i18n('terms_service')}}</fort-li>
-          <fort-li on-tap="_openCustomerAgreement">{{i18n('cust_agree')}}</fort-li>
+          <fort-li on-tap="_openTerms" primary="{{i18n('terms_service')}}"></fort-li>
+          <fort-li on-tap="_openCustomerAgreement" primary="{{i18n('cust_agree')}}"></fort-li>
         </fort-list-group>
         <fort-list-group>
-          <fort-li on-tap="_openOrganisationInfo">{{i18n('org_info')}}</fort-li>
-          <fort-li on-tap="_openSupport">{{i18n('support')}}</fort-li>
+          <fort-li on-tap="_openOrganisationInfo" primary="{{i18n('org_info')}}"></fort-li>
+          <fort-li on-tap="_openSupport" primary="{{i18n('support')}}"></fort-li>
         </fort-list-group>
       </fort-list-menu>
 
@@ -62,20 +62,11 @@
 
       <fort-list zebra border border-group>
         <fort-list-group title="{{i18n('navigation')}}">
-          <fort-li>
-            {{i18n('show_apps_orgs')}}
-            <div secondary>.</div>
-          </fort-li>
-          <fort-li>
-            {{i18n('launch_search')}}
-            <div secondary>/</div>
-          </fort-li>
+          <fort-li primary="{{i18n('show_apps_orgs')}}" secondary="."></fort-li>
+          <fort-li primary="{{i18n('launch_search')}}" secondary="/"></fort-li>
         </fort-list-group>
         <fort-list-group title="{{i18n('general')}}">
-          <fort-li>
-            {{i18n('open_shortcut_help')}}
-            <div secondary>?</div>
-          </fort-li>
+          <fort-li primary="{{i18n('open_shortcut_help')}}" secondary="?"></fort-li>
         </fort-list-group>
       </fort-list>
 

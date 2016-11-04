@@ -4,24 +4,24 @@
 <link rel="import" href="../fort-behavior/fort-iterator-behavior.html">
 <link rel="import" href="../fort-behavior/fort-i18n-behavior.html">
 <link rel="import" href="../fort-app/fort-app-definition.html">
-<link rel="import" href="../fort-time/fort-time.html">
+<link rel="import" href="../moment-element/moment-element.html">
 <link rel="import" href="fortifi-notification-state.html">
 <link rel="import" href="fortifi-notification-definition.html">
 
 <dom-module id="fortifi-notification" attributes="notification">
   <template>
-    <fort-notification-definition notification="[[notification]]"
-                                  definition="{{definition}}"></fort-notification-definition>
+    <fortifi-notification-definition notification="[[notification]]"
+                                  definition="{{definition}}"></fortifi-notification-definition>
 
     <fort-li multi-line unread="[[notification.unread]]">
-      <fort-icon>[[definition.Icon]]</fort-icon>
+      <fort-icon icon="[[definition.Icon]]"></fort-icon>
       [[i18n_c4t(definition.ID,'_name')]]
       <div secondary>
-        <relative-time datetime$="[[_dateTime(notification)]]">[[_dateTime(notification)]]</relative-time>
+        <moment-element datetime$="[[_dateTime(notification)]]" from="now">[[_dateTime(notification)]]</moment-element>
         by Tom Kay
       </div>
       <fort-action>
-        <fort-notification-state notification="[[notification]]"></fort-notification-state>
+        <fortifi-notification-state notification="[[notification]]"></fortifi-notification-state>
       </fort-action>
     </fort-li>
   </template>
