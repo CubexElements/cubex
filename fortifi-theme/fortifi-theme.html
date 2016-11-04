@@ -32,52 +32,46 @@ Example:
         _regex:         /[^a-z0-9\-]/,
         _import:        function (type, name)
                         {
-                          var dom = Polymer.dom(this),
+                          if(!name)
+                          {
+                            return;
+                          }
+                          var dom = this,
                             doc = this._doc,
                             prefix = 'fortifi-theme-' + type,
-                            e = dom.querySelector('#' + prefix),
+                            cs = dom.querySelector('#' + prefix),
                             fullName = prefix + '-' + name;
 
-                          if(e)
+                          if(!cs)
                           {
-                            if(e.getAttribute('include') === fullName)
+                            cs = document.createElement('custom-style');
+                            cs.id = prefix;
+                            dom.appendChild(cs);
+                          }
+
+                          var s = cs.querySelector('style');
+                          if(s && s.getAttribute('include') === fullName)
+                          {
+                            return;
+                          }
+
+                          this.importHref(
+                            this.resolveUrl('styles/' + type + '/' + fullName + '.html'),
+                            function ()
                             {
-                              return;
-                            }
-                            e.parentNode.removeChild(e);
-                          }
+                              console.log('loaded', fullName);
 
-                          e = document.createElement('style', 'custom-style');
-                          e.id = prefix;
-                          e.setAttribute('include', fullName);
-
-                          if(!isElementRegistered(fullName))
-                          {
-                            this.importHref(
-                              this.resolveUrl('styles/' + type + '/' + fullName + '.html'),
-                              function ()
+                              while(e = cs.firstChild)
                               {
-                                dom.appendChild(e);
-                              }, null, true
-                            );
-                          }
-                          else
-                          {
-                            dom.appendChild(e);
-                          }
-
-                          function isElementRegistered(elementId)
-                          {
-                            var modules = doc.querySelectorAll('dom-module');
-                            for(var i = modules.length - 1, m; i >= 0 && (m = modules[i]); i--)
-                            {
-                              if(m.id == elementId)
-                              {
-                                return true;
+                                cs.removeChild(e);
                               }
-                            }
-                            return false;
-                          }
+
+                              s = document.createElement('style');
+                              s.setAttribute('include', fullName);
+                              cs.appendChild(s);
+                              CustomStyle.processHook(s);
+                            }, null, true
+                          );
                         },
         _updatePrimary: function (v)
                         {

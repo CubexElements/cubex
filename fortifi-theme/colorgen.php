@@ -411,7 +411,7 @@ foreach($colors as $colorName => $colorGrades)
   }
   foreach(['primary', 'accent'] as $type)
   {
-    $template = '<dom-module id="fortifi-theme-%s-%s"><template><style>:host>*{%s}</style></template></dom-module>';
+    $template = '<dom-module id="fortifi-theme-%s-%s"><template><style>html{%s}</style></template></dom-module>';
     file_put_contents(
       'styles/' . $type . '/fortifi-theme-' . $type . '-' . $colorName . '.html',
       sprintf(
