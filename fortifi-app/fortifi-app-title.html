@@ -54,9 +54,8 @@
         line-height: 64px;
       }
 
-      :host:not([trusted-vendor]) h1 {
+      :host(:not([trusted-vendor])) h1 {
         @apply --paper-font-menu;
-        line-height: normal;
         bottom: 36px;
         top: auto;
       }
