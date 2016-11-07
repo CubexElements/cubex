@@ -75,9 +75,9 @@ Example:
       }
     </style>
 
-    <iron-media-query query="(max-width: 600px)" query-matches="{{narrow}}"></iron-media-query>
-    <iron-media-query query="(min-width: 1200px)" query-matches="{{_peek}}"></iron-media-query>
-    <iron-media-query query="(min-width: 1400px)" query-matches="{{_lock}}"></iron-media-query>
+    <iron-media-query query="(max-width: 375px)" query-matches="{{narrow}}"></iron-media-query>
+    <iron-media-query query="(min-width: 1000px)" query-matches="{{_peek}}"></iron-media-query>
+    <iron-media-query query="(min-width: 1300px)" query-matches="{{_lock}}"></iron-media-query>
 
     <fortifi-app-definition vendor="{{vendor}}" app="{{app}}" app-data="{{appData}}"></fortifi-app-definition>
 
@@ -120,7 +120,7 @@ Example:
           _peek:          {type: Boolean, value: false}
         },
         observers:       [
-          '_viewChanged(_lock,_peek)',
+          '_viewChanged(_lock,_peek,narrow)',
           '_updateDrawer(appData)'
         ],
         _updateDrawer:   function (appData)
@@ -131,25 +131,25 @@ Example:
                          {
                            this.async(function () {this._viewChanged(this._lock, this._peek);});
                          },
-        _viewChanged:    function (lock, peek)
+        _viewChanged:    function (lock, peek, narrow)
                          {
                            var drawer = this.drawer;
                            if(drawer)
                            {
-                             if(!this._touchEnabled())
+                             if(this._touchEnabled())
                              {
-                               drawer.minState = 1;
+                               drawer.setMinState(0);
                              }
                              else
                              {
-                               drawer.minState = 0;
+                               drawer.setMinState(1);
                              }
 
                              if(lock)
                              {
                                drawer.setState(2);
                              }
-                             else if(peek)
+                             else if(((narrow && !this._touchEnabled()) || peek) && (drawer.state < 1 || narrow))
                              {
                                drawer.setState(1);
                              }
