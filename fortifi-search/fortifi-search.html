@@ -1,6 +1,7 @@
 <link href="../../polymer/polymer.html" rel="import">
 <link rel="import" href="../../paper-input/paper-input.html">
 <link rel="import" href="../../paper-styles/shadow.html">
+<link rel="import" href="../../iron-dropdown/iron-dropdown.html">
 <link rel="import" href="../../fort-icon/fort-icon.html">
 <link rel="import" href="fortifi-search-overlay.html">
 
@@ -22,7 +23,6 @@
           top: 64px;
         };
 
-        --iron-overlay-backdrop-background-color: red;
         --iron-overlay-backdrop-opened: {
           display: none;
         };
@@ -33,6 +33,7 @@
         --paper-input-container: {
           background: rgba(255, 255, 255, 0.1);
         };
+        border-bottom: 2px solid transparent;
       }
 
       paper-input:not([focused]) {
@@ -43,6 +44,7 @@
 
       paper-input[focused] {
         @apply --shadow-elevation-2dp;
+        border-bottom-color: var(--accent-400-color);
         background: var(--theme-100-color);
       }
 
@@ -81,11 +83,22 @@
       :host, input {
         width: 100%;
       }
+
+      #results {
+        display: block;
+        padding: 20px;
+        @apply --shadow-elevation-2dp;
+        background: var(--theme-100-color, white);
+        color: var(--theme-text, black);
+      }
     </style>
     <fortifi-search-overlay with-backdrop id="overlay"></fortifi-search-overlay>
-    <paper-input no-label-float label="Find products and features" id="search">
+    <paper-input no-label-float label="Find products and features" id="search" on-keyup="_query">
       <fort-icon icon="icons:search" slot="prefix"></fort-icon>
     </paper-input>
+    <iron-dropdown vertical-align="top" id="results">
+      No Results Found
+    </iron-dropdown>
   </template>
   <script>
     Polymer(
@@ -101,6 +114,23 @@
           'tap':       "_onTap",
           'mousedown': '_md'
         },
+        _query:     function (e)
+                    {
+                      this.debounce('query', function () {this.runQuery();}, 20);
+                    },
+        runQuery:   function ()
+                    {
+                      var query = this.$.search.inputElement.value;
+                      if(query.length == 0)
+                      {
+                        this.$.results.close();
+                      }
+                      else
+                      {
+                        this.$.results.innerHTML = "Search Results For: " + query;
+                        this.$.results.open();
+                      }
+                    },
         _md:        function (e)
                     {
                       if(this.$.overlay.opened
@@ -117,7 +147,7 @@
                       if(!this.$.overlay.opened)
                       {
                         this.updateStyles();
-                        this.$.overlay._focusedChild = this.$.search.inputElement;
+                        this.$.overlay._focusedChild = Polymer.dom(this.$.search.inputElement).querySelector('input');
                         this.$.overlay.open();
                       }
                       else
@@ -138,6 +168,7 @@
                       this.$.search.inputElement.blur();
                       this.$.overlay._focusedChild = null;
                       this.$.overlay.close();
+                      this.$.results.close();
                       this.fire('blur');
                       this.updateStyles();
                     },
