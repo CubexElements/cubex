@@ -127,9 +127,9 @@
                     },
         focus:      function ()
                     {
-                      this.$.overlay._focusedChild = this.$.search.inputElement;
-                      this.$.search.focus();
+                      this.$.overlay._focusedChild = Polymer.dom(this.$.search.inputElement).querySelector('input');
                       this.$.overlay.open();
+                      this.$.search.focus();
                       this.updateStyles();
                     },
         _onBlur:    function ()
