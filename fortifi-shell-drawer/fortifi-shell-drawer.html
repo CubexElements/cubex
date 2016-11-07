@@ -13,25 +13,28 @@
         height: 100%;
       }
 
-      fort-animbg {
+      #user-view {
+        position: relative;
+        width: 100%;
+        height: 146px;
         @apply(--paper-font-body2);
         color: var(--accent-700-text-color);
         border-bottom: 1px solid rgba(0, 0, 0, 0.2);
       }
 
-      fort-animbg strong,
-      fort-animbg span {
+      #user-view strong,
+      #user-view span {
         padding-left: 98px;
         display: block;
         padding-top: 26px;
       }
 
-      fort-animbg span {
+      #user-view span {
         padding-top: 0;
         opacity: var(--light-secondary-opacity);
       }
 
-      fort-animbg img {
+      #user-view img {
         border-radius: 50%;
         border: solid 3px rgba(255, 255, 255, 0.4);
         width: 64px;
@@ -60,6 +63,7 @@
 
         text-transform: none;
         @apply(--paper-font-body2);
+        height: 56px;
         line-height: 56px;
       }
 
@@ -90,11 +94,12 @@
         display: block;
       }
 
-      :root {
+      :host {
         --fort-animbg-background-color: var(--accent-700-color);
       }
+
     </style>
-    <fort-animbg speed="2500" fixed-size size="70" style="width:100%;height:146px;">
+    <fort-animbg id="user-view" size="10">
       <paper-button on-tap="_toggleParent" class="closer"></paper-button>
       <img src="[[avatar]]">
       <strong>[[name]]</strong>
@@ -123,6 +128,22 @@
           icon:         {
             type:  String,
             value: "icons:arrow-drop-down"
+          },
+          name:         {
+            type:  String,
+            value: "Your Full Name"
+          },
+          username:     {
+            type:  String,
+            value: "user.name"
+          },
+          organisation: {
+            type:  String,
+            value: "Your Organisation Name"
+          },
+          avatar:       {
+            type:  String,
+            value: "resources/images/avatar/default-64.png"
           },
           headColor:    {
             type: String
