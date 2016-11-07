@@ -132,6 +132,7 @@
       }
 
       #search-shortcut {
+        @apply --primary-700-text-secondary;
         display: none;
       }
 
@@ -160,10 +161,12 @@
 
       :host([focus-search]) #burger,
       :host([focus-search]) #search-shortcut,
+      :host([focus-search]) #user-panel-action,
       :host([focus-search]) fortifi-pinned-apps,
       :host([focus-search]) fortifi-toolbar,
       :host([drawer-opened]) #burger,
       :host([drawer-opened]) #search-shortcut,
+      :host([drawer-opened]) #user-panel-action,
       :host([drawer-opened]) fortifi-search,
       :host([drawer-opened]) fortifi-toolbar {
         display: none;
@@ -177,8 +180,8 @@
         --fort-icon-color: var(--primary-700-text-color);
         @apply --text-secondary;
         position: relative;
-        margin-top: 12px;
-        margin-right: 6px;
+        margin-top: 16px;
+        margin-right: 10px;
       }
 
       #user-panel-action:before,
@@ -187,17 +190,17 @@
         display: inline-block;
         border: 5px solid transparent;
         position: absolute;
-        top: 16px;
+        top: 13px;
       }
 
       :host(:not([user-drawer-opened])) #user-panel-action:before {
         border-right-color: var(--primary-700-text-color);
-        left: -2px;
+        left: -6px;
       }
 
       :host([user-drawer-opened]) #user-panel-action:after {
         border-left-color: var(--primary-700-text-color);
-        right: -2px;
+        right: -6px;
       }
 
       #lockUserDrawer {
@@ -254,10 +257,8 @@
               <paper-icon-button icon="search" on-tap="_searchFocus"></paper-icon-button>
             </div>
             <fortifi-toolbar id="toolbar"></fortifi-toolbar>
-            <div>
-              <fort-action icon="icons:chrome-reader-mode" hidden="[[_narrow]]" id="user-panel-action" size="23"
-                           on-tap="_toggleUserDrawer"></fort-action>
-            </div>
+            <fort-action icon="icons:chrome-reader-mode" hidden="[[_narrow]]" id="user-panel-action" size="23"
+                         on-tap="_toggleUserDrawer"></fort-action>
           </div>
         </app-header>
       </app-header-layout>
@@ -344,7 +345,7 @@
                               {
                                 if(narrow)
                                 {
-                                  this.$.userDrawer.setMaxState(1);
+                                  this.$.userDrawer.setMaxState(0);
                                 }
                                 else
                                 {
