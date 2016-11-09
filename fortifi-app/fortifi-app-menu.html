@@ -44,7 +44,6 @@
         min-height: 100px;
       }
 
-      .accent,
       :host fort-li {
         cursor: pointer;
 
@@ -81,7 +80,7 @@
         background: var(--accent-700-color);
       }
 
-      #configure, .accent {
+      #configure {
         align-self: flex-end;
       }
 
@@ -99,22 +98,23 @@
         display: block;
       }
 
-      .accent {
-        display: none;
+      #toggler {
         @apply --accent-400;
       }
 
-      .accent:hover {
+      #toggler:hover {
         @apply --accent-700;
       }
 
-      .accent fort-icon {
+      fort-icon {
         position: relative;
-        margin-right: -9px;
+        min-width: 24px;
+        width: 24px;
+        margin-right: 15px;
       }
 
-      .accent fort-icon:before,
-      .accent fort-icon:after {
+      #toggler fort-icon:before,
+      #toggler fort-icon:after {
         content: '';
         display: inline-block;
         border: 5px solid transparent;
@@ -122,25 +122,14 @@
         top: 8px;
       }
 
-      #collapse fort-icon:before {
+      #toggler[drawer-open] fort-icon:before {
         border-right-color: var(--accent-400-text-color);
         left: -12px;
       }
 
-      #expand fort-icon:after {
+      #toggler:not([drawer-open]) fort-icon:after {
         border-left-color: var(--accent-400-text-color);
         right: -12px;
-      }
-
-      :host-context(fortifi-app[narrow]):host-context(fortifi-drawer#appDrawer[is-open]) #collapse,
-      :host-context(fortifi-app:not([narrow])):host-context(fortifi-drawer#appDrawer[state="2"]) #collapse {
-        display: block;
-      }
-
-      :host-context(fortifi-app[narrow]):host-context(fortifi-drawer#appDrawer:not([is-open])) #expand,
-      :host-context(fortifi-app:not([narrow])):host-context(fortifi-drawer#appDrawer[state="1"]) #expand,
-      :host-context(fortifi-app:not([narrow])):host-context(fortifi-drawer#appDrawer[state="0"]) #expand {
-        display: block;
       }
     </style>
 
@@ -169,11 +158,14 @@
       <fort-icon icon="icons:settings" item-icon></fort-icon>
     </fort-li>
 
-    <fort-li class="accent" id="collapse" on-tap="_collapseDrawer" primary="{{i18n('collapse')}}">
+    <fort-li id="toggler" on-tap="_toggleDrawer" drawer-open$="[[_drawerOpen]]">
       <fort-icon icon="icons:chrome-reader-mode" item-icon></fort-icon>
-    </fort-li>
-    <fort-li class="accent" id="expand" on-tap="_expandDrawer" primary="{{i18n('keep_out')}}">
-      <fort-icon icon="icons:chrome-reader-mode" item-icon></fort-icon>
+      <template is="dom-if" if="[[_drawerOpen]]">
+        {{i18n('collapse')}}
+      </template>
+      <template is="dom-if" if="[[!_drawerOpen]]">
+        {{i18n('keep_out')}}
+      </template>
     </fort-li>
   </template>
   <script>
@@ -182,10 +174,15 @@
         is: 'fortifi-app-menu',
 
         properties: {
-          configPath: {type: String, computed: '_calculateConfigure(appData)'},
-          appData:    {type: Object, notify: true, observer: '_resetResources'},
-          resources:  {type: Object, value: this._resetResources}
+          configPath:  {type: String, computed: '_calculateConfigure(appData)'},
+          appData:     {type: Object, notify: true, observer: '_resetResources'},
+          resources:   {type: Object},
+          _drawerOpen: {type: Boolean, value: false}
         },
+        attached:   function ()
+                    {
+                      this._resetResources();
+                    },
 
         _getApp:             function ()
                              {
@@ -206,27 +203,22 @@
                              {
                                this._getApp().setDrawerState(state);
                              },
-        _collapseDrawer:     function ()
+        _toggleDrawer:       function ()
                              {
-                               if(this._getApp().narrow)
+                               var app = this._getApp();
+                               if(app.narrow)
                                {
-                                 this._getApp().drawer.close();
+                                 app.drawer.toggle();
                                }
-                               else
+                               else if(app.drawer.state == 2)
                                {
                                  this._setDrawerState(1);
-                               }
-                             },
-        _expandDrawer:       function ()
-                             {
-                               if(this._getApp().narrow)
-                               {
-                                 this._getApp().drawer.open();
                                }
                                else
                                {
                                  this._setDrawerState(2);
                                }
+                               this._drawerOpen = app.drawer.state == 2;
                              },
         _calculateConfigure: function ()
                              {
@@ -258,7 +250,7 @@
                                    }
                                  };
 
-                               if(this.appData.Name)
+                               if(this.appData && this.appData.Name)
                                {
                                  res = this.hydrateResources(res, 'app_name', this.appData.Name);
                                  this.iterate(
