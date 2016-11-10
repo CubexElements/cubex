@@ -28,7 +28,7 @@
             <template is="dom-repeat" items="{{actions}}">
               <fort-li href$="/{{organisation.id}}/{{item.GlobalAppID}}/{{item.Path}}" title="{{item.Name}}"
                        primary="{{i18n_c4t(item.ID, '_name')}}">
-                <fort-icon icon="{{item.Icon}}" item-icon></fort-icon>
+                <fort-icon slot="icon" icon="{{item.Icon}}"></fort-icon>
               </fort-li>
             </template>
           </fort-list-menu>

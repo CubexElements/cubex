@@ -145,7 +145,7 @@
       <fort-list>
         <template is="dom-repeat" items="{{appData.Navigation}}">
           <fort-li href$="/{{routeData.org}}/{{appData.GlobalAppID}}/{{item.Path}}">
-            <fort-icon slot="icon" icon="[[item.Icon]]" item-icon></fort-icon>
+            <fort-icon slot="icon" icon="[[item.Icon]]"></fort-icon>
             [[i18n_c4t('nav_', item.ID, '_name')]]
           </fort-li>
         </template>
@@ -155,11 +155,11 @@
     <div class="flex"></div>
 
     <fort-li href$="[[configPath]]" id="configure" shown$="[[configPath]]" primary="{{i18n('configure')}}">
-      <fort-icon icon="icons:settings" item-icon></fort-icon>
+      <fort-icon slot="icon" icon="icons:settings"></fort-icon>
     </fort-li>
 
     <fort-li id="toggler" on-tap="_toggleDrawer" drawer-open$="[[_drawerOpen]]">
-      <fort-icon icon="icons:chrome-reader-mode" item-icon></fort-icon>
+      <fort-icon icon="icons:chrome-reader-mode" slot="icon"></fort-icon>
       <template is="dom-if" if="[[_drawerOpen]]">
         {{i18n('collapse')}}
       </template>
