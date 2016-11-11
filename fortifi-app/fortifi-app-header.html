@@ -107,17 +107,22 @@
         background: var(--theme-50-color);
       }
 
-      :host #actions .dropdown-content {
-        margin-top: 1px;
-        border-bottom: 1px solid var(--theme-600-color);
-        @apply --theme-100;
+      fort-list-menu {
+        display: block;
       }
 
-      :host #actions .dropdown-content fort-icon {
+      :host #actions fort-dropdown {
+        --fort-dropdown-style: {
+          border-bottom: 1px solid var(--theme-600-color);
+          @apply --theme-100;
+        };
+      }
+
+      :host #actions fort-dropdown fort-icon {
         padding: 0;
       }
 
-      :host #actions .dropdown-content fort-action[primary-alt] {
+      :host #actions fort-dropdown fort-action[primary-alt] {
         display: none;
       }
 
@@ -126,7 +131,7 @@
           display: none;
         }
 
-        :host #actions .dropdown-content fort-action[primary-alt] {
+        :host #actions fort-dropdown fort-action[primary-alt] {
           display: inline-flex;
         }
       }
@@ -145,17 +150,15 @@
       <template is="dom-repeat" items="[[actions]]" filter="{{_filter(_small,1)}}" sort="_sort" observe="primary">
         <fort-action icon="[[item.icon]]"></fort-action>
       </template>
-      <fort-dropdown hidden$="[[!_hasDropdownActions(_small,1)}}">
+      <fort-dropdown horizontal-align="right" hidden$="[[!_hasDropdownActions(_small,1)}}">
         <fort-action icon="icons:more-vert" slot="trigger" id="more-actions"></fort-action>
-        <div class="dropdown-content">
-          <fort-list-menu>
-            <template is="dom-repeat" items="[[actions]]" filter="{{_filter(_small,0)}}" sort="_sort" observe="primary">
-              <fort-li>
-                [[item.title]]
-              </fort-li>
-            </template>
-          </fort-list-menu>
-        </div>
+        <fort-list-menu>
+          <template is="dom-repeat" items="[[actions]]" filter="{{_filter(_small,0)}}" sort="_sort" observe="primary">
+            <fort-li>
+              [[item.title]]
+            </fort-li>
+          </template>
+        </fort-list-menu>
       </fort-dropdown>
     </div>
   </template>
