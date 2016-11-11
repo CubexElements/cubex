@@ -169,8 +169,10 @@
         --fort-icon-color: var(--primary-700-text-color);
         @apply --text-secondary;
         position: relative;
-        margin-top: 16px;
-        margin-right: 10px;
+        padding: 6px;
+        margin: 10px;
+        width: 44px;
+        height: 44px;
       }
 
       #user-panel-action:before,
@@ -179,7 +181,7 @@
         display: inline-block;
         border: 5px solid transparent;
         position: absolute;
-        top: 13px;
+        top: 18px;
       }
 
       :host(:not([user-drawer-opened])) #user-panel-action:before {
@@ -198,6 +200,9 @@
         left: 0;
         color: var(--text-color-secondary);
         cursor: pointer;
+        width: 54px;
+        height: 54px;
+        padding: 10px;
       }
 
       #lockUserDrawer[hidden] {
@@ -273,7 +278,7 @@
                                         repellat sequi sint? Assumenda eum itaque perferendis perspiciatis quisquam!
               </div>
             </iron-pages>
-            <fort-action icon="icons:chrome-reader-mode" id="lockUserDrawer" on-tap="_lockUserDrawer"></fort-action>
+            <fort-action icon="icons:lock" id="lockUserDrawer" on-tap="_lockUserDrawer"></fort-action>
             <fortifi-user-drawer-items slot="drawer-items">
               <fort-action icon="communication:phone" on-tap="_openUserDrawerApp" data-page-id="phone"></fort-action>
               <fort-action icon="communication:email" on-tap="_openUserDrawerApp" data-page-id="email"></fort-action>
