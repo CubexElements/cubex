@@ -86,7 +86,7 @@ Example:
         <slot name="app-drawer-content"></slot>
       </div>
       <app-header-layout>
-        <app-header slot="header" condenses reveals effects="waterfall">
+        <app-header id="ah" slot="header" condenses reveals effects="waterfall">
           <fortifi-breadcrumb></fortifi-breadcrumb>
           <app-toolbar sticky>
             <slot name="app-header"></slot>
@@ -129,6 +129,19 @@ Example:
                          },
         ready:           function ()
                          {
+                           document.addEventListener(
+                             'fortifi-drawer-state-changed', function (e)
+                             {
+                               if(e.detail.position == 'left')
+                               {
+                                 this.$.ah.style.left = (e.detail.offset + 24) + 'px';
+                               }
+                               else if(e.detail.position == 'right')
+                               {
+                                 this.$.ah.style.right = (e.detail.offset + 24) + 'px';
+                               }
+                             }.bind(this)
+                           );
                            this.async(function () {this._viewChanged(this._lock, this._peek);});
                          },
         _viewChanged:    function (lock, peek, narrow)
