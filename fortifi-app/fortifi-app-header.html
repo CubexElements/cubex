@@ -28,8 +28,7 @@
 
       :host #app-back {
         color: var(--accent-400-color);
-        margin: 15px;
-        left: -9px;
+        left: 0;
         top: 0;
         bottom: 0;
         position: absolute;
@@ -48,6 +47,7 @@
         width: 40px;
         height: 40px;
         margin: 12px 16px 12px 0;
+        padding: 0;
       }
 
       :host ::slotted(h1) {
@@ -57,31 +57,19 @@
         line-height: 64px;
       }
 
-      :host fort-dropdown {
-        display: inline-block;
-        height: 64px;
-      }
-
-      :host fort-dropdown .dropdown-trigger {
-        height: 64px;
-      }
-
-      :host #actions fort-action {
+      :host fort-action {
         color: var(--text-color-secondary);
-      }
-
-      :host #actions fort-action:hover {
-        color: var(--text-color-primary);
-      }
-
-      :host #actions ::content fort-action,
-      :host #actions fort-action {
         display: inline-block;
-        padding: 20px;
+        width: 64px;
+        height: 64px;
+        padding: 15px;
         line-height: normal;
       }
 
-      :host #actions ::content fort-action:before,
+      :host fort-action:hover {
+        color: var(--text-color-primary);
+      }
+
       :host #actions fort-action:before {
         content: '';
         display: block;
@@ -94,11 +82,6 @@
         top: 0;
         bottom: 0;
         right: 0;
-      }
-
-      :host #actions ::content #more-actions fort-icon,
-      :host #actions #more-actions fort-icon {
-        opacity: 1;
       }
 
       :host #actions {
@@ -120,30 +103,30 @@
         @apply --accent-200;
       }
 
-      :host #actions ::content fort-action:hover:before,
-      :host #actions fort-action:hover:before {
+      :host fort-action:hover:before {
         background: var(--theme-50-color);
       }
 
       :host #actions .dropdown-content {
         margin-top: 1px;
         border-bottom: 1px solid var(--theme-600-color);
+        @apply --theme-100;
       }
 
-      :host #actions .dropdown-content fort-action[primary-alt],
-      :host #actions .dropdown-content ::content fort-action[primary-alt] {
+      :host #actions .dropdown-content fort-icon {
+        padding: 0;
+      }
+
+      :host #actions .dropdown-content fort-action[primary-alt] {
         display: none;
       }
 
       @media all and (max-width: 700px) {
-        :host #header-icon,
-        :host #actions fort-action[primary],
-        :host #actions ::content fort-action[primary] {
+        :host fort-action[primary] {
           display: none;
         }
 
-        :host #actions .dropdown-content fort-action[primary-alt],
-        :host #actions .dropdown-content ::content fort-action[primary-alt] {
+        :host #actions .dropdown-content fort-action[primary-alt] {
           display: inline-flex;
         }
       }
@@ -162,13 +145,13 @@
       <template is="dom-repeat" items="[[actions]]" filter="{{_filter(_small,1)}}" sort="_sort" observe="primary">
         <fort-action icon="[[item.icon]]"></fort-action>
       </template>
-      <fort-dropdown hidden$="[[!_hasDropdownActions(_small)}}">
-        <fort-action icon="icons:more-vert" class="dropdown-trigger" id="more-actions"></fort-action>
+      <fort-dropdown hidden$="[[!_hasDropdownActions(_small,1)}}">
+        <fort-action icon="icons:more-vert" slot="trigger" id="more-actions"></fort-action>
         <div class="dropdown-content">
           <fort-list-menu>
             <template is="dom-repeat" items="[[actions]]" filter="{{_filter(_small,0)}}" sort="_sort" observe="primary">
               <fort-li>
-                <fort-icon icon="[[item.icon]]"></fort-icon>
+                [[item.title]]
               </fort-li>
             </template>
           </fort-list-menu>
@@ -221,9 +204,14 @@
                return a.primary > b.primary;
              },
 
-      _hasDropdownActions: function ()
+      _hasDropdownActions: function (small, primary)
                            {
-                             return this.actions.slice(0).filter(this._filter(this._small, 0), this).length > 0;
+                             if(small !== undefined && primary !== undefined)
+                             {
+                               console.log('has', small, primary);
+                               console.log(this.actions.slice(0).filter(this._filter(this._small, 0), this).length > 0);
+                               return this.actions.slice(0).filter(this._filter(this._small, 0), this).length > 0;
+                             }
                            }
     }
   )</script>
