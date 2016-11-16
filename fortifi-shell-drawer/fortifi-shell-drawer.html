@@ -1,8 +1,7 @@
 <link href="../../polymer/polymer.html" rel="import">
 <link href="../../iron-selector/iron-selector.html" rel="import">
 <link href="../../paper-button/paper-button.html" rel="import">
-<link href="../../fort-animbg/fort-animbg.html"
-      rel="import">
+<link href="../../fort-animbg/fort-animbg.html" rel="import">
 
 <dom-module id="fortifi-shell-drawer">
   <template>
@@ -44,11 +43,11 @@
         left: 13px;
       }
 
-      paper-button.toggle {
+      .toggle {
 
         display: block;
         position: absolute;
-        bottom: 0;
+        top: 90px;
         left: 0;
         right: 0;
         margin: 0;
@@ -78,20 +77,12 @@
         top: 0;
         left: 0;
         right: 0;
-        bottom: 56px;
+        height: 90px;
       }
 
       #drawerPanels {
         height: 100%;
         width: 100%;
-      }
-
-      #drawerPanels ::content fortifi-shell-drawer-panel {
-        display: none;
-      }
-
-      #drawerPanels ::content fortifi-shell-drawer-panel.iron-selected {
-        display: block;
       }
 
       :host {
