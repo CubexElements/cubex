@@ -16,132 +16,171 @@
   <link rel="import" href="../../fort-list/fort-li.html">
 </head>
 <body unresolved>
-<fortifi-theme primary="fortifi-navy" accent="fortifi-blue" theme="light">
 
-  <fortifi-app drawer-min-state="1">
-    <fortifi-drawer-content slot="app-drawer-content">
-      <fortifi-app-menu
-        app-data='{"Name":{"en":"My Test App"},"Icon":"communication:email","Vendor":"test vendor","Navigation":[{"ID":"nav1","Name":{"en":"test"},"Icon":"communication:phone"}]}'>
-        <fortifi-app-title icon="communication:email" title="CRM Emailer" vendor="Fortifi"
-                           trusted-vendor></fortifi-app-title>
-        <fort-li>
-          <fort-icon slot="icon" icon="icons:cached"></fort-icon>
-          Menu Item 1
-        </fort-li>
-        <fort-li active>
-          <fort-icon slot="icon" icon="icons:group-work"></fort-icon>
-          Menu Item 2
-        </fort-li>
-        <fort-li>
-          <fort-icon slot="icon" icon="icons:gavel"></fort-icon>
-          Menu Item 3
-        </fort-li>
-        <fort-li>
-          <fort-icon slot="icon" icon="icons:gavel"></fort-icon>
-          Menu Item 4
-        </fort-li>
-        <fort-li>
-          <fort-icon slot="icon" icon="icons:gavel"></fort-icon>
-          Menu Item 5
-        </fort-li>
-        <fort-li>
-          <fort-icon slot="icon" icon="icons:gavel"></fort-icon>
-          Menu Item 6
-        </fort-li>
-        <fort-li>
-          <fort-icon slot="icon" icon="icons:gavel"></fort-icon>
-          Menu Item 7
-        </fort-li>
-        <fort-li>
-          <fort-icon slot="icon" icon="icons:gavel"></fort-icon>
-          Menu Item 8
-        </fort-li>
-        <fort-li>
-          <fort-icon slot="icon" icon="icons:gavel"></fort-icon>
-          Menu Item 9
-        </fort-li>
-        <fort-li>
-          <fort-icon slot="icon" icon="icons:gavel"></fort-icon>
-          Menu Item 10
-        </fort-li>
-      </fortifi-app-menu>
-    </fortifi-drawer-content>
+<dom-bind>
+  <template is="dom-bind">
+    <dom-module id="x-app-data" attributes="app-data">
+      <script>
+        Polymer(
+          {
+            is: 'x-app-data', properties: {
+            appData: {
+              type:   Object,
+              notify: true,
+              value:  {
+                "Name":       {"en": "My Test App"},
+                "Icon":       "communication:email",
+                "Vendor":     "test vendor",
+                "Navigation": [
+                  {
+                    "ID":   "nav1",
+                    "Name": {"en": "test"},
+                    "Icon": "communication:phone"
+                  }
+                ],
+                "actions":    [
+                  {title: 'Email', icon: 'communication:email', primary: true},
+                  {title: 'Phone', icon: 'communication:phone', primary: true},
+                  {title: 'aspect', icon: 'icons:aspect-ratio'},
+                  {title: 'alarm', icon: 'icons:alarm-add'},
+                  {title: 'alarm2', icon: 'icons:alarm-add'}
+                ]
+              }
+            }
+          }
+          }
+        );
+      </script>
+    </dom-module>
 
-    <fortifi-app-header slot="app-header">
-      <fort-icon slot="icon" src="https://s3.amazonaws.com/uifaces/faces/twitter/adellecharles/128.jpg"></fort-icon>
-      <h1 slot="header">Hannah Smith</h1>
-    </fortifi-app-header>
+    <fortifi-theme primary="fortifi-navy" accent="fortifi-blue" theme="light">
+      <x-app-data app-data="{{appData}}"></x-app-data>
 
-    <fort-icon src="https://s3.amazonaws.com/uifaces/faces/twitter/adellecharles/128.jpg"></fort-icon>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-    <p>some content</p>
-  </fortifi-app>
+      <fortifi-app drawer-min-state="1">
+        <fortifi-drawer-content slot="app-drawer-content">
+          <fortifi-app-menu app-data="[[appData]]">
+            <fortifi-app-title icon="communication:email" title="CRM Emailer" vendor="Fortifi"
+                               trusted-vendor></fortifi-app-title>
+            <fort-li>
+              <fort-icon slot="icon" icon="icons:cached"></fort-icon>
+              Menu Item 1
+            </fort-li>
+            <fort-li active>
+              <fort-icon slot="icon" icon="icons:group-work"></fort-icon>
+              Menu Item 2
+            </fort-li>
+            <fort-li>
+              <fort-icon slot="icon" icon="icons:gavel"></fort-icon>
+              Menu Item 3
+            </fort-li>
+            <fort-li>
+              <fort-icon slot="icon" icon="icons:gavel"></fort-icon>
+              Menu Item 4
+            </fort-li>
+            <fort-li>
+              <fort-icon slot="icon" icon="icons:gavel"></fort-icon>
+              Menu Item 5
+            </fort-li>
+            <fort-li>
+              <fort-icon slot="icon" icon="icons:gavel"></fort-icon>
+              Menu Item 6
+            </fort-li>
+            <fort-li>
+              <fort-icon slot="icon" icon="icons:gavel"></fort-icon>
+              Menu Item 7
+            </fort-li>
+            <fort-li>
+              <fort-icon slot="icon" icon="icons:gavel"></fort-icon>
+              Menu Item 8
+            </fort-li>
+            <fort-li>
+              <fort-icon slot="icon" icon="icons:gavel"></fort-icon>
+              Menu Item 9
+            </fort-li>
+            <fort-li>
+              <fort-icon slot="icon" icon="icons:gavel"></fort-icon>
+              Menu Item 10
+            </fort-li>
+          </fortifi-app-menu>
+        </fortifi-drawer-content>
 
-</fortifi-theme>
+        <fortifi-app-header slot="app-header" actions="[[appData.actions]]">
+          <fort-icon slot="icon" src="https://s3.amazonaws.com/uifaces/faces/twitter/adellecharles/128.jpg"></fort-icon>
+          <h1 slot="header">Hannah Smith</h1>
+        </fortifi-app-header>
+
+        <fort-icon src="https://s3.amazonaws.com/uifaces/faces/twitter/adellecharles/128.jpg"></fort-icon>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+      </fortifi-app>
+
+    </fortifi-theme>
+  </template>
+</dom-bind>
 </body>
 </html>
