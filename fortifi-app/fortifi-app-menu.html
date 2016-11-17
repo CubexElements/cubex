@@ -183,6 +183,8 @@
         attached:   function ()
                     {
                       this._resetResources();
+                      this._refreshDrawerState();
+                      document.addEventListener('fortifi-drawer-state-changed', this._refreshDrawerState.bind(this));
                     },
 
         _getApp:             function ()
@@ -219,7 +221,11 @@
                                {
                                  this._setDrawerState(2);
                                }
-                               this._drawerOpen = app.drawer.state == 2;
+                               this._refreshDrawerState();
+                             },
+        _refreshDrawerState: function ()
+                             {
+                               this._drawerOpen = this._getApp().drawer.state == 2;
                              },
         _calculateConfigure: function ()
                              {
