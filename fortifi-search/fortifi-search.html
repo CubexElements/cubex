@@ -92,13 +92,17 @@
         background: var(--theme-100-color, white);
         color: var(--theme-text, black);
       }
+
+      #results span{
+        line-height:22px;
+      }
     </style>
     <fortifi-search-overlay with-backdrop id="overlay"></fortifi-search-overlay>
     <paper-input no-label-float label="Find products and features" id="search" on-keyup="_query">
       <fort-icon icon="icons:search" slot="prefix"></fort-icon>
     </paper-input>
     <iron-dropdown vertical-align="top" id="results">
-      No Results Found
+      <span>No Results Found</span>
     </iron-dropdown>
   </template>
   <script>
@@ -122,14 +126,15 @@
         runQuery:   function ()
                     {
                       var query = this.$.search.inputElement.value;
-                      if(query.length == 0)
+                      if(!query || query.length == 0)
                       {
                         this.$.results.close();
                       }
                       else
                       {
-                        this.$.results.innerHTML = "Search Results For: " + query;
+                        this.$.results.querySelector('span').innerHTML = "Search Results For: <b>" + query + "</b>";
                         this.$.results.open();
+                        this.$.results.sizingTarget = null;
                       }
                     },
         _md:        function (e)
