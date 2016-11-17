@@ -28,23 +28,34 @@
               type:   Object,
               notify: true,
               value:  {
-                "Name":       {"en": "My Test App"},
-                "Icon":       "communication:email",
-                "Vendor":     "test vendor",
-                "Navigation": [
+                "Name":               {"en": "My Test App"},
+                "Icon":               "communication:email",
+                "Vendor":             "Test Vendor",
+                "Navigation":         [
                   {
                     "ID":   "nav1",
-                    "Name": {"en": "test"},
-                    "Icon": "communication:phone"
+                    "Name": {"en": "Menu Item 1"},
+                    "Icon": "icons:change-history"
+                  },
+                  {
+                    "ID":   "nav2",
+                    "Name": {"en": "Menu Item 2"},
+                    "Icon": "icons:check-box-outline-blank"
+                  },
+                  {
+                    "ID":   "nav3",
+                    "Name": {"en": "Menu Item 3"},
+                    "Icon": "icons:label-outline"
                   }
                 ],
-                "actions":    [
+                "actions":            [
                   {title: 'Email', icon: 'communication:email', primary: true},
                   {title: 'Phone', icon: 'communication:phone', primary: true},
                   {title: 'aspect', icon: 'icons:aspect-ratio'},
                   {title: 'alarm', icon: 'icons:alarm-add'},
                   {title: 'alarm2', icon: 'icons:alarm-add'}
-                ]
+                ],
+                "AdvancedConfigPath": '/my/config/path'
               }
             }
           }
@@ -58,50 +69,7 @@
 
       <fortifi-app drawer-min-state="1">
         <fortifi-drawer-content slot="app-drawer-content">
-          <fortifi-app-menu app-data="[[appData]]">
-            <fortifi-app-title icon="communication:email" title="CRM Emailer" vendor="Fortifi"
-                               trusted-vendor></fortifi-app-title>
-            <fort-li>
-              <fort-icon slot="icon" icon="icons:cached"></fort-icon>
-              Menu Item 1
-            </fort-li>
-            <fort-li active>
-              <fort-icon slot="icon" icon="icons:group-work"></fort-icon>
-              Menu Item 2
-            </fort-li>
-            <fort-li>
-              <fort-icon slot="icon" icon="icons:gavel"></fort-icon>
-              Menu Item 3
-            </fort-li>
-            <fort-li>
-              <fort-icon slot="icon" icon="icons:gavel"></fort-icon>
-              Menu Item 4
-            </fort-li>
-            <fort-li>
-              <fort-icon slot="icon" icon="icons:gavel"></fort-icon>
-              Menu Item 5
-            </fort-li>
-            <fort-li>
-              <fort-icon slot="icon" icon="icons:gavel"></fort-icon>
-              Menu Item 6
-            </fort-li>
-            <fort-li>
-              <fort-icon slot="icon" icon="icons:gavel"></fort-icon>
-              Menu Item 7
-            </fort-li>
-            <fort-li>
-              <fort-icon slot="icon" icon="icons:gavel"></fort-icon>
-              Menu Item 8
-            </fort-li>
-            <fort-li>
-              <fort-icon slot="icon" icon="icons:gavel"></fort-icon>
-              Menu Item 9
-            </fort-li>
-            <fort-li>
-              <fort-icon slot="icon" icon="icons:gavel"></fort-icon>
-              Menu Item 10
-            </fort-li>
-          </fortifi-app-menu>
+          <fortifi-app-menu app-data="[[appData]]"></fortifi-app-menu>
         </fortifi-drawer-content>
 
         <fortifi-app-header slot="app-header" actions="[[appData.actions]]">
