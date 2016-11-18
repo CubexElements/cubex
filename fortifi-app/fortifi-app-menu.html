@@ -80,20 +80,12 @@
 
       #configure {
         align-self: flex-end;
-      }
-
-      #configure {
-        display: none;
         background: var(--theme-500-color);
       }
 
       #configure:hover {
         background: var(--theme-600-color);
         color: var(--accent-700-color);
-      }
-
-      #configure[shown] {
-        display: block;
       }
 
       #toggler {
@@ -142,7 +134,7 @@
     <template restamp is="dom-if" if="[[appData.Navigation.length]]">
       <fort-list>
         <template is="dom-repeat" items="[[appData.Navigation]]">
-          <fort-li href$="/[[routeData.org]]/[[appData.GlobalAppID]]/[[item.Path]]">
+          <fort-li href$="/[[routeData.org]]/[[appData.GlobalAppID]]/[[_trimPath(item.Path)]]">
             <fort-icon slot="icon" icon="[[item.Icon]]"></fort-icon>
             [[i18n_c4t('nav_', item.ID, '_name')]]
             <paper-ripple></paper-ripple>
@@ -153,12 +145,14 @@
 
     <div class="flex"></div>
 
-    <fort-li href$="/[[routeData.org]]/[[appData.GlobalAppID]]/[[configPath]]" id="configure" shown$="[[configPath]]"
-             primary="[[i18n('configure')]]">
-      <fort-icon slot="icon" icon="icons:settings"></fort-icon>
-      [[i18n('configure')]]
-      <paper-ripple></paper-ripple>
-    </fort-li>
+    <template is="dom-if" if="[[configPath]]">
+      <fort-li href$="/[[routeData.org]]/[[appData.GlobalAppID]]/[[_trimPath(configPath)]]" id="configure"
+               primary="[[i18n('configure')]]">
+        <fort-icon slot="icon" icon="icons:settings"></fort-icon>
+        [[i18n('configure')]]
+        <paper-ripple></paper-ripple>
+      </fort-li>
+    </template>
 
     <fort-li id="toggler" on-tap="_toggleDrawer" drawer-open$="[[_drawerOpen]]">
       <fort-icon icon="icons:chrome-reader-mode" slot="icon"></fort-icon>
@@ -231,18 +225,11 @@
                              },
         _calculateConfigure: function ()
                              {
-                               if(this.routeData && this.appData)
-                               {
-                                 if(this.appData.Config && this.appData.Config.length)
-                                 {
-                                   return '_configure';
-                                 }
-                                 else if(this.appData.AdvancedConfigPath && this.appData.AdvancedConfigPath.length)
-                                 {
-                                   return this.appData.AdvancedConfigPath.replace(/^\//, '');
-                                 }
-                               }
-                               return null;
+                               return (this.appData.Config && '_configure') || this.appData.AdvancedConfigPath || null;
+                             },
+        _trimPath:           function (path)
+                             {
+                               return path.replace(/^\/+/, '');
                              },
         _resetResources:     function ()
                              {
