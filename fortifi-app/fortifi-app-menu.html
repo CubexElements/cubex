@@ -132,17 +132,17 @@
     </style>
 
     <app-location route="{{route}}"></app-location>
-    <app-route route="{{route}}" pattern="/:org" data="{{routeData}}"></app-route>
+    <app-route route="[[route]]" pattern="/:org" data="{{routeData}}"></app-route>
 
-    <template restamp is="dom-if" if="{{appData.Name}}">
-      <fortifi-app-title icon="{{appData.Icon}}" title="{{i18n('app_name')}}" vendor="{{appData.Vendor}}"
-                         trusted-vendor="{{appData.TrustedVendor}}"></fortifi-app-title>
+    <template restamp is="dom-if" if="[[appData.Name]]">
+      <fortifi-app-title icon="[[appData.Icon]]" title="[[i18n('app_name')]]" vendor="[[appData.Vendor]]"
+                         trusted-vendor="[[appData.TrustedVendor]]"></fortifi-app-title>
     </template>
 
-    <template restamp is="dom-if" if="{{appData.Navigation.length}}">
+    <template restamp is="dom-if" if="[[appData.Navigation.length]]">
       <fort-list>
-        <template is="dom-repeat" items="{{appData.Navigation}}">
-          <fort-li href$="/{{routeData.org}}/{{appData.GlobalAppID}}/{{item.Path}}">
+        <template is="dom-repeat" items="[[appData.Navigation]]">
+          <fort-li href$="/[[routeData.org]]/[[appData.GlobalAppID]]/[[item.Path]]">
             <fort-icon slot="icon" icon="[[item.Icon]]"></fort-icon>
             [[i18n_c4t('nav_', item.ID, '_name')]]
             <paper-ripple></paper-ripple>
@@ -155,17 +155,17 @@
 
     <fort-li href$="[[configPath]]" id="configure" shown$="[[configPath]]" primary="{{i18n('configure')}}">
       <fort-icon slot="icon" icon="icons:settings"></fort-icon>
-      {{i18n('configure')}}
+      [[i18n('configure')]]
       <paper-ripple></paper-ripple>
     </fort-li>
 
     <fort-li id="toggler" on-tap="_toggleDrawer" drawer-open$="[[_drawerOpen]]">
       <fort-icon icon="icons:chrome-reader-mode" slot="icon"></fort-icon>
       <template is="dom-if" if="[[_drawerOpen]]">
-        {{i18n('collapse')}}
+        [[i18n('collapse')]]
       </template>
       <template is="dom-if" if="[[!_drawerOpen]]">
-        {{i18n('keep_out')}}
+        [[i18n('keep_out')]]
       </template>
       <paper-ripple></paper-ripple>
     </fort-li>
