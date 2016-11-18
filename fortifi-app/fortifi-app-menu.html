@@ -225,7 +225,9 @@
                              },
         _calculateConfigure: function ()
                              {
-                               return (this.appData.Config && '_configure') || this.appData.AdvancedConfigPath || null;
+                               return (this.appData && this.appData.Config && '_configure')
+                                 || (this.appData && this.appData.AdvancedConfigPath)
+                                 || null;
                              },
         _trimPath:           function (path)
                              {
