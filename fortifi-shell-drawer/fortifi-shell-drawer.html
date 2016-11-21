@@ -2,6 +2,9 @@
 <link href="../../iron-selector/iron-selector.html" rel="import">
 <link href="../../paper-button/paper-button.html" rel="import">
 <link href="../../fort-animbg/fort-animbg.html" rel="import">
+<link href="../../fort-list/fort-list-menu.html" rel="import">
+<link href="../../fort-list/fort-list-group.html" rel="import">
+<link href="../../fort-list/fort-li.html" rel="import">
 <link href="../fortifi-organisation/fortifi-organisation.html" rel="import">
 
 <dom-module id="fortifi-shell-drawer">
@@ -92,7 +95,7 @@
 
     </style>
 
-    <fortifi-organisation organisation="{{organisation}}"></fortifi-organisation>
+    <fortifi-organisation organisation="{{organisation}}" organisations="{{_organisations}}"></fortifi-organisation>
 
     <fort-animbg id="user-view" size="80">
       <paper-button on-tap="_toggleParent" class="closer"></paper-button>
@@ -107,6 +110,15 @@
     <div style="position: relative;">
       <iron-selector selected="0" id="drawerPanels">
         <slot></slot>
+        <fortifi-shell-drawer-panel>
+          <fort-list-menu>
+            <fort-list-group title="All Organisations">
+              <template is="dom-repeat" items="[[organisations]]">
+                <fort-li>[[item.name]]</fort-li>
+              </template>
+            </fort-list-group>
+          </fort-list-menu>
+        </fortifi-shell-drawer-panel>
       </iron-selector>
     </div>
   </template>
@@ -114,33 +126,41 @@
   <script>
     Polymer(
       {
-        is:            'fortifi-shell-drawer',
-        properties:    {
-          selectedItem: {
+        is:         'fortifi-shell-drawer',
+        properties: {
+          selectedItem:  {
             type:  Number,
             value: 0
           },
-          icon:         {
+          icon:          {
             type:  String,
             value: "icons:arrow-drop-down"
           },
-          name:         {
+          name:          {
             type:  String,
             value: "Your Full Name"
           },
-          username:     {
+          username:      {
             type:  String,
             value: "user.name"
           },
-          organisation: {type: Object},
-          avatar:       {
+          organisation:  {type: Object},
+          organisations: {type: Array},
+          avatar:        {
             type:  String,
             value: "resources/images/avatar/default-64.png"
           },
-          headColor:    {
+          headColor:     {
             type: String
           }
         },
+
+        observers:   ['_updateOrgs(_organisations)'],
+        _updateOrgs: function (orgs)
+                     {
+                       this.organisations = Object.keys(orgs).map(function (key) { return orgs[key]; });
+                     },
+
         _toggleParent: function ()
                        {
                          this.fire('closeParent', {});
