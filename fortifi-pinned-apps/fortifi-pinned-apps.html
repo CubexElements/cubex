@@ -1,16 +1,56 @@
 <link href="../../polymer/polymer.html" rel="import">
+<link href="../../fort-websocket/fort-websocket.html" rel="import">
+<link href="../../fort-action/fort-action.html" rel="import">
+<link href="../../app-route/app-route.html" rel="import">
+<link href="../../app-route/app-location.html" rel="import">
 
 <dom-module id="fortifi-pinned-apps">
   <template>
     <style>
+      :host {
+        display: flex;
+        align-items: center;
+      }
 
+      a {
+        display: inline-flex;
+        @apply(--primary-700-text-secondary);
+      }
+
+      a:hover {
+        @apply(--primary-700-text);
+      }
     </style>
-    PINNED APPS
+    <app-location route="{{route}}"></app-location>
+    <app-route route="{{route}}" pattern="/:org" data="{{routeData}}"></app-route>
+    <fort-websocket auto vendor="fortifi" app="dev-console" on-subscribe="_pinnedSub"
+                    on-message="_pinnedMsg"></fort-websocket>
+    <template is="dom-repeat" items="{{pinnedApps}}">
+      <a href="/{{routeData.org}}/{{item.GlobalAppID}}">
+        <fort-action icon="{{item.Icon}}"></fort-action>
+      </a>
+    </template>
   </template>
   <script>
     Polymer(
       {
-        is: 'fortifi-pinned-apps'
+        is:         'fortifi-pinned-apps',
+        properties: {
+          pinnedApps: {
+            type:  Array,
+            value: []
+          }
+        },
+        _pinnedSub: function (e, msg)
+                    {
+                      this.set('pinnedApps', JSON.parse(msg));
+                    },
+        _pinnedMsg: function (e, msg)
+                    {
+                      var apps = this.pinnedApps || [];
+                      Array.prototype.push.apply(apps, msg.payload);
+                      this.set('pinnedApps', apps);
+                    }
       }
     );
   </script>
