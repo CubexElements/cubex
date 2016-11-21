@@ -2,6 +2,7 @@
 <link href="../../iron-selector/iron-selector.html" rel="import">
 <link href="../../paper-button/paper-button.html" rel="import">
 <link href="../../fort-animbg/fort-animbg.html" rel="import">
+<link href="../fortifi-organisation/fortifi-organisation.html" rel="import">
 
 <dom-module id="fortifi-shell-drawer">
   <template>
@@ -90,13 +91,16 @@
       }
 
     </style>
+
+    <fortifi-organisation organisation="{{organisation}}"></fortifi-organisation>
+
     <fort-animbg id="user-view" size="80">
       <paper-button on-tap="_toggleParent" class="closer"></paper-button>
       <img src="[[avatar]]">
       <strong>[[name]]</strong>
       <span>[[username]]</span>
       <paper-button on-tap="toggleDrawer" class="toggle" selected-drawer="{{selectedItem}}">
-        [[organisation]]
+        [[organisation.name]]
         <iron-icon icon="[[icon]]"></iron-icon>
       </paper-button>
     </fort-animbg>
@@ -128,10 +132,7 @@
             type:  String,
             value: "user.name"
           },
-          organisation: {
-            type:  String,
-            value: "Your Organisation Name"
-          },
+          organisation: {type: Object},
           avatar:       {
             type:  String,
             value: "resources/images/avatar/default-64.png"
