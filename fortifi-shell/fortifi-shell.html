@@ -209,15 +209,14 @@
         display: none;
       }
 
-      #lockSessionAction {
+      fort-action[hidden] {
+        display: none;
+      }
+
+      fortifi-user-drawer fort-action#lockSessionAction {
         position: absolute;
         bottom: 0;
         left: 0;
-        padding: 16px;
-      }
-
-      fort-action[hidden] {
-        display: none;
       }
 
     </style>
@@ -278,7 +277,7 @@
                                         repellat sequi sint? Assumenda eum itaque perferendis perspiciatis quisquam!
               </div>
             </iron-pages>
-            <fort-action icon="icons:lock" id="lockUserDrawer" on-tap="_lockUserDrawer"></fort-action>
+            <fort-action icon="icons:chrome-reader-mode" id="lockUserDrawer" on-tap="_lockUserDrawer"></fort-action>
             <fortifi-user-drawer-items slot="drawer-items">
               <fort-action icon="communication:phone" on-tap="_openUserDrawerApp" data-page-id="phone"></fort-action>
               <fort-action icon="communication:email" on-tap="_openUserDrawerApp" data-page-id="email"></fort-action>

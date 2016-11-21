@@ -1,4 +1,5 @@
 <link href="../../polymer/polymer.html" rel="import">
+<link href="../../iron-flex-layout/iron-flex-layout.html" rel="import">
 <link href="fortifi-user-drawer-items.html" rel="import">
 
 <dom-module id="fortifi-user-drawer">
@@ -11,7 +12,7 @@
         background: var(--theme-100-color);
       }
 
-      :host ::content fortifi-user-drawer {
+      :host ::slotted(fortifi-user-drawer) {
         position: relative;
         min-width: 100%;
         min-height: 100%;
@@ -20,7 +21,7 @@
         padding-right: var(--fortifi-drawer-peek-width);
       }
 
-      :host ::content fortifi-user-drawer-items {
+      :host ::slotted(fortifi-user-drawer-items) {
         position: absolute;
         top: 0;
         right: 0;
@@ -32,7 +33,7 @@
         color: white
       }
     </style>
-    <slot select="drawer-items"></slot>
+    <slot name="drawer-items"></slot>
     <div id="contentContainer">
       <slot></slot>
     </div>

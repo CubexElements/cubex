@@ -15,11 +15,13 @@
         color: white
       }
 
-      :host ::content fort-action {
-        padding: calc(calc(var(--fortifi-drawer-peek-width) - 24px) / 2);
+      :host ::slotted(fort-action) {
+        width: 100%;
+        height: auto;
+        padding: 10px;
       }
 
-      :host ::content fort-action[active] {
+      :host ::slotted(fort-action[active]) {
         background: var(--theme-100-color);
         color: var(--accent-700-color);
       }
