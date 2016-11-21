@@ -14,8 +14,11 @@
         @apply --fortifi-breadcrumb-style;
       }
 
-      :host ::content fort-action {
-        padding: 0;
+      :host ::slotted(fort-action) {
+        margin: 10px 0 10px 10px;
+        padding: 5px;
+        height: 40px;
+        width: 40px;
       }
 
       .left-column {
