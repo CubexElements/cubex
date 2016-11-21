@@ -40,9 +40,12 @@ Example:
                             this.set('organisations.' + message.payload.id, message.payload);
                           }
                         },
-        _orgChanged:    function (orgs, orgId)
+        _orgChanged:    function ()
                         {
-                          this.set('organisation', orgs[orgId]);
+                          if(this.organisations && this.routeData.org)
+                          {
+                            this.set('organisation', this.organisations[this.routeData.org]);
+                          }
                         }
       }
     );
