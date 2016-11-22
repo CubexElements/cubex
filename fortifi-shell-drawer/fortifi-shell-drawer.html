@@ -6,6 +6,8 @@
 <link href="../../fort-list/fort-list-group.html" rel="import">
 <link href="../../fort-list/fort-li.html" rel="import">
 <link href="../fortifi-organisation/fortifi-organisation.html" rel="import">
+<link href="../../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html" rel="import">
+
 
 <dom-module id="fortifi-shell-drawer">
   <template>
@@ -126,8 +128,8 @@
   <script>
     Polymer(
       {
-        is:         'fortifi-shell-drawer',
-        properties: {
+        is:          'fortifi-shell-drawer',
+        properties:  {
           selectedItem:  {
             type:  Number,
             value: 0
@@ -154,7 +156,16 @@
             type: String
           }
         },
-
+        behaviors:   [
+          Polymer.IronA11yKeysBehavior
+        ],
+        keyBindings: {
+          ',': 'toggleDrawer'
+        },
+        attached:    function ()
+                     {
+                       this.keyEventTarget = document.body;
+                     },
         observers:   ['_updateOrgs(_organisations)'],
         _updateOrgs: function (orgs)
                      {
