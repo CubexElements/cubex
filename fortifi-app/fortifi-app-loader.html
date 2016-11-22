@@ -37,50 +37,54 @@
         properties:   {
           appData: {type: Object, notify: true}
         },
-        behaviors:    [Polymer.FortIteratorBehavior, Polymer.FortServiceBehavior],
+        observers:    [
+          '_pathChanged(routeData.vendor,routeData.app)'
+        ],
         _hasDrawer:   function ()
                       {
                         return this.appData && this.appData.Navigation;
                       },
-        ready:        function ()
+        attached:        function ()
                       {
                         this.async(this._pathChanged);
-                        window.addEventListener('location-changed', this._pathChanged.bind(this));
                       },
         _pathChanged: function ()
                       {
-                        if(this.$.route.active && this.routeData.vendor && this.routeData.app)
+                        if(this.$.route.active)
                         {
-                          var vendor = this.routeData.vendor,
-                            app = this.routeData.app,
-                            path = this.appPath.path.replace(/^\//, '');
-                          var self = this, oReq = new XMLHttpRequest(), appNode = Polymer.dom(this.$.app);
-                          var addLoader = setTimeout(
-                            function () { appNode.appendChild(document.createElement('fort-loader')); }, 50
-                          );
-                          oReq.addEventListener(
-                            "load", function ()
-                            {
-                              if(this.status == '200')
+                          if(this.routeData.vendor && this.routeData.app)
+                          {
+                            var vendor = this.routeData.vendor,
+                              app = this.routeData.app,
+                              path = this.appPath.path.replace(/^\//, '');
+                            var self = this, oReq = new XMLHttpRequest(), appNode = Polymer.dom(this.$.app);
+                            var addLoader = setTimeout(
+                              function () { appNode.appendChild(document.createElement('fort-loader')); }, 50
+                            );
+                            oReq.addEventListener(
+                              "load", function ()
                               {
-                                clearTimeout(addLoader);
-                                self._setContent(this.responseText);
+                                if(this.status == '200')
+                                {
+                                  clearTimeout(addLoader);
+                                  self._setContent(this.responseText);
+                                }
                               }
-                            }
-                          );
-                          oReq.withCredentials = true;
-                          oReq.open(
-                            'GET',
-                            '//' + this.getServiceHost('apps') + '/' + vendor + '/' + app + (path ? '/' + path : '')
-                          );
-                          oReq.setRequestHeader('X-FORT-ORG', this.routeData.org);
-                          oReq.send();
-                        }
-                        else
-                        {
-                          this._setContent('');
-                          this.routeData = {};
-                          this.appData = {};
+                            );
+                            oReq.withCredentials = true;
+                            oReq.open(
+                              'GET',
+                              '//' + this.getServiceHost('apps') + '/' + vendor + '/' + app + (path ? '/' + path : '')
+                            );
+                            oReq.setRequestHeader('X-FORT-ORG', this.routeData.org);
+                            oReq.send();
+                          }
+                          else
+                          {
+                            this._setContent('');
+                            this.routeData = {};
+                            this.appData = {};
+                          }
                         }
                       },
         _setContent:  function (content)
@@ -97,7 +101,12 @@
                           }
                         );
                         appNode.appendChild(document.createRange().createContextualFragment(content));
-                      }
+                      },
+
+        behaviors: [
+          Polymer.FortIteratorBehavior,
+          Polymer.FortServiceBehavior
+        ]
       }
     )
   </script>
