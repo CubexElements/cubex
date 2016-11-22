@@ -47,9 +47,7 @@
                     },
         _pinnedMsg: function (e, msg)
                     {
-                      var apps = this.pinnedApps || [];
-                      Array.prototype.push.apply(apps, msg.payload);
-                      this.set('pinnedApps', apps);
+                      this.set('pinnedApps', msg.payload);
                     }
       }
     );
