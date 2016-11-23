@@ -31,10 +31,15 @@
       }
     </style>
 
+    <app-location route="{{route}}"></app-location>
+    <app-route route="{{route}}" pattern="/:org" data="{{routeData}}"></app-route>
+
     <div class="left-column">
-      <fortifi-breadcrumb-item><a href="/">Home</a></fortifi-breadcrumb-item>
+      <fortifi-breadcrumb-item href="/[[routeData.org]]">Home</fortifi-breadcrumb-item>
       <template id="crumbList" is="dom-repeat" items="[[crumbs]]">
-        <fortifi-breadcrumb-item><a href="[[item.href]]">[[item.name]]</a></fortifi-breadcrumb-item>
+        <fortifi-breadcrumb-item href="/[[routeData.org]]/[[_trimPath(item.href)]]">
+          [[item.name]]
+        </fortifi-breadcrumb-item>
       </template>
     </div>
     <div class="right-column">
@@ -83,7 +88,12 @@
         attached:      function ()
                        {
                          this._colorChanged();
-                       }
+                       },
+
+        _trimPath: function (path)
+                   {
+                     return path.replace(/^\/+/, '');
+                   }
       }
     );
   </script>

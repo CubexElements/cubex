@@ -1,25 +1,27 @@
 <link rel="import" href="../../polymer/polymer.html"/>
 
-<dom-module id="fortifi-breadcrumb-item">
+<dom-module id="fortifi-breadcrumb-item" attributes="href">
   <template>
     <style>
-      :host(:first-of-type) i {
+      :host(:first-of-type) > i {
         display: none;
       }
 
-      :host i {
+      :host > i {
         padding: 0 5px;
         cursor: pointer;
       }
 
-      :host ::slotted(a) {
+      :host > a {
         text-decoration: none;
         text-transform: capitalize;
         color: var(--accent-400-color);
       }
     </style>
     <i>/</i>
-    <slot></slot>
+    <a href="[[href]]">
+      <slot></slot>
+    </a>
   </template>
   <script>
     Polymer({is: 'fortifi-breadcrumb-item'});
