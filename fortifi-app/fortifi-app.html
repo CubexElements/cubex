@@ -2,6 +2,7 @@
 <link rel="import" href="../fortifi-drawer/fortifi-drawer.html">
 <link rel="import" href="../fortifi-drawer/fortifi-drawer-content.html">
 <link rel="import" href="../fortifi-breadcrumb/fortifi-breadcrumb.html">
+<link rel="import" href="../fortifi-app/fortifi-app-definition.html">
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../iron-media-query/iron-media-query.html">
 <link rel="import" href="../../fort-behavior/fort-touch-enabled-behavior.html">
@@ -79,7 +80,7 @@ Example:
     <iron-media-query query="(min-width: 1000px)" query-matches="{{_peek}}"></iron-media-query>
     <iron-media-query query="(min-width: 1300px)" query-matches="{{_lock}}"></iron-media-query>
 
-    <fortifi-app-definition vendor="{{vendor}}" app="{{app}}" app-data="{{appData}}"></fortifi-app-definition>
+    <fortifi-app-definition vendor="[[vendor]]" app="[[app]]" app-data="{{appData}}"></fortifi-app-definition>
 
     <fortifi-drawer id="appDrawer" hover-popout swipe-open position="left">
       <slot slot="drawer-content" name="drawer-content"></slot>

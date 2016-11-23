@@ -1,7 +1,7 @@
 <link href="../../polymer/polymer.html" rel="import">
 <link href="../../fort-behavior/fort-service-behavior.html" rel="import">
 
-<dom-module id="fortifi-app-definition" attributes="gaid app-data">
+<dom-module id="fortifi-app-definition" attributes="vendor app app-data">
   <script>
     (function ()
     {
@@ -12,11 +12,12 @@
         {
           is:         'fortifi-app-definition',
           properties: {
-            gaid:    {type: String, observer: '_updateAppData'},
+            vendor:  {type: String},
+            app:     {type: String},
             appData: {type: Boolean, notify: true}
           },
 
-          observers: ['_updateAppData(gaid)'],
+          observers: ['_updateAppData(vendor,app)'],
           ready:     function ()
                      {
                        document.addEventListener(NOTIFY_EVENT_NAME, this._appDefinitionUpdated.bind(this));
@@ -30,10 +31,11 @@
                                    }
                                  },
 
-          _updateAppData: function (gaid)
+          _updateAppData: function ()
                           {
-                            if(gaid)
+                            if(this.vendor && this.app)
                             {
+                              var gaid = this.vendor + '/' + this.app;
                               if(definitionCache[gaid])
                               {
                                 this.appData = definitionCache[gaid];
