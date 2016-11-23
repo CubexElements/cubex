@@ -91,6 +91,15 @@
         width: 100%;
       }
 
+      :host fort-list-menu {
+        --primary-text-color: var(--primary-800-text-color);
+        --secondary-text-color: var(--primary-800-text-secondary-color);
+        --fort-list-filter: {
+          @apply --primary-800;
+          @apply --text-secondary;
+        };
+      }
+
       :host {
         --fort-animbg-background-color: var(--accent-700-color);
       }
