@@ -134,11 +134,13 @@
     <template restamp is="dom-if" if="[[appData.Navigation.length]]">
       <fort-list>
         <template is="dom-repeat" items="[[appData.Navigation]]">
-          <fort-li href$="/[[routeData.org]]/[[appData.GlobalAppID]]/[[_trimPath(item.Path)]]">
-            <fort-icon slot="icon" icon="[[item.Icon]]"></fort-icon>
-            [[i18n_c4t('nav_', item.ID, '_name')]]
-            <paper-ripple></paper-ripple>
-          </fort-li>
+          <a href="/[[routeData.org]]/[[appData.GlobalAppID]]/[[_trimPath(item.Path)]]">
+            <fort-li>
+              <fort-icon slot="icon" icon="[[item.Icon]]"></fort-icon>
+              [[i18n_c4t('nav_', item.ID, '_name')]]
+              <paper-ripple></paper-ripple>
+            </fort-li>
+          </a>
         </template>
       </fort-list>
     </template>
@@ -146,12 +148,13 @@
     <div class="flex"></div>
 
     <template is="dom-if" if="[[_configPath]]">
-      <fort-li href$="/[[routeData.org]]/[[appData.GlobalAppID]]/[[_trimPath(_configPath)]]" id="configure"
-               primary="[[i18n('configure')]]">
-        <fort-icon slot="icon" icon="icons:settings"></fort-icon>
-        [[i18n('configure')]]
-        <paper-ripple></paper-ripple>
-      </fort-li>
+      <a href="/[[routeData.org]]/[[appData.GlobalAppID]]/[[_trimPath(_configPath)]]">
+        <fort-li id="configure" primary="[[i18n('configure')]]">
+          <fort-icon slot="icon" icon="icons:settings"></fort-icon>
+          [[i18n('configure')]]
+          <paper-ripple></paper-ripple>
+        </fort-li>
+      </a>
     </template>
 
     <fort-li id="toggler" on-tap="_toggleDrawer" drawer-open$="[[_drawerOpen]]">

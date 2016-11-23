@@ -26,10 +26,11 @@
           <fort-action icon="icons:add" class="dropdown-trigger"></fort-action>
           <fort-list-menu class="dropdown-content">
             <template is="dom-repeat" items="{{actions}}">
-              <fort-li href$="/{{organisation.id}}/{{item.GlobalAppID}}/{{item.Path}}" title="{{item.Name}}"
-                       primary="{{i18n_c4t(item.ID, '_name')}}">
-                <fort-icon slot="icon" icon="{{item.Icon}}"></fort-icon>
-              </fort-li>
+              <a href="/{{organisation.id}}/{{item.GlobalAppID}}/{{item.Path}}">
+                <fort-li title="{{item.Name}}" primary="{{i18n_c4t(item.ID, '_name')}}">
+                  <fort-icon slot="icon" icon="{{item.Icon}}"></fort-icon>
+                </fort-li>
+              </a>
             </template>
           </fort-list-menu>
         </fort-dropdown>
