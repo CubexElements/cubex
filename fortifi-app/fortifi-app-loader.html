@@ -42,10 +42,6 @@
         observers:    [
           '_pathChanged(route.path)'
         ],
-        _hasDrawer:   function ()
-                      {
-                        return this.appData && this.appData.Navigation;
-                      },
         attached:     function ()
                       {
                         this.async(this._pathChanged);
