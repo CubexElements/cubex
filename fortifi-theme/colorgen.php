@@ -392,22 +392,23 @@ foreach($colors as $colorName => $colorGrades)
 
     $code = substr($colorKey, 1);
     $cssVars[$type][] = '--' . $type . '-' . $code . '-color:' . $hex . ';';
-    $cssVars[$type][] = '--' . $type . '-' . $code . '-text-color: var(--' . ($isWhite ? 'light' : 'dark') . '-text);';
+    $cssVars[$type][] = '--' . $type . '-' . $code . '-text-color:var(--' . ($isWhite ? 'light' : 'dark') . '-text);';
+    $cssVars[$type][] = '--' . $type . '-' . $code . '-text-secondary-color:var(--' . ($isWhite ? 'light' : 'dark') . '-text-secondary);';
     $mixins[$type][] = '--' . $type . '-' . $code . ':{'
-      . 'background-color: ' . $hex . ';'
+      . 'background-color:' . $hex . ';'
       . 'color:var(--' . ($isWhite ? 'light' : 'dark') . '-text);'
       . '};';
-    $mixins[$type][] = '--' . $type . '-' . $code . '-text :{'
-      . 'color:var(--' . ($isWhite ? 'light' : 'dark') . '-text);'
+    $mixins[$type][] = '--' . $type . '-' . $code . '-text:{'
+      . 'color:var(--' . $type . '-' . $code . '-text-color);'
       . '};';
-    $mixins[$type][] = '--' . $type . '-' . $code . '-text-secondary :{'
-      . 'color:var(--' . ($isWhite ? 'light' : 'dark') . '-text-secondary);'
+    $mixins[$type][] = '--' . $type . '-' . $code . '-text-secondary:{'
+      . 'color:var(--' . $type . '-' . $code . '-text-secondary-color);'
       . '};';
-    $mixins[$type][] = '--' . $type . '-' . $code . '-text-disabled :{'
+    $mixins[$type][] = '--' . $type . '-' . $code . '-text-disabled:{'
       . 'color:var(--' . ($isWhite ? 'light' : 'dark') . '-text-disabled);'
       . '};';
-    $cssVars[$type][] = '--' . $type . '-' . $code . '-divider-primary-color : var(--' . (!$isWhite ? 'light' : 'dark') . '-divider-primary-color);';
-    $cssVars[$type][] = '--' . $type . '-' . $code . '-divider-secondary-color : var(--' . (!$isWhite ? 'light' : 'dark') . '-divider-secondary-color);';
+    $cssVars[$type][] = '--' . $type . '-' . $code . '-divider-primary-color:var(--' . (!$isWhite ? 'light' : 'dark') . '-divider-primary-color);';
+    $cssVars[$type][] = '--' . $type . '-' . $code . '-divider-secondary-color:var(--' . (!$isWhite ? 'light' : 'dark') . '-divider-secondary-color);';
   }
   foreach(['primary', 'accent'] as $type)
   {
