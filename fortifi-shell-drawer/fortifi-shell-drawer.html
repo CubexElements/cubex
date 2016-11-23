@@ -127,7 +127,10 @@
             <fort-list-group title="All Organisations">
               <template is="dom-repeat" items="[[organisations]]">
                 <a href="/[[item.id]]">
-                  <fort-li>[[item.name]]</fort-li>
+                  <fort-li>
+                    <fort-icon slot="icon" icon="communication:business"></fort-icon>
+                    [[item.name]]
+                  </fort-li>
                 </a>
               </template>
             </fort-list-group>
