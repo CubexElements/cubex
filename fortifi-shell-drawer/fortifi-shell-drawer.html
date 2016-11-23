@@ -11,11 +11,12 @@
 
 <dom-module id="fortifi-shell-drawer">
   <template>
-    <style is="content-style">
+    <style>
       :host {
         display: block;
         overflow: auto;
         height: 100%;
+        --fort-animbg-background-color: var(--accent-700-color);
       }
 
       #user-view {
@@ -100,11 +101,6 @@
           color: var(--primary-800-text-secondary-color);
         };
       }
-
-      :host {
-        --fort-animbg-background-color: var(--accent-700-color);
-      }
-
     </style>
 
     <fortifi-organisation organisation="{{organisation}}" organisations="{{_organisations}}"></fortifi-organisation>
