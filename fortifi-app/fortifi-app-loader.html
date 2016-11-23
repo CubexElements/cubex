@@ -33,21 +33,23 @@
   <script>
     Polymer(
       {
-        is:           'fortifi-app-loader',
-        properties:   {
+        is:         'fortifi-app-loader',
+        properties: {
           appData: {type: Object, notify: true}
         },
-        observers:    [
+        observers:  [
           '_pathChanged(route.path)'
         ],
-        _hasDrawer:   function ()
-                      {
-                        return this.appData && this.appData.Navigation;
-                      },
-        attached:     function ()
-                      {
-                        this.async(this._pathChanged);
-                      },
+        _hasDrawer: function ()
+                    {
+                      return this.appData && this.appData.Navigation;
+                    },
+        attached:   function ()
+                    {
+                      this.async(this._pathChanged);
+                    },
+
+        _addLoader:   0,
         _pathChanged: function ()
                       {
                         if(this.$.route.active)
@@ -56,7 +58,7 @@
                             app = this.routeData.app,
                             path = this.appPath.path.replace(/^\//, '');
                           var self = this, oReq = new XMLHttpRequest(), appNode = Polymer.dom(this.$.app);
-                          var addLoader = setTimeout(
+                          this._addLoader = setTimeout(
                             function () { appNode.appendChild(document.createElement('fort-loader')); }, 50
                           );
                           oReq.addEventListener(
@@ -64,7 +66,6 @@
                             {
                               if(this.status == '200')
                               {
-                                clearTimeout(addLoader);
                                 self._setContent(this.responseText);
                               }
                             }
@@ -86,18 +87,51 @@
                       },
         _setContent:  function (content)
                       {
-                        var appNode = Polymer.dom(this.$.app);
-                        this.iterate(
-                          appNode.getEffectiveChildNodes(),
-                          function (node)
+                        var frag = document.createRange().createContextualFragment(content),
+                          imports = frag.querySelectorAll('link[rel="import"]'),
+                          toLoad = imports.length,
+                          loaded = 0;
+
+                        if(toLoad > 0)
+                        {
+                          for(var idx in imports)
                           {
-                            if(node.nodeType == 3 || node.id !== 'appDrawerContent')
+                            if(imports.hasOwnProperty(idx))
                             {
-                              appNode.removeChild(node);
+                              this.importHref(imports[idx].getAttribute('href'), completeLoad);
+                              frag.removeChild(imports[idx]);
                             }
                           }
-                        );
-                        appNode.appendChild(document.createRange().createContextualFragment(content));
+                        }
+                        else
+                        {
+                          completeLoad.apply(this);
+                        }
+
+                        function completeLoad()
+                        {
+                          loaded++;
+                          if(loaded >= toLoad)
+                          {
+                            if(this._addLoader)
+                            {
+                              clearTimeout(this._addLoader);
+                            }
+
+                            var appNode = Polymer.dom(this.$.app);
+                            this.iterate(
+                              appNode.getEffectiveChildNodes(),
+                              function (node)
+                              {
+                                if(node.nodeType == 3 || node.id !== 'appDrawerContent')
+                                {
+                                  appNode.removeChild(node);
+                                }
+                              }
+                            );
+                            appNode.appendChild(frag);
+                          }
+                        }
                       },
 
         behaviors: [
