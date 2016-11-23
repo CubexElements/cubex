@@ -22,12 +22,12 @@
       }
     </style>
     <app-location route="{{route}}"></app-location>
-    <app-route route="{{route}}" pattern="/:org" data="{{routeData}}"></app-route>
+    <app-route route="[[route]]" pattern="/:org" data="{{routeData}}"></app-route>
     <fort-websocket auto vendor="fortifi" app="pinnedapps" on-subscribe="_pinnedSub"
                     on-message="_pinnedMsg"></fort-websocket>
-    <template is="dom-repeat" items="{{pinnedApps}}">
-      <a href="/{{routeData.org}}/{{item.GlobalAppID}}">
-        <fort-action icon="{{item.Icon}}"></fort-action>
+    <template is="dom-repeat" items="[[pinnedApps]]">
+      <a href="/[[routeData.org]]/[[item.GlobalAppID]]">
+        <fort-action icon="[[item.Icon]]"></fort-action>
       </a>
     </template>
   </template>
