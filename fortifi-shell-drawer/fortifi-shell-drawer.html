@@ -92,11 +92,12 @@
       }
 
       :host fort-list-menu {
-        --primary-text-color: var(--primary-800-text-color);
-        --secondary-text-color: var(--primary-800-text-secondary-color);
+        --paper-input-container-color: var(--primary-800-text-secondary-color);
+        --paper-input-container-input-color: var(--primary-800-text-secondary-color);
+        --paper-input-container-focus-color: var(--primary-800-text-color);
         --fort-list-filter: {
           @apply --primary-800;
-          @apply --text-secondary;
+          color: var(--primary-800-text-secondary-color);
         };
       }
 
