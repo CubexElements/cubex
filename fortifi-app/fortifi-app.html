@@ -82,9 +82,7 @@ Example:
     <fortifi-app-definition vendor="{{vendor}}" app="{{app}}" app-data="{{appData}}"></fortifi-app-definition>
 
     <fortifi-drawer id="appDrawer" hover-popout swipe-open position="left">
-      <div slot="drawer-content">
-        <slot name="app-drawer-content"></slot>
-      </div>
+      <slot slot="drawer-content" name="drawer-content"></slot>
       <app-header-layout>
         <app-header id="ah" slot="header" condenses reveals effects="waterfall">
           <fortifi-breadcrumb></fortifi-breadcrumb>

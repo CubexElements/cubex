@@ -24,7 +24,7 @@
     <app-route id="route" route="[[route]]" pattern="/:org/:vendor/:app" data="{{routeData}}"
                tail="{{appPath}}" query-params="{{appQuery}}"></app-route>
     <fortifi-app id="app" vendor="[[routeData.vendor]]" app="[[routeData.app]]" app-data="{{appData}}">
-      <fortifi-drawer-content slot="app-drawer-content" id="appDrawerContent">
+      <fortifi-drawer-content slot="drawer-content" id="appDrawerContent">
         <fortifi-app-menu app-data="[[appData]]"></fortifi-app-menu>
       </fortifi-drawer-content>
       <fort-loader></fort-loader>
