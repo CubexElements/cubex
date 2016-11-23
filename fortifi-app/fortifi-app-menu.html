@@ -230,7 +230,7 @@
                              },
         _trimPath:           function (path)
                              {
-                               return path.replace(/^\/+/, '');
+                               return (path || '').replace(/^\/+/, '');
                              },
         _resetResources:     function ()
                              {
