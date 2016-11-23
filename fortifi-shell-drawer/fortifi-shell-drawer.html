@@ -101,6 +101,10 @@
           color: var(--primary-800-text-secondary-color);
         };
       }
+
+      :host fort-li {
+        @apply --primary-700;
+      }
     </style>
 
     <fortifi-organisation organisation="{{organisation}}" organisations="{{_organisations}}"></fortifi-organisation>
@@ -122,7 +126,9 @@
           <fort-list-menu show-filter filter-label="Filter Organisations">
             <fort-list-group title="All Organisations">
               <template is="dom-repeat" items="[[organisations]]">
-                <fort-li>[[item.name]]</fort-li>
+                <a href="/[[item.id]]">
+                  <fort-li>[[item.name]]</fort-li>
+                </a>
               </template>
             </fort-list-group>
           </fort-list-menu>
