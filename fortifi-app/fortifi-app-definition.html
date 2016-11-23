@@ -14,11 +14,12 @@
           properties: {
             vendor:  {type: String},
             app:     {type: String},
+            gaid:    {type: String, readOnly: true},
             appData: {type: Boolean, notify: true}
           },
 
           observers: ['_updateAppData(vendor,app)'],
-          ready:     function ()
+          attached:  function ()
                      {
                        document.addEventListener(NOTIFY_EVENT_NAME, this._appDefinitionUpdated.bind(this));
                      },
@@ -36,6 +37,7 @@
                             if(this.vendor && this.app)
                             {
                               var gaid = this.vendor + '/' + this.app;
+                              this._setGaid(gaid);
                               if(definitionCache[gaid])
                               {
                                 this.appData = definitionCache[gaid];
