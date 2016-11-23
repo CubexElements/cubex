@@ -33,27 +33,28 @@
   <script>
     Polymer(
       {
-        is:         'fortifi-app-loader',
-        properties: {
-          appData: {type: Object, notify: true}
+        is:           'fortifi-app-loader',
+        properties:   {
+          appData:     {type: Object, notify: true},
+          _addLoader:  {type: Number, value: 0},
+          _loadedPath: {type: String, value: ''}
         },
-        observers:  [
+        observers:    [
           '_pathChanged(route.path)'
         ],
-        _hasDrawer: function ()
-                    {
-                      return this.appData && this.appData.Navigation;
-                    },
-        attached:   function ()
-                    {
-                      this.async(this._pathChanged);
-                    },
-
-        _addLoader:   0,
+        _hasDrawer:   function ()
+                      {
+                        return this.appData && this.appData.Navigation;
+                      },
+        attached:     function ()
+                      {
+                        this.async(this._pathChanged);
+                      },
         _pathChanged: function ()
                       {
-                        if(this.$.route.active)
+                        if(this.$.route.active && this.route.path !== this._loadedPath)
                         {
+                          this._loadedPath = this.route.path;
                           var vendor = this.routeData.vendor,
                             app = this.routeData.app,
                             path = this.appPath.path.replace(/^\//, '');
@@ -83,6 +84,7 @@
                           this._setContent('');
                           this.routeData = {};
                           this.appData = {};
+                          this._loadedPath = null;
                         }
                       },
         _setContent:  function (content)
