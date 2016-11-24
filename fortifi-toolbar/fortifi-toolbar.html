@@ -35,13 +35,23 @@
         @apply(--primary-700-text);
       }
 
+      #keyhelp {
+        padding-top: 20px;
+        width: 500px;
+        text-align: left;
+
+        --fort-li-style: {
+          background: var(--theme-2-color);
+        }
+      }
+
     </style>
 
     <fortifi-quick-actions></fortifi-quick-actions>
 
     <fort-dropdown id="additional">
       <fort-action icon="icons:more-vert" slot="trigger"></fort-action>
-      <fort-list-menu>
+      <fort-list-menu border>
         <fort-list-group>
           <fort-li on-tap="openKeyboardHelp">{{i18n('keyboard_shortcuts')}}</fort-li>
         </fort-list-group>
