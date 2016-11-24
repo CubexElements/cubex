@@ -218,7 +218,7 @@
     <iron-media-query query="(min-width: 1000px)" query-matches="{{_peek}}"></iron-media-query>
     <iron-media-query query="(max-width: 375px)" query-matches="{{_narrow}}"></iron-media-query>
 
-    <app-drawer-layout fullbleed force-narrow>
+    <app-drawer-layout id="adl" fullbleed force-narrow>
       <app-drawer id="drawer" opened="{{drawerOpened}}">
         <fortifi-shell-drawer>
           <fortifi-shell-drawer-panel>
@@ -315,6 +315,11 @@
                               {
                                 this.keyEventTarget = document.body;
                                 document.querySelector('body').removeAttribute('shellunloaded');
+                                this.async(this._resetLayout, 200);
+                              },
+        _resetLayout:         function ()
+                              {
+                                this.$.adl.resetLayout();
                               },
         _keyboardHelp:        function (e)
                               {
