@@ -55,15 +55,20 @@
         line-height: 64px;
       }
 
+      :host([trusted-vendor]) h2 {
+        display: none;
+      }
+
       :host(:not([trusted-vendor])) h1 {
-        @apply --paper-font-menu;
+        @apply --paper-font-body2;
+        line-height: initial;
         bottom: 36px;
         top: auto;
       }
 
       :host h2 {
         @apply --paper-font-caption;
-        line-height: normal;
+        line-height: initial;
         top: 36px;
         bottom: auto;
       }
