@@ -206,12 +206,6 @@
       fort-action[hidden] {
         display: none;
       }
-
-      fortifi-user-drawer fort-action#lockSessionAction {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-      }
     </style>
 
     <app-location route="{{route}}"></app-location>
@@ -272,7 +266,6 @@
             <fortifi-user-drawer-items slot="drawer-items">
               <fort-action icon="communication:phone" on-tap="_openUserDrawerApp" data-page-id="phone"></fort-action>
               <fort-action icon="communication:email" on-tap="_openUserDrawerApp" data-page-id="email"></fort-action>
-              <fort-action icon="icons:lock" id="lockSessionAction"></fort-action>
             </fortifi-user-drawer-items>
           </fortifi-user-drawer>
         </fortifi-drawer-content>
