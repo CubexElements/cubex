@@ -7,6 +7,7 @@
 <link href="../../fort-list/fort-li.html" rel="import">
 <link href="../fortifi-organisation/fortifi-organisation.html" rel="import">
 <link href="../../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html" rel="import">
+<link href="../../fort-behavior/fort-i18n-behavior.html" rel="import">
 
 
 <dom-module id="fortifi-shell-drawer">
@@ -123,8 +124,52 @@
       <iron-selector selected="0" id="drawerPanels">
         <slot></slot>
         <fortifi-shell-drawer-panel>
-          <fort-list-menu show-filter filter-label="Filter Organisations">
-            <fort-list-group title="All Organisations">
+          <fort-list-menu show-filter filter-label="{{i18n('filter_apps')}}">
+            <fort-list-group title="Finance">
+              <a href="fortifi/testapp">
+                <fort-li>
+                  <fort-icon slot="icon" icon="editor:attach-money"></fort-icon>
+                  Paychecks
+                </fort-li>
+              </a>
+              <a href="fortifi/invoice">
+                <fort-li>
+                  <fort-icon slot="icon" icon="icons:receipt"></fort-icon>
+                  Invoices
+                </fort-li>
+              </a>
+              <a href="fortifi/transactions">
+                <fort-li>
+                  <fort-icon slot="icon" icon="icons:compare-arrows"></fort-icon>
+                  Transactions
+                </fort-li>
+              </a>
+              <a href="fortifi/orders">
+                <fort-li>
+                  <fort-icon slot="icon" icon="icons:assignment"></fort-icon>
+                  Orders
+                </fort-li>
+              </a>
+              <a href="fortifi/payment-accounts">
+                <fort-li>
+                  <fort-icon slot="icon" icon="icons:payment"></fort-icon>
+                  Payment Accounts
+                </fort-li>
+              </a>
+            </fort-list-group>
+            <fort-list-group title="CRM">
+              <a href="fortifi/accounts">
+                <fort-li>
+                  <fort-icon slot="icon" icon="image:portrait"></fort-icon>
+                  Accounts
+                </fort-li>
+              </a>
+            </fort-list-group>
+          </fort-list-menu>
+        </fortifi-shell-drawer-panel>
+        <fortifi-shell-drawer-panel>
+          <fort-list-menu show-filter filter-label="{{i18n('filter_orgs')}}">
+            <fort-list-group title="{{i18n('all_organisations')}}">
               <template is="dom-repeat" items="[[organisations]]">
                 <a href="/[[item.id]]">
                   <fort-li>
@@ -145,6 +190,21 @@
       {
         is:          'fortifi-shell-drawer',
         properties:  {
+          resources:     {
+            type:  Object,
+            value: {
+              "en": {
+                "filter_apps":       "Filter Applications",
+                "filter_orgs":       "Filter Organisations",
+                "all_organisations": "All Organisations"
+              },
+              "fr": {
+                "filter_apps":       "Filtre Applications",
+                "filter_orgs":       "Filtre les organisations",
+                "all_organisations": "Toutes les organisations"
+              }
+            }
+          },
           selectedItem:  {
             type:  Number,
             value: 0
@@ -172,7 +232,8 @@
           }
         },
         behaviors:   [
-          Polymer.IronA11yKeysBehavior
+          Polymer.IronA11yKeysBehavior,
+          Polymer.FortI18nBehavior
         ],
         keyBindings: {
           ',': 'toggleDrawer'
