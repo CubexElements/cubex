@@ -142,18 +142,20 @@
         _openTerms:             function ()
                                 {
                                   this.$.additional.close();
-                                  alert('coming soon');
+                                  window.location = "/_/fortifi/legal/terms";
                                 },
         _logout:                function ()
                                 {
                                   this.$.additional.close();
-                                  //TODO: Are you sure?
-                                  window.location = '/logout';
+                                  if(confirm("Are you sure you wish to logout?"))
+                                  {
+                                    window.location = '/logout';
+                                  }
                                 },
         _openCustomerAgreement: function ()
                                 {
                                   this.$.additional.close();
-                                  window.open('http://fortifi.uk/agreement');
+                                  window.location = "/_/fortifi/legal/customer-agreement";
                                 },
         _openOrganisationInfo:  function ()
                                 {
@@ -164,7 +166,7 @@
                                 {
                                   this.$.additional.close();
                                   window.open('http://support.fortifi.uk');
-                                },
+                                }
       }
     );
   </script>
