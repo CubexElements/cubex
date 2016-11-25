@@ -3,6 +3,7 @@
 <link rel="import" href="../fortifi-drawer/fortifi-drawer-content.html">
 <link rel="import" href="../fortifi-breadcrumb/fortifi-breadcrumb.html">
 <link rel="import" href="../fortifi-app/fortifi-app-definition.html">
+<link rel="import" href="../fortifi-app/fortifi-app-header.html">
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../iron-media-query/iron-media-query.html">
 <link rel="import" href="../../fort-behavior/fort-touch-enabled-behavior.html">
@@ -26,7 +27,7 @@ Example:
 @hero hero.svg
 -->
 
-<dom-module id="fortifi-app" attributes="vendor app app-data">
+<dom-module id="fortifi-app" attributes="app-data page-data">
   <template>
     <style>
       :host {
@@ -45,14 +46,15 @@ Example:
         min-width: 100px;
       }
 
-      .app-container {
+      #app-container {
+        margin-top: var(--fortifi-drawer-offset-top, 0);
         border-bottom-left-radius: 3px;
         border-bottom-right-radius: 3px;
         @apply --theme-600;
         overflow: hidden;
       }
 
-      .app-content {
+      #app-content {
         margin: 40px;
       }
 
@@ -80,19 +82,21 @@ Example:
     <iron-media-query query="(min-width: 1000px)" query-matches="{{_peek}}"></iron-media-query>
     <iron-media-query query="(min-width: 1300px)" query-matches="{{_lock}}"></iron-media-query>
 
-    <fortifi-app-definition vendor="[[vendor]]" app="[[app]]" app-data="{{appData}}"></fortifi-app-definition>
-
     <fortifi-drawer id="appDrawer" hover-popout swipe-open position="left">
       <slot slot="drawer-content" name="drawer-content"></slot>
       <app-header-layout>
         <app-header id="ah" slot="header" condenses reveals effects="waterfall">
           <fortifi-breadcrumb></fortifi-breadcrumb>
           <app-toolbar sticky>
-            <slot name="app-header"></slot>
+            <fortifi-app-header actions="[[appData.actions]]">
+              <!--<fort-icon slot="icon" src="https://s3.amazonaws.com/uifaces/faces/twitter/adellecharles/128.jpg"></fort-icon>-->
+              <h1 slot="header">[[pageData.title]]</h1>
+            </fortifi-app-header>
           </app-toolbar>
         </app-header>
-        <div class="app-container">
-          <div class="app-content">
+
+        <div id="app-container">
+          <div id="app-content">
             <slot></slot>
           </div>
         </div>
@@ -107,9 +111,8 @@ Example:
         behaviors:       [Polymer.FortTouchEnabledBehavior, Polymer.FortServiceBehavior],
         properties:      {
           narrow:         {type: Boolean, value: true, reflectToAttribute: true, observer: '_updateMaxState'},
-          vendor:         {type: String},
-          app:            {type: String},
-          appData:        {type: Object, notify: true},
+          appData:        {type: Object},
+          pageData:       {type: Object},
           drawerDisabled: {
             type:               Boolean,
             value:              false,

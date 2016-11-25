@@ -12,7 +12,7 @@
 <link rel="import" href="../../fort-behavior/fort-iterator-behavior.html">
 <link rel="import" href="../../fort-behavior/fort-service-behavior.html">
 
-<dom-module id="fortifi-app-loader" attributes="route vendor app path app-data">
+<dom-module id="fortifi-app-loader" attributes="route vendor">
   <template strip-whitespace>
     <style>
       :host {
@@ -21,9 +21,13 @@
       }
     </style>
 
+    <fortifi-app-definition vendor="[[routeData.vendor]]" app="[[routeData.app]]"
+                            app-data="{{appData}}"></fortifi-app-definition>
+
     <app-route id="route" route="[[route]]" pattern="/:org/:vendor/:app" data="{{routeData}}"
                tail="{{appPath}}" query-params="{{appQuery}}"></app-route>
-    <fortifi-app id="app" vendor="[[routeData.vendor]]" app="[[routeData.app]]" app-data="{{appData}}">
+    <fortifi-app id="app" vendor="[[routeData.vendor]]" app="[[routeData.app]]"
+                 app-data="[[appData]]" page-data="[[pageData]]">
       <fortifi-drawer-content slot="drawer-content" id="appDrawerContent">
         <fortifi-app-menu app-data="[[appData]]"></fortifi-app-menu>
       </fortifi-drawer-content>
@@ -35,7 +39,6 @@
       {
         is:           'fortifi-app-loader',
         properties:   {
-          appData:     {type: Object, notify: true},
           _addLoader:  {type: Number, value: 0},
           _loadedPath: {type: String, value: ''}
         },
@@ -63,7 +66,7 @@
                             {
                               if(this.status == '200')
                               {
-                                self._setContent(this.responseText);
+                                self._updateData(this);
                               }
                             }
                           );
@@ -77,18 +80,29 @@
                         }
                         else
                         {
-                          this._setContent('');
+                          this._updateData(new XMLHttpRequest());
                           this.routeData = {};
                           this.appData = {};
                           this._loadedPath = null;
                         }
                       },
-        _setContent:  function (content)
+        /**
+         * @param {XMLHttpRequest} xhr
+         * @private
+         */
+        _updateData:  function (xhr)
                       {
-                        var frag = document.createRange().createContextualFragment(content),
+                        var frag = document.createRange().createContextualFragment(xhr.responseText),
                           imports = frag.querySelectorAll('link[rel="import"]'),
                           toLoad = imports.length,
-                          loaded = 0;
+                          loaded = 0,
+                          fortHeaderRegex = /x-fort-([a-z\-]+): (.*)[\n\r]*/g,
+                          headers = {};
+
+                        while(matches = fortHeaderRegex.exec(xhr.getAllResponseHeaders()))
+                        {
+                          headers[matches[1]] = matches[2];
+                        }
 
                         if(toLoad > 0)
                         {
@@ -128,6 +142,7 @@
                               }
                             );
                             appNode.appendChild(frag);
+                            this.pageData = headers;
                           }
                         }
                       },
