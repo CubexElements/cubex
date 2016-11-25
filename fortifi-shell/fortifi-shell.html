@@ -260,8 +260,12 @@
             </iron-pages>
             <fort-action icon="icons:chrome-reader-mode" id="lockUserDrawer" on-tap="_lockUserDrawer"></fort-action>
             <fortifi-user-drawer-items slot="drawer-items">
-              <fort-action icon="communication:phone" on-tap="_openUserDrawerApp" data-page-id="phone"></fort-action>
-              <fort-action icon="communication:email" on-tap="_openUserDrawerApp" data-page-id="email"></fort-action>
+              <fort-nudge count="3">
+                <fort-action icon="communication:phone" on-tap="_openUserDrawerApp" data-page-id="phone"></fort-action>
+              </fort-nudge>
+              <fort-nudge count="0">
+                <fort-action icon="communication:email" on-tap="_openUserDrawerApp" data-page-id="email"></fort-action>
+              </fort-nudge>
             </fortifi-user-drawer-items>
           </fortifi-user-drawer>
         </fortifi-drawer-content>
