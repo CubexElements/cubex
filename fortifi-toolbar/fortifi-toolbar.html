@@ -63,6 +63,9 @@
           <fort-li on-tap="_openOrganisationInfo">{{i18n('org_info')}}</fort-li>
           <fort-li on-tap="_openSupport">{{i18n('support')}}</fort-li>
         </fort-list-group>
+        <fort-list-group>
+          <fort-li on-tap="_logout">{{i18n('logout')}}</fort-li>
+        </fort-list-group>
       </fort-list-menu>
 
     </fort-dropdown>
@@ -114,7 +117,8 @@
                 "terms_service":      "Terms of Service",
                 "org_info":           "Organisation Info",
                 "cust_agree":         "Customer Agreement",
-                "support":            "Support"
+                "support":            "Support",
+                "logout":             "Logout"
               },
               "fr": {
                 "recently_used":      "Utilisé récemment",
@@ -132,7 +136,8 @@
                 "terms_service":      "Conditions d'utilisation",
                 "org_info":           "Organisation Infos",
                 "cust_agree":         "Accord client",
-                "support":            "Soutien"
+                "support":            "Soutien",
+                "logout":             "Se déconnecter"
               }
             }
           }
@@ -146,6 +151,12 @@
                                 {
                                   this.$.additional.close();
                                   alert('coming soon');
+                                },
+        _logout:                function ()
+                                {
+                                  this.$.additional.close();
+                                  //TODO: Are you sure?
+                                  window.location = '/logout';
                                 },
         _openCustomerAgreement: function ()
                                 {
