@@ -210,11 +210,12 @@
                              },
         _collapseDrawer:     function ()
                              {
-                               if(this._getApp().narrow)
+                               var app = this._getApp();
+                               if(app.narrow)
                                {
-                                 this._getApp().drawer.close();
+                                 app.drawer.close();
                                }
-                               else
+                               else if(app.drawer.state != 2)
                                {
                                  this._setDrawerState(1);
                                }
