@@ -201,7 +201,7 @@
 
       _hasDropdownActions: function (small, primary)
                            {
-                             if(small !== undefined && primary !== undefined)
+                             if(this.actions && small !== undefined && primary !== undefined)
                              {
                                return this.actions.slice(0).filter(this._filter(this._small, 0), this).length > 0;
                              }

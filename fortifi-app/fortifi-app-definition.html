@@ -2,77 +2,28 @@
 <link href="../../fort-behavior/fort-service-behavior.html" rel="import">
 
 <dom-module id="fortifi-app-definition" attributes="vendor app app-data">
+  <template>
+    <fort-resource auto="[[_ready]]" url="//[[getServiceHost('cdn')]]/_apps/[[vendor]]/[[app]]/definition.json"
+                   data="{{appData}}" headers="{}"></fort-resource>
+  </template>
   <script>
-    (function ()
-    {
-      const NOTIFY_EVENT_NAME = 'fortifi-app-definition-updated';
+    Polymer(
+      {
+        is:         'fortifi-app-definition',
+        properties: {
+          vendor:  {type: String},
+          app:     {type: String},
+          _ready:  {type: Boolean, value: false, computed: '_setReady(vendor,app)'},
+          appData: {type: Object, notify: true, value: {}}
+        },
 
-      var definitionCache = {};
-      Polymer(
-        {
-          is:         'fortifi-app-definition',
-          properties: {
-            vendor:  {type: String},
-            app:     {type: String},
-            gaid:    {type: String, readOnly: true},
-            appData: {type: Boolean, notify: true}
-          },
+        _setReady: function ()
+                   {
+                     return this.vendor && this.app;
+                   },
 
-          observers: ['_updateAppData(vendor,app)'],
-          attached:  function ()
-                     {
-                       document.addEventListener(NOTIFY_EVENT_NAME, this._appDefinitionUpdated.bind(this));
-                     },
-
-          _appDefinitionUpdated: function (e)
-                                 {
-                                   if(e.detail.gaid == this.gaid)
-                                   {
-                                     this.appData = definitionCache[this.gaid];
-                                   }
-                                 },
-
-          _updateAppData: function ()
-                          {
-                            if(this.vendor && this.app)
-                            {
-                              var gaid = this.vendor + '/' + this.app;
-                              this._setGaid(gaid);
-                              if(definitionCache[gaid])
-                              {
-                                this.appData = definitionCache[gaid];
-                              }
-                              else
-                              {
-                                definitionCache[gaid] = {};
-                                var oReq = new XMLHttpRequest();
-                                oReq.addEventListener(
-                                  "load", function ()
-                                  {
-                                    if(this.status == '200')
-                                    {
-                                      definitionCache[gaid] = JSON.parse(this.responseText);
-                                      var event = new CustomEvent(NOTIFY_EVENT_NAME, {detail: {gaid: gaid}});
-                                      document.dispatchEvent(event);
-                                    }
-                                  }
-                                );
-                                oReq.open(
-                                  'GET',
-                                  'https://' + this.getServiceHost('cdn') + '/_apps/' + gaid + '/definition.json'
-                                );
-                                oReq.send();
-                              }
-                            }
-                            else
-                            {
-                              this.appData = {};
-                            }
-                          },
-
-          behaviors: [Polymer.FortServiceBehavior]
-        }
-      );
-    }());
+        behaviors: [Polymer.FortServiceBehavior]
+      }
+    );
   </script>
 </dom-module>

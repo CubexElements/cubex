@@ -67,6 +67,7 @@
     "iron-pages": "2.0-preview",
     "iron-menu-behavior": "2.0-preview",
     "paper-dialog": "2.0-preview",
-    "paper-dialog-behavior": "2.0-preview"
+    "paper-dialog-behavior": "2.0-preview",
+    "iron-ajax": "2.0-preview"
   }
 }

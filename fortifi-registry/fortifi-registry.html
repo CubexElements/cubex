@@ -1,97 +1,37 @@
 <link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../app-route/app-location.html">
+<link rel="import" href="../../app-route/app-route.html">
+<link rel="import" href="../../fort-resource/fort-resource.html">
 
 <dom-module id="fortifi-registry" attributes="org-data user-data">
   <template>
     <app-location route="{{route}}"></app-location>
-    <app-route route="{{route}}" pattern="/:org" data="{{routeData}}"></app-route>
+    <app-route route="[[route]]" pattern="/:org" data="{{routeData}}"></app-route>
+
+    <fort-resource auto auth url="//[[getServiceHost('apps')]]/fortifi/registry/organisation.json"
+                   data="{{orgData}}" headers="[[_headers]]"></fort-resource>
+    <fort-resource auto auth url="//[[getServiceHost('apps')]]/fortifi/registry/user.json"
+                   data="{{userData}}" headers="[[_headers]]"></fort-resource>
   </template>
   <script>
-    (function ()
-    {
-      var orgCache = null;
-      var userCache = null;
-      Polymer(
-        {
-          is:         'fortifi-registry',
-          properties: {
-            orgData:  {type: Object, notify: true, value: this.__cachedOrg},
-            userData: {type: Object, notify: true, value: this.__cachedUser}
-          },
-          observers:  ['__updateOrg(routeData.org)'],
-          ready:      function ()
-                      {
-                        if(!this.orgData)
-                        {
-                          this.__updateOrg(this.routeData.org);
-                        }
-                        if(!this.userData)
-                        {
-                          this.__updateUser();
-                        }
-                      },
-
-          clearCache:   function ()
-                        {
-                          orgCache = userCache = null;
-                        },
-          __cachedOrg:  function ()
-                        {
-                          return orgCache;
-                        },
-          __cachedUser: function ()
-                        {
-                          return userCache;
-                        },
-
-          __updateOrg:  function (org)
-                        {
-                          if(org)
-                          {
-                            this.__get(
-                              '//' + org + '/fortifi/registry/organisation.json',
-                              function (data)
-                              {
-                                self.orgData = orgCache = data;
-                              }
-                            );
-                          }
-                          else
-                          {
-                            self.orgData = orgCache = null;
-                          }
-                        },
-          __updateUser: function ()
-                        {
-                          this.__get(
-                            '//' + org + '/fortifi/registry/user.json',
-                            function (data)
-                            {
-                              self.userData = userCache = data;
-                            }
-                          );
-                        },
-
-          __get: function (path, callback)
-                 {
-                   var oReq = new XMLHttpRequest();
-                   oReq.addEventListener(
-                     "load", function ()
-                     {
-                       if(this.status == '200')
-                       {
-                         callback(JSON.parse(this.responseText));
-                       }
-                       else
-                       {
-                         throw 'Error fetching registry information';
-                       }
-                     }
-                   );
-                   oReq.open('GET', path);
-                   oReq.send();
-                 }
-        }
-      );
-    }());
+    Polymer(
+      {
+        is:              'fortifi-registry',
+        properties:      {
+          orgData:  {type: Object, notify: true},
+          userData: {type: Object, notify: true},
+          _headers: {type: Object, computed: '_refreshHeaders(routeData.org)'}
+        },
+        _refreshHeaders: function (org)
+                         {
+                           if(org)
+                           {
+                             return {'x-fort-org': org};
+                           }
+                           return undefined;
+                         },
+        behaviors:       [Polymer.FortServiceBehavior]
+      }
+    );
   </script>
 </dom-module>

@@ -8,7 +8,7 @@
 <link href="../fortifi-organisation/fortifi-organisation.html" rel="import">
 <link href="../../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html" rel="import">
 <link href="../../fort-behavior/fort-i18n-behavior.html" rel="import">
-
+<link href="../fortifi-registry/fortifi-registry.html" rel="import">
 
 <dom-module id="fortifi-shell-drawer">
   <template>
@@ -110,6 +110,8 @@
 
     <fortifi-organisation organisation="{{organisation}}" organisations="{{_organisations}}"></fortifi-organisation>
 
+    <fortifi-registry user-data="{{userData}}" org-data="{{orgData}}"></fortifi-registry>
+
     <fort-animbg id="user-view" size="80">
       <paper-button on-tap="_toggleParent" class="closer"></paper-button>
       <img src="[[avatar]]">
@@ -117,7 +119,7 @@
       <span>[[username]]</span>
       <paper-button on-tap="toggleDrawer" class="toggle" selected-drawer="{{selectedItem}}">
         [[organisation.name]]
-        <iron-icon icon="[[icon]]"></iron-icon>
+        <iron-icon icon="[[_icon]]"></iron-icon>
       </paper-button>
     </fort-animbg>
     <div style="position: relative;">
@@ -209,18 +211,12 @@
             type:  Number,
             value: 0
           },
-          icon:          {
+          _icon:         {
             type:  String,
             value: "icons:arrow-drop-down"
           },
-          name:          {
-            type:  String,
-            value: "Your Full Name"
-          },
-          username:      {
-            type:  String,
-            value: "user.name"
-          },
+          userData:      {type: Object},
+          orgData:       {type: Object},
           organisation:  {type: Object},
           organisations: {type: Array},
           avatar:        {
@@ -258,11 +254,11 @@
                          this.selectedItem = this.$.drawerPanels.selected;
                          if(this.selectedItem == 1)
                          {
-                           this.icon = "icons:arrow-drop-up";
+                           this._icon = "icons:arrow-drop-up";
                          }
                          else if(this.selectedItem == 0)
                          {
-                           this.icon = "icons:arrow-drop-down";
+                           this._icon = "icons:arrow-drop-down";
                          }
                        }
       }
