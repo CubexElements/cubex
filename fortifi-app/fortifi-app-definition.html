@@ -1,7 +1,7 @@
 <link href="../../polymer/polymer.html" rel="import">
 <link href="../../fort-behavior/fort-service-behavior.html" rel="import">
 
-<dom-module id="fortifi-app-definition" attributes="vendor app app-data">
+<dom-module id="fortifi-app-definition" attributes="gaid app-data">
   <template>
     <fort-resource auto url="[[_url]]" data="{{appData}}" headers="{}"></fort-resource>
   </template>
@@ -10,19 +10,18 @@
       {
         is:         'fortifi-app-definition',
         properties: {
-          vendor:  {type: String},
-          app:     {type: String},
+          gaid:    {type: String},
           appData: {type: Object, notify: true},
           _url:    {type: String}
         },
-        observers:  ['_updateUrl(vendor,app)'],
+        observers:  ['_updateUrl(gaid)'],
 
         _updateUrl: function ()
                     {
                       var url;
-                      if(this.vendor && this.app)
+                      if(this.gaid && this.gaid !== '/')
                       {
-                        url = '//' + this.getServiceHost('cdn') + '/_apps/' + this.vendor + '/' + this.app + '/definition.json';
+                        url = '//' + this.getServiceHost('cdn') + '/_apps/' + this.gaid + '/definition.json';
                       }
 
                       if(this._url !== url)
