@@ -271,7 +271,7 @@
           </fortifi-user-drawer>
         </fortifi-drawer-content>
 
-        <fortifi-app-loader route="{{route}}"></fortifi-app-loader>
+        <fortifi-app-loader route="[[route]]"></fortifi-app-loader>
       </fortifi-drawer>
 
     </app-drawer-layout>
@@ -309,6 +309,14 @@
                               {
                                 this.keyEventTarget = document.body;
                                 document.querySelector('body').removeAttribute('shellunloaded');
+                                this._resetLayoutDelayed();
+                                document.addEventListener(
+                                  'fortifi-drawer-state-changed', this._resetLayoutDelayed.bind(this)
+                                );
+                              },
+        _resetLayoutDelayed:  function ()
+                              {
+                                // delay due to 0.2s animation
                                 this.async(this._resetLayout, 200);
                               },
         _resetLayout:         function ()
