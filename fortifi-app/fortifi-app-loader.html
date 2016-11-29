@@ -51,39 +51,42 @@
                       },
         _pathChanged: function ()
                       {
-                        if(this.$.route.active && this.route.path !== this._loadedPath)
+                        if(this.$.route.active)
                         {
-                          this._loadedPath = this.route.path;
-                          var vendor = this.routeData.vendor,
-                            app = this.routeData.app,
-                            path = this.appPath.path.replace(/^\//, '');
-                          var self = this, oReq = new XMLHttpRequest(), appNode = Polymer.dom(this.$.app);
-                          this._addLoader = setTimeout(
-                            function () { appNode.appendChild(document.createElement('fort-loader')); }, 50
-                          );
-                          oReq.addEventListener(
-                            "load", function ()
-                            {
-                              if(this.status == '200')
+                          if(this.route.path !== this._loadedPath)
+                          {
+                            this._loadedPath = this.route.path;
+                            var vendor = this.routeData.vendor,
+                              app = this.routeData.app,
+                              path = this.appPath.path.replace(/^\//, '');
+                            var self = this, oReq = new XMLHttpRequest(), appNode = Polymer.dom(this.$.app);
+                            this._addLoader = setTimeout(
+                              function () { appNode.appendChild(document.createElement('fort-loader')); }, 50
+                            );
+                            oReq.addEventListener(
+                              "load", function ()
                               {
-                                self._updateData(this);
+                                if(this.status == '200')
+                                {
+                                  self._updateData(this);
+                                }
                               }
-                            }
-                          );
-                          oReq.withCredentials = true;
-                          oReq.open(
-                            'GET',
-                            '//' + this.getServiceHost('apps') + '/' + vendor + '/' + app + (path ? '/' + path : '')
-                          );
-                          oReq.setRequestHeader('X-FORT-ORG', this.routeData.org);
-                          oReq.send();
+                            );
+                            oReq.withCredentials = true;
+                            oReq.open(
+                              'GET',
+                              '//' + this.getServiceHost('apps') + '/' + vendor + '/' + app + (path ? '/' + path : '')
+                            );
+                            oReq.setRequestHeader('X-FORT-ORG', this.routeData.org);
+                            oReq.send();
+                          }
                         }
                         else
                         {
                           this._updateData(new XMLHttpRequest());
+                          this._loadedPath = null;
                           this.routeData = {};
                           this.appData = {};
-                          this._loadedPath = null;
                         }
                       },
         /**
