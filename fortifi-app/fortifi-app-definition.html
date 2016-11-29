@@ -3,8 +3,7 @@
 
 <dom-module id="fortifi-app-definition" attributes="vendor app app-data">
   <template>
-    <fort-resource auto="[[_ready]]" url="//[[getServiceHost('cdn')]]/_apps/[[vendor]]/[[app]]/definition.json"
-                   data="{{appData}}" headers="{}"></fort-resource>
+    <fort-resource auto url="[[_url]]" data="{{appData}}" headers="{}"></fort-resource>
   </template>
   <script>
     Polymer(
@@ -13,14 +12,24 @@
         properties: {
           vendor:  {type: String},
           app:     {type: String},
-          _ready:  {type: Boolean, value: false, computed: '_setReady(vendor,app)'},
-          appData: {type: Object, notify: true, value: {}}
+          appData: {type: Object, notify: true},
+          _url:    {type: String}
         },
+        observers:  ['_updateUrl(vendor,app)'],
 
-        _setReady: function ()
-                   {
-                     return this.vendor && this.app;
-                   },
+        _updateUrl: function ()
+                    {
+                      var url;
+                      if(this.vendor && this.app)
+                      {
+                        url = '//' + this.getServiceHost('cdn') + '/_apps/' + this.vendor + '/' + this.app + '/definition.json';
+                      }
+
+                      if(this._url !== url)
+                      {
+                        this._url = url;
+                      }
+                    },
 
         behaviors: [Polymer.FortServiceBehavior]
       }
