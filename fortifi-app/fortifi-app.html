@@ -127,7 +127,14 @@ Example:
         ],
         _updateDrawer:   function (appData)
                          {
-                           this.drawerDisabled = !(appData && appData.Navigation && appData.Navigation.length);
+                           if(!(appData && appData.Navigation && appData.Navigation.length))
+                           {
+                             this.$.appDrawer.setMaxState(0);
+                           }
+                           else
+                           {
+                             this.$.appDrawer.setMaxState(2);
+                           }
                          },
         ready:           function ()
                          {

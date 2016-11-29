@@ -88,6 +88,10 @@ Example:
         left: auto;
       }
 
+      :host([state="0"]) > #drawerContentContainer {
+        width: 0;
+      }
+
       :host([max-state="1"]:not([state="2"]):not([is-open])) > #drawerContentContainer {
         max-width: var(--fortifi-drawer-peek-width, 50px);
       }
@@ -122,12 +126,20 @@ Example:
         width: var(--fortifi-drawer-width, 256px);
       }
 
+      :host([state="0"][position="left"]) > #content {
+        padding-left: 0;
+      }
+
       :host([state="1"][position="left"]) > #content {
         padding-left: var(--fortifi-drawer-peek-width, 50px);
       }
 
       :host([state="2"][position="left"]) > #content {
         padding-left: var(--fortifi-drawer-width, 256px);
+      }
+
+      :host([state="0"][position="right"]) > #content {
+        padding-right: 0;
       }
 
       :host([state="1"][position="right"]) > #content {
@@ -169,7 +181,7 @@ Example:
         preferredState: {type: Number, readOnly: true, value: 0}
       },
       observers:     [
-        '_refreshState(minState,maxState,preferredState)'
+        'refreshState(minState,maxState,preferredState)'
       ],
       listeners:     {
         'down':  '_down',
@@ -334,9 +346,10 @@ Example:
                          this._setPreferredState(value);
                        }
                      },
-      _refreshState: function (minState, maxState, preferred)
+      refreshState:  function ()
                      {
-                       this._setState(Math.max(minState, Math.min(preferred, maxState)));
+                       //noinspection JSCheckFunctionSignatures
+                       this._setState(Math.min(this.maxState, Math.max(this.minState, this.preferredState)));
                      },
       _stateChanged: function ()
                      {
