@@ -207,6 +207,10 @@
       fort-action[hidden] {
         display: none;
       }
+
+      fortifi-user-drawer-items fort-action {
+        padding: 12px
+      }
     </style>
 
     <app-location route="{{route}}"></app-location>
@@ -240,8 +244,7 @@
       <div id="waterfall"></div>
 
       <fortifi-drawer id="userDrawer" swipe-open="[[_touchEnabled()]]"
-                      max-state="[[_userDrawerMaxState]]"
-                      position="right">
+                      max-state="[[_userDrawerMaxState]]" position="right">
         <fortifi-drawer-content slot="drawer-content">
           <fortifi-user-drawer>
             <iron-pages id="userPages" selected="none" attr-for-selected="data-page-id">
@@ -264,7 +267,7 @@
               <fort-nudge count="3">
                 <fort-action icon="communication:phone" on-tap="_openUserDrawerApp" data-page-id="phone"></fort-action>
               </fort-nudge>
-              <fort-nudge count="0">
+              <fort-nudge count="1">
                 <fort-action icon="communication:email" on-tap="_openUserDrawerApp" data-page-id="email"></fort-action>
               </fort-nudge>
             </fortifi-user-drawer-items>
