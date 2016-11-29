@@ -163,10 +163,10 @@
 
     <fort-li id="toggler" on-tap="_toggleDrawer" drawer-open$="[[_drawerOpen]]">
       <fort-icon icon="icons:chrome-reader-mode" slot="icon"></fort-icon>
-      <template is="dom-if" if="[[_drawerOpen]]">
+      <template restamp is="dom-if" if="[[_drawerOpen]]">
         [[i18n('collapse')]]
       </template>
-      <template is="dom-if" if="[[!_drawerOpen]]">
+      <template restamp is="dom-if" if="[[!_drawerOpen]]">
         [[i18n('keep_out')]]
       </template>
       <paper-ripple></paper-ripple>
