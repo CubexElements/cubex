@@ -189,58 +189,59 @@
                       document.addEventListener('fortifi-drawer-state-changed', this._refreshDrawerState.bind(this));
                     },
 
-        _getApp:             function ()
-                             {
-                               var app = null;
-                               this.iterate(
-                                 this.getPath(this), function (parent)
-                                 {
-                                   if(parent.tagName == 'FORTIFI-APP')
-                                   {
-                                     app = parent;
-                                     return false;
-                                   }
-                                 }
-                               );
-                               return app;
-                             },
-        _setDrawerState:     function (state)
-                             {
-                               this._getApp().setDrawerState(state);
-                             },
-        _collapseDrawer:     function ()
-                             {
-                               var app = this._getApp();
-                               if(app.narrow)
-                               {
-                                 app.drawer.close();
-                               }
-                               else if(app.drawer.state != 2)
-                               {
-                                 this._setDrawerState(1);
-                               }
-                             },
-        _toggleDrawer:       function ()
-                             {
-                               var app = this._getApp();
-                               if(app.narrow)
-                               {
-                                 app.drawer.toggle();
-                               }
-                               else if(app.drawer.state == 2)
-                               {
-                                 this._setDrawerState(1);
-                               }
-                               else
-                               {
-                                 this._setDrawerState(2);
-                               }
-                               this._refreshDrawerState();
-                             },
         _refreshDrawerState: function ()
                              {
                                this._drawerOpen = this._getApp().drawer.state == 2;
                              },
+
+        _getApp:         function ()
+                         {
+                           var app = null;
+                           this.iterate(
+                             this.getPath(this), function (parent)
+                             {
+                               if(parent.tagName == 'FORTIFI-APP')
+                               {
+                                 app = parent;
+                                 return false;
+                               }
+                             }
+                           );
+                           return app;
+                         },
+        _setDrawerState: function (state)
+                         {
+                           this._getApp().setDrawerState(state);
+                         },
+        _collapseDrawer: function ()
+                         {
+                           var app = this._getApp();
+                           if(app.narrow)
+                           {
+                             app.drawer.close();
+                           }
+                           else if(app.drawer.state != 2)
+                           {
+                             this._setDrawerState(1);
+                           }
+                         },
+        _toggleDrawer:   function ()
+                         {
+                           var app = this._getApp();
+                           if(app.narrow)
+                           {
+                             app.drawer.toggle();
+                           }
+                           else if(app.drawer.state == 2)
+                           {
+                             this._setDrawerState(1);
+                           }
+                           else
+                           {
+                             this._setDrawerState(2);
+                           }
+                         },
+
         _calculateConfigure: function ()
                              {
                                return (this.appData && this.appData.Config && '_configure')
