@@ -113,10 +113,11 @@
     <fortifi-registry user-data="{{userData}}" org-data="{{orgData}}"></fortifi-registry>
 
     <fort-animbg id="user-view" size="80">
+      <fort-resource auto auth url="//apps.fortifi.me/fortifi/whoami/whoami.json" data="{{whoami}}"></fort-resource>
       <paper-button on-tap="_toggleParent" class="closer"></paper-button>
-      <img src="[[avatar]]">
-      <strong>[[name]]</strong>
-      <span>[[username]]</span>
+      <img src="../demo/resources/images/avatar/default-64.png">
+      <strong>[[whoami.FirstName]] [[whoami.LastName]]</strong>
+      <span>[[whoami.Username]]</span>
       <paper-button on-tap="toggleDrawer" class="toggle" selected-drawer="{{selectedItem}}">
         [[organisation.name]]
         <iron-icon icon="[[_icon]]"></iron-icon>
