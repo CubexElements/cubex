@@ -110,7 +110,7 @@
 
     <fortifi-organisation organisation="{{organisation}}" organisations="{{_organisations}}"></fortifi-organisation>
 
-    <fortifi-registry user-data="{{userData}}" org-data="{{orgData}}"></fortifi-registry>
+    <fortifi-registry user-data="{{userRegistryData}}" org-data="{{orgRegistryData}}"></fortifi-registry>
 
     <fort-animbg id="user-view" size="80">
       <fort-resource auto auth url="//apps.fortifi.me/fortifi/whoami/whoami.json" data="{{whoami}}"></fort-resource>
@@ -193,7 +193,7 @@
       {
         is:          'fortifi-shell-drawer',
         properties:  {
-          resources:     {
+          resources:        {
             type:  Object,
             value: {
               "en": {
@@ -208,23 +208,23 @@
               }
             }
           },
-          selectedItem:  {
+          selectedItem:     {
             type:  Number,
             value: 0
           },
-          _icon:         {
+          _icon:            {
             type:  String,
             value: "icons:arrow-drop-down"
           },
-          userData:      {type: Object},
-          orgData:       {type: Object},
-          organisation:  {type: Object},
-          organisations: {type: Array},
-          avatar:        {
+          userRegistryData: {type: Object},
+          orgRegistryData:  {type: Object},
+          organisation:     {type: Object},
+          organisations:    {type: Array},
+          avatar:           {
             type:  String,
             value: "resources/images/avatar/default-64.png"
           },
-          headColor:     {
+          headColor:        {
             type: String
           }
         },
