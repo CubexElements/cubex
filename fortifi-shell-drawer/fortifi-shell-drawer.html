@@ -128,7 +128,7 @@
         <slot></slot>
         <fortifi-shell-drawer-panel>
           <fort-list-menu show-filter filter-label="{{i18n('filter_apps')}}">
-            <template is="dom-repeat" items="[[__groups(orgRegistryData)]]" as="group">
+            <template is="dom-repeat" items="[[__appGroups(orgRegistryData)]]" as="group">
               <fort-list-group title="[[group.name]]">
                 <template is="dom-repeat" items="[[group.apps]]" as="app">
                   <a href="/[[organisation.id]]/[[app.vendor_id]]/[[app.id]]" on-tap="_toggleParent">
@@ -236,27 +236,27 @@
                          Ï
                        },
 
-        __groups: function (d)
-                  {
-                    var groups = {};
-                    if(d)
-                    {
-                      for(var idx in d.AppSummary)
-                      {
-                        if(d.AppSummary.hasOwnProperty(idx))
-                        {
-                          var app = d.AppSummary[idx];
-                          if(!groups[app.category])
-                          {
-                            groups[app.category] = {name: app.category, apps: []};
-                          }
-                          var group = groups[app.category];
-                          group.apps.push(app);
-                        }
-                      }
-                    }
-                    return Object.keys(groups).map(function (i) {return groups[i];});
-                  }
+        __appGroups: function (orgRegistry)
+                     {
+                       var groups = {};
+                       if(orgRegistry)
+                       {
+                         for(var idx in orgRegistry.AppSummary)
+                         {
+                           if(orgRegistry.AppSummary.hasOwnProperty(idx))
+                           {
+                             var app = orgRegistry.AppSummary[idx];
+                             if(!groups[app.category])
+                             {
+                               groups[app.category] = {name: app.category, apps: []};
+                             }
+                             var group = groups[app.category];
+                             group.apps.push(app);
+                           }
+                         }
+                       }
+                       return Object.keys(groups).map(function (i) {return groups[i];});
+                     }
       }
     );
   </script>
