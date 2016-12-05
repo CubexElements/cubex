@@ -190,19 +190,6 @@
         right: -6px;
       }
 
-      #lockUserDrawer {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        color: var(--text-color-secondary);
-        cursor: pointer;
-        padding: 10px;
-      }
-
-      #lockUserDrawer[hidden] {
-        display: none;
-      }
-
       fort-action[hidden] {
         display: none;
       }
@@ -412,49 +399,7 @@
                                 }
                                 this.$.userDrawer.setState(newState);
                               },
-        _lockUserDrawer:      function ()
-                              {
-                                this.$.userDrawer.setMaxState(this.$.userDrawer.state == 2 ? 1 : 2);
-                                this.$.userDrawer.setState(this.$.userDrawer.maxState);
-                                this._userDrawerPrevState = this.$.userDrawer.state;
-                              },
-        _userDrawerPrevState: 0,
-        _openUserDrawerApp:   function (e)
-                              {
-                                this.iterate(
-                                  this.root.querySelectorAll('fortifi-user-drawer-items [active]'),
-                                  function (e)
-                                  {
-                                    e.removeAttribute('active');
-                                  }
-                                );
-                                e.currentTarget.setAttribute('active', true);
-                                var page = e.currentTarget.getAttribute('data-page-id');
-                                if(this.$.userPages.selected == page)
-                                {
-                                  if(this.$.userDrawer.state == 2)
-                                  {
-                                    this._userDrawerPrevState = 2;
-                                    this.$.userDrawer.setMaxState(1);
-                                    this.$.userDrawer.setState(this.$.userDrawer.maxState);
-                                  }
-                                  this.$.userDrawer.toggle();
-                                  if(!this.$.userDrawer.isOpen)
-                                  {
-                                    e.currentTarget.removeAttribute('active');
-                                  }
-                                }
-                                else
-                                {
-                                  this.$.userPages.select(page);
-                                  this.$.userDrawer.open();
-                                }
-                                if(this.$.userDrawer.isOpen && this._userDrawerPrevState > 0)
-                                {
-                                  this.$.userDrawer.setMaxState(this._userDrawerPrevState);
-                                  this.$.userDrawer.setState(this.$.userDrawer.maxState);
-                                }
-                              }
+        _userDrawerPrevState: 0
       }
     );
   </script>

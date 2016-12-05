@@ -42,6 +42,19 @@
       fortifi-user-drawer-items fort-action {
         padding: 12px
       }
+
+      #lockUserDrawer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        color: var(--text-color-secondary);
+        cursor: pointer;
+        padding: 10px;
+      }
+
+      #lockUserDrawer[hidden] {
+        display: none;
+      }
     </style>
     <fortifi-user-drawer-items>
       <fort-nudge count="3">
@@ -138,6 +151,12 @@
                               this.drawer.setMaxState(this._userDrawerPrevState);
                               this.drawer.setState(this.drawer.maxState);
                             }
+                          },
+      _lockUserDrawer:    function ()
+                          {
+                            this.drawer.setMaxState(this.drawer.state == 2 ? 1 : 2);
+                            this.drawer.setState(this.drawer.maxState);
+                            this._userDrawerPrevState = this.drawer.state;
                           }
     }
   )</script>
