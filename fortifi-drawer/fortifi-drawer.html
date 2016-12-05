@@ -19,7 +19,7 @@ Example:
 @hero hero.svg
 -->
 
-<dom-module id="fortifi-drawer" attributes="hover-popout swipe-open position min-state max-state">
+<dom-module id="fortifi-drawer" attributes="hover-popout swipe-open position min-state max-state preferred-state state">
   <template>
     <style>
       :host #drawerContent ::slotted(*) {
@@ -175,10 +175,17 @@ Example:
         position:       {type: String, value: 'left', reflectToAttribute: true},
         transitioning:  {type: Boolean, value: false, reflectToAttribute: true},
         isOpen:         {type: Boolean, value: false, reflectToAttribute: true},
-        state:          {type: Number, readOnly: true, value: 0, reflectToAttribute: true, observer: '_stateChanged'},
+        state:          {
+          type:               Number,
+          notify:             true,
+          readOnly:           true,
+          value:              0,
+          reflectToAttribute: true,
+          observer:           '_stateChanged'
+        },
         minState:       {type: Number, readOnly: true, value: 0, reflectToAttribute: true},
         maxState:       {type: Number, readOnly: true, value: 2, reflectToAttribute: true},
-        preferredState: {type: Number, readOnly: true, value: 0}
+        preferredState: {type: Number, value: 0}
       },
       observers:     [
         'refreshState(minState,maxState,preferredState)'
@@ -343,7 +350,7 @@ Example:
                      {
                        if(this.preferredState !== value)
                        {
-                         this._setPreferredState(value);
+                         this.preferredState = value;
                        }
                      },
       refreshState:  function ()

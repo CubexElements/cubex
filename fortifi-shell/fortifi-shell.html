@@ -27,6 +27,7 @@
 <link rel="import" href="../fortifi-app/fortifi-app-loader.html">
 <link rel="import" href="../../iron-pages/iron-pages.html">
 <link rel="import" href="../../fort-nudge/fort-nudge.html">
+<link rel="import" href="../../fort-preferences/fort-preferences.html">
 
 <dom-module id="fortifi-shell" attributes="drawer-opened focus-search">
   <template>
@@ -243,7 +244,9 @@
       </app-header-layout>
       <div id="waterfall"></div>
 
-      <fortifi-drawer id="userDrawer" swipe-open="[[_touchEnabled()]]"
+      <fort-preferences name="userDrawerPosition" value="{{userDrawerState}}"></fort-preferences>
+      <fortifi-drawer id="userDrawer" swipe-open="[[_touchEnabled()]]" state="{{userDrawerState}}"
+                      preferred-state="[[userDrawerState]]"
                       max-state="[[_userDrawerMaxState]]" position="right">
         <fortifi-drawer-content slot="drawer-content">
           <fortifi-user-drawer>
