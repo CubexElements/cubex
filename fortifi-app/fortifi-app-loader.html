@@ -95,7 +95,6 @@
 
         _updateData: function ()
                      {
-                       console.log(this._appDataPath, this._pageXhr, this._pageData);
                        var frag = document.createRange().createContextualFragment(this._pageData || ''),
                          imports = frag.querySelectorAll('link[rel="import"]'),
                          fortHeaderRegex = /x-fort-([a-z\-]+): (.*)[\n\r]*/g,
