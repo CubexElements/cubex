@@ -83,8 +83,7 @@ Example:
     <iron-media-query query="(min-width: 1300px)" query-matches="{{_lock}}"></iron-media-query>
 
     <fort-preferences name="appDrawerPosition" value="{{appDrawerState}}"></fort-preferences>
-    <fortifi-drawer id="appDrawer" hover-popout swipe-open position="left" preferred-state="[[appDrawerState]]"
-                    state="{{appDrawerState}}">
+    <fortifi-drawer id="appDrawer" hover-popout swipe-open position="left" preferred-state="{{appDrawerState}}">
       <slot slot="drawer-content" name="drawer-content"></slot>
       <app-header-layout>
         <app-header id="ah" slot="header" condenses reveals effects="waterfall">

@@ -185,7 +185,7 @@ Example:
         },
         minState:       {type: Number, readOnly: true, value: 0, reflectToAttribute: true},
         maxState:       {type: Number, readOnly: true, value: 2, reflectToAttribute: true},
-        preferredState: {type: Number, value: 0}
+        preferredState: {type: Number, notify: true, value: 0}
       },
       observers:     [
         'refreshState(minState,maxState,preferredState)'
