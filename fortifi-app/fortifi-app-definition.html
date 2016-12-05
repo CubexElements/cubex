@@ -18,7 +18,7 @@
 
         _updateUrl: function ()
                     {
-                      var url;
+                      var url = null;
                       if(this.gaid && this.gaid !== '/')
                       {
                         url = '//' + this.getServiceHost('cdn') + '/_apps/' + this.gaid + '/definition.json';
