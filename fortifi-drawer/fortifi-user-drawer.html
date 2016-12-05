@@ -4,8 +4,11 @@
 <link rel="import" href="../../iron-pages/iron-pages.html">
 <link rel="import" href="../../fort-nudge/fort-nudge.html">
 <link rel="import" href="../../fort-action/fort-action.html">
+<link rel="import" href="../../fort-behavior/fort-iterator-behavior.html">
+<link rel="import" href="../../fort-behavior/fort-element-path-behavior.html">
 
-<dom-module id="fortifi-user-drawer">
+
+<dom-module id="fortifi-user-drawer" attributes="drawer">
   <template>
     <style>
       :host > #contentContainer {
@@ -24,7 +27,7 @@
         padding-right: var(--fortifi-drawer-peek-width);
       }
 
-      :host ::slotted(fortifi-user-drawer-items) {
+      fortifi-user-drawer-items {
         position: absolute;
         top: 0;
         right: 0;
@@ -35,8 +38,20 @@
         background: var(--primary-800-color);
         color: white
       }
+
+      fortifi-user-drawer-items fort-action {
+        padding: 12px
+      }
     </style>
-    <slot name="drawer-items"></slot>
+    <fortifi-user-drawer-items>
+      <fort-nudge count="3">
+        <fort-action icon="communication:phone" on-tap="_openUserDrawerApp" data-page-id="phone"></fort-action>
+      </fort-nudge>
+      <fort-nudge count="1">
+        <fort-action icon="communication:email" on-tap="_openUserDrawerApp" data-page-id="email"></fort-action>
+      </fort-nudge>
+    </fortifi-user-drawer-items>
+
     <div id="contentContainer">
       <iron-pages id="userPages" selected="none" attr-for-selected="data-page-id">
         <div data-page-id="none">nun :(</div>
@@ -54,15 +69,76 @@
         </div>
       </iron-pages>
       <fort-action icon="icons:chrome-reader-mode" id="lockUserDrawer" on-tap="_lockUserDrawer"></fort-action>
-      <fortifi-user-drawer-items slot="drawer-items">
-        <fort-nudge count="3">
-          <fort-action icon="communication:phone" on-tap="_openUserDrawerApp" data-page-id="phone"></fort-action>
-        </fort-nudge>
-        <fort-nudge count="1">
-          <fort-action icon="communication:email" on-tap="_openUserDrawerApp" data-page-id="email"></fort-action>
-        </fort-nudge>
-      </fortifi-user-drawer-items>
+
     </div>
   </template>
-  <script>Polymer({is: 'fortifi-user-drawer'})</script>
+  <script>Polymer(
+    {
+      is:                 'fortifi-user-drawer',
+      behaviors:          [
+        Polymer.FortElementPathBehavior,
+        Polymer.FortIteratorBehavior
+      ],
+      attached:           function ()
+                          {
+                            this.drawer = this._getDrawer();
+                          },
+      properties:         {
+        drawer: {
+          type: Object
+        }
+      },
+      _getDrawer:         function ()
+                          {
+                            var drawer = null;
+                            this.iterate(
+                              this.getPath(this), function (parent)
+                              {
+                                if(parent.tagName == 'FORTIFI-DRAWER')
+                                {
+                                  drawer = parent;
+                                  return true;
+                                }
+                              }
+                            );
+                            return drawer;
+                          },
+      _openUserDrawerApp: function (e)
+                          {
+                            this.iterate(
+                              this.querySelectorAll('fortifi-user-drawer-items [active]'),
+                              function (e)
+                              {
+                                e.removeAttribute('active');
+                              }
+                            );
+                            e.currentTarget.setAttribute('active', true);
+                            var page = e.currentTarget.getAttribute('data-page-id');
+                            if(this.$.userPages.selected == page)
+                            {
+                              if(this.drawer.state == 2)
+                              {
+                                this._userDrawerPrevState = 2;
+                                this.drawer.setMaxState(1);
+                                this.drawer.setState(this.drawer.maxState);
+                              }
+                              this.drawer.toggle();
+                              if(!this.drawer.isOpen)
+                              {
+                                e.currentTarget.removeAttribute('active');
+                              }
+                            }
+                            else
+                            {
+                              this.$.userPages.select(page);
+                              this.drawer.open();
+                            }
+                            if(this.drawer.isOpen && this._userDrawerPrevState > 0)
+                            {
+                              this.drawer.setMaxState(this._userDrawerPrevState);
+                              this.drawer.setState(this.drawer.maxState);
+                            }
+                          }
+    }
+  )</script>
 </dom-module>
