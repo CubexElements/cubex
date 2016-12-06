@@ -29,8 +29,8 @@
     <template is="dom-repeat" items="[[pinnedApps]]">
       <a href="/[[routeData.org]]/[[item.GlobalAppID]]">
         <fort-action id="pinned-[[item.ID]]" icon="[[item.Icon]]"></fort-action>
-        <paper-tooltip for="pinned-[[item.ID]]">[[item.Name]] - [[item.Description]]</paper-tooltip>
       </a>
+      <paper-tooltip for="pinned-[[item.ID]]" position="right"><strong>[[item.Name]]</strong></paper-tooltip>
     </template>
   </template>
   <script>
