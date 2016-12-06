@@ -27,7 +27,7 @@
     <fortifi-app-definition gaid="[[routeData.vendor]]/[[routeData.app]]"
                             app-data="{{appData}}"></fortifi-app-definition>
 
-    <fort-resource id="myres" auto auth url="[[_appDataPath]]" xhr="{{_pageXhr}}" data="{{_pageData}}"
+    <fort-resource auto auth url="[[_appDataPath]]" xhr="{{_pageXhr}}" data="{{_pageData}}"
                    headers="[[_appDataHeaders]]"></fort-resource>
     <fortifi-app id="app" app-data="[[appData]]" page-data="[[pageData]]">
       <fortifi-drawer-content slot="drawer-content" id="appDrawerContent">
