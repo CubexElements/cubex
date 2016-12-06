@@ -1,11 +1,11 @@
 <link href="../../polymer/polymer.html" rel="import">
 <link href="../../iron-flex-layout/iron-flex-layout.html" rel="import">
 <link href="fortifi-user-drawer-items.html" rel="import">
-<link rel="import" href="../../iron-pages/iron-pages.html">
 <link rel="import" href="../../fort-nudge/fort-nudge.html">
 <link rel="import" href="../../fort-action/fort-action.html">
 <link rel="import" href="../../fort-behavior/fort-iterator-behavior.html">
 <link rel="import" href="../../fort-behavior/fort-element-path-behavior.html">
+<link rel="import" href="../../fort-pagelet/fort-pagelet.html">
 
 
 <dom-module id="fortifi-user-drawer" attributes="drawer">
@@ -56,51 +56,32 @@
         display: none;
       }
     </style>
+
+    <fortifi-registry user-data="{{_userRegistryData}}"></fortifi-registry>
+
     <fortifi-user-drawer-items>
-      <fort-nudge count="3">
-        <fort-action icon="communication:phone" on-tap="_openUserDrawerApp" data-page-id="phone"></fort-action>
-      </fort-nudge>
-      <fort-nudge count="1">
-        <fort-action icon="communication:email" on-tap="_openUserDrawerApp" data-page-id="email"></fort-action>
-      </fort-nudge>
+      <template is="dom-repeat" items="[[__appGroups(_userRegistryData)]]" as="app">
+        <fort-action icon="[[app.icon]]" on-tap="_openUserDrawerApp" gaid$="[[app.vendor_id]]/[[app.id]]"></fort-action>
+      </template>
     </fortifi-user-drawer-items>
 
     <div id="contentContainer">
-      <iron-pages id="userPages" selected="none" attr-for-selected="data-page-id">
-        <div data-page-id="none">nun :(</div>
-        <div data-page-id="phone">PHONE Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto
-                                  autem
-                                  consequatur dignissimos doloremque doloribus nihil porro rem sed similique
-                                  sit!
-                                  Accusamus earum harum hic impedit, maiores quas repellat ut vel?
-        </div>
-        <div data-page-id="email">EMAIL Lorem ipsum dolor sit amet, consectetur adipisicing elit. Blanditiis
-                                  commodi
-                                  consequatur deleniti dolorem dolores doloribus in inventore, placeat porro
-                                  quisquam quos
-                                  repellat sequi sint? Assumenda eum itaque perferendis perspiciatis quisquam!
-        </div>
-      </iron-pages>
+      <fort-pagelet auth id="pagelet" url="[[_pageletUrl]]">Loading...</fort-pagelet>
       <fort-action icon="icons:chrome-reader-mode" id="lockUserDrawer" on-tap="_lockUserDrawer"></fort-action>
-
     </div>
   </template>
   <script>Polymer(
     {
       is:                 'fortifi-user-drawer',
-      behaviors:          [
-        Polymer.FortElementPathBehavior,
-        Polymer.FortIteratorBehavior
-      ],
+      properties:         {
+        drawer:            {type: Object},
+        _userRegistryData: {type: Object},
+        _pageletUrl:       {type: String}
+      },
       attached:           function ()
                           {
                             this.drawer = this._getDrawer();
                           },
-      properties:         {
-        drawer: {
-          type: Object
-        }
-      },
       _getDrawer:         function ()
                           {
                             var drawer = null;
@@ -118,16 +99,9 @@
                           },
       _openUserDrawerApp: function (e)
                           {
-                            this.iterate(
-                              this.querySelectorAll('fortifi-user-drawer-items [active]'),
-                              function (e)
-                              {
-                                e.removeAttribute('active');
-                              }
-                            );
-                            e.currentTarget.setAttribute('active', true);
-                            var page = e.currentTarget.getAttribute('data-page-id');
-                            if(this.$.userPages.selected == page)
+                            var page = e.currentTarget.getAttribute('gaid');
+                            this._pageletUrl = '//' + this.getServiceHost('apps') + '/' + page;
+                            if(e.currentTarget.hasAttribute('active'))
                             {
                               if(this.drawer.state == 2)
                               {
@@ -143,9 +117,20 @@
                             }
                             else
                             {
-                              this.$.userPages.select(page);
+                              e.currentTarget.setAttribute('active', true);
+                              this.$.pagelet.update();
                               this.drawer.open();
                             }
+
+                            var all = this.shadowRoot.querySelectorAll('fort-action[active]');
+                            for(var i in all)
+                            {
+                              if(all.hasOwnProperty(i) && ((!this.drawer.isOpen) || (all[i] !== e.currentTarget)))
+                              {
+                                all[i].removeAttribute('active');
+                              }
+                            }
+
                             if(this.drawer.isOpen && this._userDrawerPrevState > 0)
                             {
                               this.drawer.setMaxState(this._userDrawerPrevState);
@@ -157,7 +142,29 @@
                             this.drawer.setMaxState(this.drawer.state == 2 ? 1 : 2);
                             this.drawer.setState(this.drawer.maxState);
                             this._userDrawerPrevState = this.drawer.state;
-                          }
+                          },
+
+      __appGroups: function (userRegistry)
+                   {
+                     var apps = [];
+                     if(userRegistry)
+                     {
+                       for(var idx in userRegistry.AppSummary)
+                       {
+                         if(userRegistry.AppSummary.hasOwnProperty(idx))
+                         {
+                           apps.push(userRegistry.AppSummary[idx]);
+                         }
+                       }
+                     }
+                     return apps;
+                   },
+
+      behaviors: [
+        Polymer.FortElementPathBehavior,
+        Polymer.FortIteratorBehavior,
+        Polymer.FortServiceBehavior
+      ]
     }
   )</script>
 </dom-module>
