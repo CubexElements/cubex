@@ -110,7 +110,7 @@
 
     <fortifi-organisation organisation="{{organisation}}" organisations="{{_organisations}}"></fortifi-organisation>
 
-    <fortifi-registry user-data="{{userRegistryData}}" org-data="{{orgRegistryData}}"></fortifi-registry>
+    <fortifi-registry org-data="{{_orgRegistryData}}"></fortifi-registry>
 
     <fort-animbg id="user-view" size="80">
       <fort-resource auto auth url="//apps.fortifi.me/fortifi/whoami/whoami.json" data="{{whoami}}"></fort-resource>
@@ -128,7 +128,7 @@
         <slot></slot>
         <fortifi-shell-drawer-panel>
           <fort-list-menu show-filter filter-label="{{i18n('filter_apps')}}">
-            <template is="dom-repeat" items="[[__appGroups(orgRegistryData)]]" as="group">
+            <template is="dom-repeat" items="[[__appGroups(_orgRegistryData)]]" as="group">
               <fort-list-group title="[[group.name]]">
                 <template is="dom-repeat" items="[[group.apps]]" as="app">
                   <a href="/[[organisation.id]]/[[app.vendor_id]]/[[app.id]]" on-tap="_toggleParent">
@@ -188,8 +188,7 @@
             type:  String,
             value: "icons:arrow-drop-down"
           },
-          userRegistryData: {type: Object},
-          orgRegistryData:  {type: Object},
+          _orgRegistryData: {type: Object},
           organisation:     {type: Object},
           organisations:    {type: Array},
           avatar:           {
@@ -233,7 +232,6 @@
                          {
                            this._icon = "icons:arrow-drop-down";
                          }
-                         Ï
                        },
 
         __appGroups: function (orgRegistry)
