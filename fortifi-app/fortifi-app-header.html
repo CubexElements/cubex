@@ -59,10 +59,7 @@
 
       :host fort-action {
         color: var(--text-color-secondary);
-        display: inline-block;
-        width: 24px;
-        height: 24px;
-        padding: 20px;
+        padding: 15px;
         line-height: normal;
       }
 
@@ -139,7 +136,7 @@
 
     <iron-media-query query="(max-width: 700px)" query-matches="{{_small}}"></iron-media-query>
     <template is="dom-if" if="[[showBack]]" strip-whitespace>
-      <fort-action icon="icons:arrow-back" id="app-back"></fort-action>
+      <fort-action icon="icons:arrow-back" size="24" id="app-back"></fort-action>
     </template>
     <slot id="iconSlot" name="icon"></slot>
 
