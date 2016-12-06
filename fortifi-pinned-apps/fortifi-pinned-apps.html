@@ -3,6 +3,7 @@
 <link href="../../fort-action/fort-action.html" rel="import">
 <link href="../../app-route/app-route.html" rel="import">
 <link href="../../app-route/app-location.html" rel="import">
+<link href="../../paper-tooltip/paper-tooltip.html" rel="import">
 
 <dom-module id="fortifi-pinned-apps">
   <template>
@@ -27,7 +28,8 @@
                     on-message="_pinnedMsg"></fort-websocket>
     <template is="dom-repeat" items="[[pinnedApps]]">
       <a href="/[[routeData.org]]/[[item.GlobalAppID]]">
-        <fort-action icon="[[item.Icon]]"></fort-action>
+        <fort-action id="pinned-[[item.ID]]" icon="[[item.Icon]]"></fort-action>
+        <paper-tooltip for="pinned-[[item.ID]]">[[item.Name]] - [[item.Description]]</paper-tooltip>
       </a>
     </template>
   </template>
