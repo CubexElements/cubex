@@ -3,6 +3,7 @@
 <link rel="import" href="../../paper-styles/shadow.html">
 <link rel="import" href="../../iron-dropdown/iron-dropdown.html">
 <link rel="import" href="../../fort-icon/fort-icon.html">
+<link rel="import" href="../../fort-behavior/fort-service-behavior.html">
 <link rel="import" href="fortifi-search-overlay.html">
 
 <dom-module id="fortifi-search" attributes="focus-search">
@@ -87,22 +88,39 @@
 
       #results {
         display: block;
-        padding: 20px;
         @apply --shadow-elevation-2dp;
         background: var(--theme-100-color, white);
         color: var(--theme-text, black);
       }
 
-      #results span{
-        line-height:22px;
+      #results span {
+        line-height: 22px;
       }
     </style>
+
+    <app-location route="{{route}}"></app-location>
+    <app-route route="[[route]]" pattern="/:org" data="{{routeData}}"></app-route>
+
+    <fort-resource auto auth url="//[[getServiceHost('apps')]]/fortifi/searchactions/search.json"
+                   headers="[[_headers]]" data="{{_search}}"></fort-resource>
+
     <fortifi-search-overlay with-backdrop id="overlay"></fortifi-search-overlay>
-    <paper-input no-label-float label="Find products and features" id="search" on-keyup="_query">
+    <paper-input no-label-float label="Find products and features" id="search" on-keyup="_query"
+                 value="{{searchQuery}}">
       <fort-icon icon="icons:search" slot="prefix"></fort-icon>
     </paper-input>
     <iron-dropdown vertical-align="top" id="results">
-      <span>No Results Found</span>
+      <fort-list-menu>
+        <template is="dom-repeat" items="{{_filterActions(searchQuery,_search.Actions)}}">
+          <fort-li>
+            <template restamp is="dom-if" if="[[item.Icon]]">
+              <fort-icon slot="icon" icon="[[item.Icon]]"></fort-icon>
+            </template>
+            [[item.Name]]
+            <div slot="secondary">[[item.Description]]</div>
+          </fort-li>
+        </template>
+      </fort-list-menu>
     </iron-dropdown>
   </template>
   <script>
@@ -110,29 +128,101 @@
       {
         is:         'fortifi-search',
         properties: {
+          searchQuery: {type: String, value: ''},
           focusSearch: {
             type:               Boolean,
             reflectToAttribute: true
-          }
+          },
+          _headers:    {type: Object, computed: '_refreshHeaders(routeData.org)'}
         },
-        listeners:  {
+
+        listeners: {
           'tap':       "_onTap",
           'mousedown': '_md'
         },
+
+        _escapeRegExp: function (str)
+                       {
+                         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+                       },
+
+        _filterActions: function (searchQuery, actions)
+                        {
+                          var filtered = [];
+                          if(searchQuery)
+                          {
+                            var matchWords = searchQuery.replace(/[^a-z0-9\s]+/ig, '').toLowerCase().split(/\s+/);
+
+                            for(var actionIdx in actions)
+                            {
+                              if(actions.hasOwnProperty(actionIdx))
+                              {
+                                var action = actions[actionIdx];
+                                action.Weight = 0;
+                                for(var matchIdx in matchWords)
+                                {
+                                  if(matchWords.hasOwnProperty(matchIdx))
+                                  {
+                                    var word = matchWords[matchIdx],
+                                      fullTest = new RegExp('\\b' + this._escapeRegExp(word) + '\\b', 'i'),
+                                      partialTest = new RegExp('\\b' + this._escapeRegExp(word), 'i');
+
+                                    var tests = [action.Name, action.Description];
+                                    Array.prototype.push.apply(tests, action.Tokens || []);
+
+                                    for(var testIdx in tests)
+                                    {
+                                      if(tests.hasOwnProperty(testIdx))
+                                      {
+                                        if(fullTest.test(tests[testIdx].replace(/[^a-z0-9\s]+/ig, '')))
+                                        {
+                                          action.Weight += 2;
+                                        }
+                                        else if(partialTest.test(tests[testIdx].replace(/[^a-z0-9\s]+/ig, '')))
+                                        {
+                                          action.Weight += 1;
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                                if(action.Weight > 0)
+                                {
+                                  filtered.push(action);
+                                }
+                              }
+                            }
+                          }
+                          if(filtered.length <= 0)
+                          {
+                            filtered.push({Name: 'No Results'});
+                          }
+
+                          return filtered.sort(function (a, b) {return a.Weight > b.Weight});
+                        },
+
+        _refreshHeaders: function (org)
+                         {
+                           if(org)
+                           {
+                             return {'x-fort-org': org};
+                           }
+                           return undefined;
+                         },
+
         _query:     function (e)
                     {
                       this.debounce('query', function () {this.runQuery();}, 20);
                     },
         runQuery:   function ()
                     {
-                      var query = this.$.search.inputElement.value;
+                      var query = this.searchQuery;
                       if(!query || query.length == 0)
                       {
                         this.$.results.close();
                       }
                       else
                       {
-                        this.$.results.querySelector('span').innerHTML = "Search Results For: <b>" + query + "</b>";
                         this.$.results.open();
                         this.$.results.sizingTarget = null;
                       }
@@ -191,7 +281,11 @@
                     {
                       this.listen(this.$.search, 'blur', '_onBlur');
                       this.listen(this.$.overlay, 'iron-overlay-opened', '_onOverlay');
-                    }
+                    },
+
+        behaviors: [
+          Polymer.FortServiceBehavior
+        ]
       }
     );
   </script>
