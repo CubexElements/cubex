@@ -15,10 +15,6 @@ Example:
   <template>
     <style>
       :host {
-        @apply --layout-fit;
-        bottom: initial;
-        min-height: 100vh;
-        background: var(--theme-700-color);
         color: var(--theme-text);
       }
 
@@ -30,6 +26,18 @@ Example:
         height: 236px;
         content: "";
         background: var(--theme-400-color);
+      }
+
+      :host::after {
+        display: block;
+        position: fixed;
+        z-index: -1;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        content: "";
+        background: var(--theme-700-color);
       }
     </style>
     <slot></slot>
