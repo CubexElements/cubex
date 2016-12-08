@@ -328,11 +328,7 @@
                               {
                                 this.focusSearch = true;
                                 this.$.search.focus();
-                                this.listen(
-                                  this.$.search,
-                                  'blur',
-                                  '_blurSearch'
-                                );
+                                this.listen(this.$.search, 'blur', '_blurSearch');
                               },
         _launchSearch:        function (e)
                               {
