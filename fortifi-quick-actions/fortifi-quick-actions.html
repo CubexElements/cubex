@@ -43,12 +43,13 @@
     <fort-resource auto auth url="//[[getServiceHost('apps')]]/fortifi/quickactions/actions.json"
                    headers="[[_headers]]" data="{{actions}}"></fort-resource>
 
-    <template is="dom-if" if="[[actions.Actions]]">
-      <fort-dropdown horizontal-align="right">
+
+    <fort-dropdown horizontal-align="right" id="qadrop">
+      <template is="dom-if" if="[[actions.Actions]]">
         <fort-action icon="icons:add" slot="trigger"></fort-action>
         <fort-list-menu>
           <template is="dom-repeat" items="[[actions.Actions]]" as="action">
-            <a href="/[[routeData.org]]/[[action.GlobalAppID]]/[[action.Path]]">
+            <a href="/[[routeData.org]]/[[action.GlobalAppID]]/[[action.Path]]" on-tap="_tap">
               <fort-li title="[[action.Name]]">
                 <fort-icon slot="icon" icon="[[action.Icon]]"></fort-icon>
                 [[action.Name]]
@@ -56,8 +57,8 @@
             </a>
           </template>
         </fort-list-menu>
-      </fort-dropdown>
-    </template>
+      </template>
+    </fort-dropdown>
   </template>
 
   <script>
@@ -76,6 +77,10 @@
                              return {'x-fort-org': org};
                            }
                            return undefined;
+                         },
+        _tap:            function ()
+                         {
+                           this.$.qadrop.close();
                          },
 
         behaviors: [
