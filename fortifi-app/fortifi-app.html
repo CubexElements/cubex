@@ -38,6 +38,7 @@ Example:
       fortifi-app-header {
         border-top-left-radius: 3px;
         border-top-right-radius: 3px;
+
       }
 
       app-header-layout {
@@ -47,10 +48,16 @@ Example:
       }
 
       #app-container {
-        margin-top: var(--fortifi-drawer-offset-top, 0);
+        margin-top: 0;
         border-bottom-left-radius: 3px;
         border-bottom-right-radius: 3px;
         @apply --theme-600;
+        @apply --shadow-elevation-2dp;
+
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        padding-top: 64px;
+
         overflow: hidden;
       }
 
@@ -60,7 +67,7 @@ Example:
 
       fortifi-breadcrumb {
         margin: 0 -24px;
-        @apply --theme-400;
+        color: var(--theme-text);
       }
 
       :host app-toolbar {
