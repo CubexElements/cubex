@@ -195,7 +195,7 @@
                           }
                           if(filtered.length <= 0)
                           {
-                            filtered.push({Name: 'No Results'});
+                            filtered.push({Name: 'No results matching "' + searchQuery + '"'});
                           }
 
                           return filtered.sort(function (a, b) {return a.Weight > b.Weight});
