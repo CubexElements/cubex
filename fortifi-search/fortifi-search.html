@@ -4,6 +4,7 @@
 <link rel="import" href="../../iron-dropdown/iron-dropdown.html">
 <link rel="import" href="../../fort-icon/fort-icon.html">
 <link rel="import" href="../../fort-behavior/fort-service-behavior.html">
+<link rel="import" href="../../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
 <link rel="import" href="fortifi-search-overlay.html">
 
 <dom-module id="fortifi-search" attributes="focus-search">
@@ -37,19 +38,19 @@
         border-bottom: 2px solid transparent;
       }
 
-      paper-input:not([focused]) {
+      :host(:not([focused])) paper-input {
         --paper-input-container-label: {
           display: none;
         }
       }
 
-      paper-input[focused] {
+      :host([focused]) paper-input {
         @apply --shadow-elevation-2dp;
         border-bottom-color: var(--accent-400-color);
         background: var(--theme-100-color);
       }
 
-      paper-input[focused] fort-icon {
+      :host([focused]) paper-input fort-icon {
         color: var(--theme-text-secondary);
       }
 
@@ -91,10 +92,25 @@
         @apply --shadow-elevation-2dp;
         background: var(--theme-100-color, white);
         color: var(--theme-text, black);
+        --fort-li-focus-color: var(--v);
+      }
+
+      #searchmenu a {
+        color: inherit;
       }
 
       #results span {
         line-height: 22px;
+      }
+
+      #scrim {
+        position: fixed;
+        top: 64px;
+        left: 0;
+        height: 99999px;
+        width: 99999px;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: -1;
       }
     </style>
 
@@ -104,21 +120,25 @@
     <fort-resource auto auth url="//[[getServiceHost('apps')]]/fortifi/searchactions/search.json"
                    headers="[[_headers]]" data="{{_search}}"></fort-resource>
 
-    <fortifi-search-overlay with-backdrop id="overlay"></fortifi-search-overlay>
+    <div id="scrim" hidden="[[!focused]]"></div>
+
     <paper-input no-label-float label="Find products and features" id="search" on-keyup="_query"
                  value="{{searchQuery}}">
       <fort-icon icon="icons:search" slot="prefix"></fort-icon>
     </paper-input>
+
     <iron-dropdown vertical-align="top" id="results">
-      <fort-list-menu>
+      <fort-list-menu id="searchmenu" zebra>
         <template is="dom-repeat" items="{{_filterActions(searchQuery,_search.Actions)}}">
-          <fort-li>
-            <template restamp is="dom-if" if="[[item.Icon]]">
-              <fort-icon slot="icon" icon="[[item.Icon]]"></fort-icon>
-            </template>
-            [[item.Name]]
-            <div slot="secondary">[[item.Description]]</div>
-          </fort-li>
+          <a href="/[[routeData.org]]/[[item.GlobalAppID]]/[[item.Path]]">
+            <fort-li>
+              <template restamp is="dom-if" if="[[item.Icon]]">
+                <fort-icon slot="icon" icon="[[item.Icon]]"></fort-icon>
+              </template>
+              [[item.Name]]
+              <div slot="secondary">[[item.Description]]</div>
+            </fort-li>
+          </a>
         </template>
       </fort-list-menu>
     </iron-dropdown>
@@ -129,17 +149,62 @@
         is:         'fortifi-search',
         properties: {
           searchQuery: {type: String, value: ''},
+          focused:     {type: Boolean, value: false, reflectToAttribute: true},
           focusSearch: {
             type:               Boolean,
+            value:              false,
             reflectToAttribute: true
           },
           _headers:    {type: Object, computed: '_refreshHeaders(routeData.org)'}
         },
 
-        listeners: {
-          'tap':       "_onTap",
-          'mousedown': '_md'
+        keyBindings: {
+          'down': '_cursor',
+          'up':   '_cursor'
         },
+        _cursor:     function (e)
+                     {
+                       this.$.searchmenu.dispatchEvent(e);
+                     },
+
+        attached:      function ()
+                       {
+                         this.listen(this, 'blur', '_onBlur');
+                         this.listen(this, 'focus', '_onFocus');
+                         this.listen(this.$.searchmenu, 'keydown', '_recoverFocus');
+                       },
+        _onFocus:      function ()
+                       {
+                         this.focused = true;
+                       },
+        _onBlur:       function ()
+                       {
+                         this.$.search.value = '';
+                         this.$.results.close();
+                         this.focused = false;
+                       },
+        _recoverFocus: function (e)
+                       {
+                         if(e.key)
+                         {
+                           if((e.key !== 'ArrowUp' && e.key !== 'ArrowDown')
+                             || (e.key === 'ArrowUp' && this.$.searchmenu.indexOf(this.$.searchmenu.focusedItem) == 0))
+                           {
+                             this.focus();
+                             var len = this.$.search.inputElement.inputElement.value.length;
+                             this.$.search.inputElement.inputElement.setSelectionRange(len, len);
+                             this.$.searchmenu.select(null);
+                             if(e.key === 'ArrowUp')
+                             {
+                               e.preventDefault();
+                             }
+                             else if(e.key == 'Enter')
+                             {
+                               this.$.results.close();
+                             }
+                           }
+                         }
+                       },
 
         _escapeRegExp: function (str)
                        {
@@ -161,7 +226,7 @@
                                 action.Weight = 0;
                                 for(var matchIdx in matchWords)
                                 {
-                                  if(matchWords.hasOwnProperty(matchIdx))
+                                  if(matchWords.hasOwnProperty(matchIdx) && matchWords[matchIdx].length > 0)
                                   {
                                     var word = matchWords[matchIdx],
                                       fullTest = new RegExp('\\b' + this._escapeRegExp(word) + '\\b', 'i'),
@@ -198,7 +263,7 @@
                             filtered.push({Name: 'No results matching "' + searchQuery + '"'});
                           }
 
-                          return filtered.sort(function (a, b) {return a.Weight > b.Weight});
+                          return filtered.sort(function (a, b) {return a.Weight < b.Weight});
                         },
 
         _refreshHeaders: function (org)
@@ -210,80 +275,30 @@
                            return undefined;
                          },
 
-        _query:     function (e)
+        _query:   function ()
+                  {
+                    this.debounce('runQuery', this.runQuery, 20);
+                  },
+        runQuery: function ()
+                  {
+                    var query = this.searchQuery;
+                    if(!query || query.length == 0)
                     {
-                      this.debounce('query', function () {this.runQuery();}, 20);
-                    },
-        runQuery:   function ()
-                    {
-                      var query = this.searchQuery;
-                      if(!query || query.length == 0)
-                      {
-                        this.$.results.close();
-                      }
-                      else
-                      {
-                        this.$.results.open();
-                        this.$.results.sizingTarget = null;
-                      }
-                    },
-        _md:        function (e)
-                    {
-                      if(this.$.overlay.opened
-                        && e.path.indexOf(this) !== -1 //Clicking search icon should prevent blur
-                        && e.path.indexOf(this.$.search.inputElement) == -1) //Selecting within input is valid
-                      {
-                        e.preventDefault();
-                      }
-                      this.updateStyles();
-                    },
-        _onTap:     function (e)
-                    {
-                      e.preventDefault();
-                      if(!this.$.overlay.opened)
-                      {
-                        this.updateStyles();
-                        this.$.overlay._focusedChild = Polymer.dom(this.$.search.inputElement).querySelector('input');
-                        this.$.overlay.open();
-                      }
-                      else
-                      {
-                        e.stopPropagation();
-                      }
-                    },
-        focus:      function ()
-                    {
-                      this.$.overlay._focusedChild = Polymer.dom(this.$.search.inputElement).querySelector('input');
-                      this.$.overlay.open();
-                      this.$.search.focus();
-                      this.updateStyles();
-                    },
-        _onBlur:    function ()
-                    {
-                      this.$.search.value = "";
-                      this.$.search.inputElement.blur();
-                      this.$.overlay._focusedChild = null;
-                      this.$.overlay.close();
                       this.$.results.close();
-                      this.fire('blur');
-                      this.updateStyles();
-                    },
-        _onOverlay: function (e)
+                    }
+                    else
                     {
-                      this.updateStyles();
-                      this.$.overlay.backdropElement.updateStyles(
-                        {
-                          "--iron-overlay-backdrop": "top: 64px;"
-                        }
-                      );
-                    },
-        attached:   function ()
-                    {
-                      this.listen(this.$.search, 'blur', '_onBlur');
-                      this.listen(this.$.overlay, 'iron-overlay-opened', '_onOverlay');
-                    },
+                      this.$.results.open();
+                      this.$.results.sizingTarget = null;
+                    }
+                  },
+        focus:    function ()
+                  {
+                    this.$.search.inputElement.inputElement.focus();
+                  },
 
         behaviors: [
+          Polymer.IronA11yKeysBehavior,
           Polymer.FortServiceBehavior
         ]
       }
