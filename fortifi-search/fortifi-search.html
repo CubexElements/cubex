@@ -6,6 +6,7 @@
 <link rel="import" href="../../fort-behavior/fort-service-behavior.html">
 <link rel="import" href="../../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
 <link rel="import" href="fortifi-search-overlay.html">
+<link rel="import" href="../../fort-behavior/fort-i18n-behavior.html">
 
 <dom-module id="fortifi-search" attributes="focus-search">
   <template>
@@ -122,7 +123,7 @@
 
     <div id="scrim" hidden="[[!focused]]"></div>
 
-    <paper-input no-label-float label="Find products and features" id="search" on-keyup="_query"
+    <paper-input no-label-float label="{{i18n('search')}}" id="search" on-keyup="_query"
                  value="{{searchQuery}}">
       <fort-icon icon="icons:search" slot="prefix"></fort-icon>
     </paper-input>
@@ -155,7 +156,20 @@
             value:              false,
             reflectToAttribute: true
           },
-          _headers:    {type: Object, computed: '_refreshHeaders(routeData.org)'}
+          _headers:    {type: Object, computed: '_refreshHeaders(routeData.org)'},
+          resources:   {
+            type:  Object,
+            value: {
+              "en": {
+                "search":     "Find products and features",
+                "no_results": "No results matching"
+              },
+              "fr": {
+                "search":     "Trouver des produits et des fonctionnalités",
+                "no_results": "Aucun résultat pour"
+              }
+            }
+          },
         },
 
         keyBindings: {
@@ -261,7 +275,7 @@
                           }
                           if(filtered.length <= 0)
                           {
-                            filtered.push({Name: 'No results matching "' + searchQuery + '"'});
+                            filtered.push({Name: this.i18n("no_results") + ' "' + searchQuery + '"'});
                           }
 
                           return filtered.sort(function (a, b) {return a.Weight < b.Weight});
@@ -300,6 +314,7 @@
 
         behaviors: [
           Polymer.IronA11yKeysBehavior,
+          Polymer.FortI18nBehavior,
           Polymer.FortServiceBehavior
         ]
       }
