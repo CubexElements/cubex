@@ -11,6 +11,13 @@
 <dom-module id="fortifi-user-drawer" attributes="drawer">
   <template>
     <style>
+      :host {
+        --fort-list-style: {
+          background: white;
+          border-bottom: 1px solid var(--fort-list-border-color, rgba(0, 0, 0, 0.06));
+        }
+      }
+
       :host > #contentContainer {
         display: block;
         overflow: hidden;
