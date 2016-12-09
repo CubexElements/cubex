@@ -175,20 +175,14 @@ Example:
         position:       {type: String, value: 'left', reflectToAttribute: true},
         transitioning:  {type: Boolean, value: false, reflectToAttribute: true},
         isOpen:         {type: Boolean, value: false, reflectToAttribute: true},
-        state:          {
-          type:               Number,
-          notify:             true,
-          readOnly:           true,
-          value:              0,
-          reflectToAttribute: true,
-          observer:           '_stateChanged'
-        },
+        state:          {type: Number, notify: true, readOnly: true, value: 0, reflectToAttribute: true},
         minState:       {type: Number, readOnly: true, value: 0, reflectToAttribute: true},
         maxState:       {type: Number, readOnly: true, value: 2, reflectToAttribute: true},
         preferredState: {type: Number, notify: true, value: 0}
       },
       observers:     [
-        'refreshState(minState,maxState,preferredState)'
+        'refreshState(minState,maxState,preferredState)',
+        '_stateChanged(state,isOpen)'
       ],
       listeners:     {
         'down':  '_down',
@@ -358,30 +352,36 @@ Example:
                        //noinspection JSCheckFunctionSignatures
                        this._setState(Math.min(this.maxState, Math.max(this.minState, this.preferredState)));
                      },
-      _stateChanged: function ()
-                     {
-                       var offset = 0;
-                       if(this.state == 1)
-                       {
-                         offset = this._getPeekWidth();
-                       }
-                       else if(this.state == 2)
-                       {
-                         offset = this._getMaxWidth();
-                       }
-                       document.dispatchEvent(
-                         new CustomEvent(
-                           'fortifi-drawer-state-changed', {
-                             detail: {
-                               drawer:   this,
-                               state:    this.state,
-                               position: this.position,
-                               offset:   offset
-                             }
-                           }
-                         )
-                       );
-                     },
+
+      _stateChanged:  function ()
+                      {
+                        this.debounce('_dispatchEvent', this._dispatchEvent);
+                      },
+      _dispatchEvent: function ()
+                      {
+                        var offset = 0;
+                        if(this.state == 1)
+                        {
+                          offset = this._getPeekWidth();
+                        }
+                        else if(this.state == 2)
+                        {
+                          offset = this._getMaxWidth();
+                        }
+                        document.dispatchEvent(
+                          new CustomEvent(
+                            'fortifi-drawer-state-changed', {
+                              detail: {
+                                drawer:   this,
+                                position: this.position,
+                                state:    this.state,
+                                isOpen:   this.isOpen,
+                                offset:   offset
+                              }
+                            }
+                          )
+                        );
+                      },
 
       _DRAWER_STATE: {
         CLOSED: 0,
