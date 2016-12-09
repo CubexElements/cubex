@@ -9,6 +9,7 @@
 <link href="../../fort-list/fort-li.html" rel="import">
 <link href="../../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html" rel="import">
 <link href="../../fort-behavior/fort-i18n-behavior.html" rel="import">
+<link href="../../fort-behavior/fort-service-behavior.html" rel="import">
 
 <dom-module id="fortifi-shell-drawer">
   <template>
@@ -108,7 +109,8 @@
     <fortifi-registry org-data="{{_orgRegistryData}}"></fortifi-registry>
 
     <fort-animbg id="user-view" size="80">
-      <fort-resource auto auth url="//apps.fortifi.me/fortifi/whoami/whoami.json" data="{{whoami}}"></fort-resource>
+      <fort-resource auto auth url="//[[getServiceHost('apps')]]/fortifi/whoami/whoami.json"
+                     data="{{whoami}}"></fort-resource>
       <paper-button on-tap="_toggleParent" class="closer"></paper-button>
       <img src="../demo/resources/images/avatar/default-64.png">
       <strong>[[whoami.FirstName]] [[whoami.LastName]]</strong>
@@ -196,7 +198,8 @@
         },
         behaviors:   [
           Polymer.IronA11yKeysBehavior,
-          Polymer.FortI18nBehavior
+          Polymer.FortI18nBehavior,
+          Polymer.FortServiceBehavior
         ],
         keyBindings: {
           ',': 'toggleDrawer'
