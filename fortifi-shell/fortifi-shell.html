@@ -212,7 +212,7 @@
         <app-header fixed>
           <div id="flex-toolbar">
             <div id="burger">
-              <paper-icon-button icon="menu" on-tap="_openDrawer"></paper-icon-button>
+              <paper-icon-button icon="menu" on-tap="_toggleDrawer"></paper-icon-button>
             </div>
             <fortifi-pinned-apps></fortifi-pinned-apps>
             <div class="spread"></div>
@@ -361,16 +361,9 @@
                                 this._prepareDrawer();
                                 if(this._isValidKeyPress(e))
                                 {
-                                  var drawer = this.$.drawer;
-                                  drawer.toggle();
+                                  this.$.drawer.toggle();
                                   e.preventDefault();
                                 }
-
-                              },
-        _openDrawer:          function ()
-                              {
-                                this._prepareDrawer();
-                                this.$.drawer.open();
                               },
         _isValidKeyPress:     function (e)
                               {
