@@ -8,7 +8,7 @@
 <link rel="import" href="../../fort-pagelet/fort-pagelet.html">
 
 
-<dom-module id="fortifi-user-drawer" attributes="drawer">
+<dom-module id="fortifi-user-drawer">
   <template>
     <style>
       :host {
@@ -69,19 +69,26 @@
         bottom: 0;
         left: 0;
       }
+
+      :host-context([is-open],[state="2"]) fortifi-user-drawer-items fort-action[active] {
+        background: var(--theme-100-color);
+        color: var(--accent-700-color);
+      }
     </style>
 
     <fortifi-registry user-data="{{_userRegistryData}}"></fortifi-registry>
 
+    <fort-preferences name="selectedUserApp" value="{{_selectedApp}}"></fort-preferences>
     <fortifi-user-drawer-items>
       <template is="dom-repeat" items="[[__appGroups(_userRegistryData)]]" as="app">
-        <fort-action icon="[[app.icon]]" on-tap="_openUserDrawerApp" gaid$="[[app.vendor_id]]/[[app.id]]"></fort-action>
+        <fort-action active$="[[_isSelectedApp(app.vendor_id,app.id,_selectedApp)]]" icon="[[app.icon]]"
+                     on-tap="_openUserDrawerApp" gaid$="[[app.vendor_id]]/[[app.id]]"></fort-action>
       </template>
       <fort-action icon="icons:add" id="addUserAppAction" on-tap="_addUserApp"></fort-action>
     </fortifi-user-drawer-items>
 
     <div id="contentContainer">
-      <fort-pagelet auth id="pagelet" url="[[_pageletUrl]]">Loading...</fort-pagelet>
+      <fort-pagelet auto auth id="pagelet" url="[[_getPageletUrl(_selectedApp,_drawerOpen)]]">Loading...</fort-pagelet>
       <fort-action icon="icons:chrome-reader-mode" id="lockUserDrawer" on-tap="_lockUserDrawer"></fort-action>
     </div>
   </template>
@@ -89,13 +96,38 @@
     {
       is:                 'fortifi-user-drawer',
       properties:         {
-        drawer:            {type: Object},
+        _drawer:           {type: Object},
+        _drawerOpen:       {type: Object},
         _userRegistryData: {type: Object},
-        _pageletUrl:       {type: String}
+        _selectedApp:      {type: String}
       },
+      _isSelectedApp:     function ()
+                          {
+                            return Array.prototype.slice.call(arguments, -1).join('/') == this._selectedApp;
+                          },
+      _getPageletUrl:     function (page)
+                          {
+                            if(page)
+                            {
+                              return '//' + this.getServiceHost('apps') + '/' + page;
+                            }
+                            return undefined;
+                          },
       attached:           function ()
                           {
-                            this.drawer = this._getDrawer();
+                            this._drawer = this._getDrawer();
+                            document.addEventListener(
+                              'fortifi-drawer-state-changed', function (e)
+                              {
+                                if(this._drawer == e.detail.drawer)
+                                {
+                                  if(e.detail.state !== 2 && e.detail.isOpen == false)
+                                  {
+                                    this._selectedApp = null;
+                                  }
+                                }
+                              }.bind(this)
+                            );
                           },
       _getDrawer:         function ()
                           {
@@ -118,49 +150,26 @@
                           },
       _openUserDrawerApp: function (e)
                           {
-                            var page = e.currentTarget.getAttribute('gaid');
-                            this._pageletUrl = '//' + this.getServiceHost('apps') + '/' + page;
-                            if(e.currentTarget.hasAttribute('active'))
+                            if(e.currentTarget.getAttribute('gaid') == this._selectedApp)
                             {
-                              if(this.drawer.state == 2)
-                              {
-                                this._userDrawerPrevState = 2;
-                                this.drawer.setMaxState(1);
-                                this.drawer.setState(this.drawer.maxState);
-                              }
-                              this.drawer.toggle();
-                              if(!this.drawer.isOpen)
-                              {
-                                e.currentTarget.removeAttribute('active');
-                              }
+                              this._selectedApp = null;
+                              this._drawer.close();
                             }
                             else
                             {
-                              e.currentTarget.setAttribute('active', true);
-                              this.$.pagelet.update();
-                              this.drawer.open();
+                              this._selectedApp = e.currentTarget.getAttribute('gaid');
+                              this._drawer.open();
                             }
 
-                            var all = this.shadowRoot.querySelectorAll('fort-action[active]');
-                            for(var i in all)
+                            if(this._drawer.state == 2)
                             {
-                              if(all.hasOwnProperty(i) && ((!this.drawer.isOpen) || (all[i] !== e.currentTarget)))
-                              {
-                                all[i].removeAttribute('active');
-                              }
-                            }
-
-                            if(this.drawer.isOpen && this._userDrawerPrevState > 0)
-                            {
-                              this.drawer.setMaxState(this._userDrawerPrevState);
-                              this.drawer.setState(this.drawer.maxState);
+                              this._drawer.setMaxState(1);
                             }
                           },
       _lockUserDrawer:    function ()
                           {
-                            this.drawer.setMaxState(this.drawer.state == 2 ? 1 : 2);
-                            this.drawer.setState(this.drawer.maxState);
-                            this._userDrawerPrevState = this.drawer.state;
+                            this._drawer.setMaxState(this._drawer.state == 2 ? 1 : 2);
+                            this._drawer.setState(this._drawer.maxState);
                           },
 
       __appGroups: function (userRegistry)
