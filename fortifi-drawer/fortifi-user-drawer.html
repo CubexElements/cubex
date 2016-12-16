@@ -63,6 +63,12 @@
       #lockUserDrawer[hidden] {
         display: none;
       }
+
+      fort-action#addUserAppAction {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+      }
     </style>
 
     <fortifi-registry user-data="{{_userRegistryData}}"></fortifi-registry>
@@ -71,6 +77,7 @@
       <template is="dom-repeat" items="[[__appGroups(_userRegistryData)]]" as="app">
         <fort-action icon="[[app.icon]]" on-tap="_openUserDrawerApp" gaid$="[[app.vendor_id]]/[[app.id]]"></fort-action>
       </template>
+      <fort-action icon="icons:add" id="addUserAppAction" on-tap="_addUserApp"></fort-action>
     </fortifi-user-drawer-items>
 
     <div id="contentContainer">
@@ -104,6 +111,10 @@
                               }
                             );
                             return drawer;
+                          },
+      _addUserApp:        function ()
+                          {
+                            console.error("Adding User App Method Missing");
                           },
       _openUserDrawerApp: function (e)
                           {
