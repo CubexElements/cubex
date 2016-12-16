@@ -175,10 +175,10 @@ Example:
         position:       {type: String, value: 'left', reflectToAttribute: true},
         transitioning:  {type: Boolean, value: false, reflectToAttribute: true},
         isOpen:         {type: Boolean, value: false, reflectToAttribute: true},
-        state:          {type: Number, notify: true, readOnly: true, value: 0, reflectToAttribute: true},
-        minState:       {type: Number, readOnly: true, value: 0, reflectToAttribute: true},
-        maxState:       {type: Number, readOnly: true, value: 2, reflectToAttribute: true},
-        preferredState: {type: Number, notify: true, value: 0}
+        minState:       {type: Number, value: 0, readOnly: true, reflectToAttribute: true},
+        maxState:       {type: Number, value: 2, readOnly: true, reflectToAttribute: true},
+        state:          {type: Number, value: 0, readOnly: true, notify: true, reflectToAttribute: true},
+        preferredState: {type: Number, value: 0, notify: true}
       },
       observers:     [
         'refreshState(minState,maxState,preferredState)',
@@ -373,9 +373,9 @@ Example:
                             'fortifi-drawer-state-changed', {
                               detail: {
                                 drawer:   this,
-                                position: this.position,
                                 state:    this.state,
                                 isOpen:   this.isOpen,
+                                position: this.position,
                                 offset:   offset
                               }
                             }
