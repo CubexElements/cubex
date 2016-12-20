@@ -99,7 +99,7 @@
         _drawer:           {type: Object},
         _drawerOpen:       {type: Object},
         _userRegistryData: {type: Object},
-        _selectedApp:      {type: String}
+        _selectedApp:      {type: String, observer: '_appChange'}
       },
       _isSelectedApp:     function ()
                           {
@@ -153,17 +153,26 @@
                             if(e.currentTarget.getAttribute('gaid') == this._selectedApp)
                             {
                               this._selectedApp = null;
-                              this._drawer.close();
                             }
                             else
                             {
                               this._selectedApp = e.currentTarget.getAttribute('gaid');
-                              this._drawer.open();
                             }
 
                             if(this._drawer.state == 2)
                             {
                               this._drawer.setMaxState(1);
+                            }
+                          },
+      _appChange:         function ()
+                          {
+                            if(this._selectedApp)
+                            {
+                              this._drawer.open();
+                            }
+                            else
+                            {
+                              this._drawer.close();
                             }
                           },
       _lockUserDrawer:    function ()
