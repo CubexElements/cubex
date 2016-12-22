@@ -109,8 +109,9 @@ Example:
           <app-toolbar sticky>
             <fortifi-app-header back-path="[[pageData.backPath]]" actions="[[integrations.HeaderActions]]"
                                 menu="[[integrations.HeaderMenuItems]]">
-              <fort-icon slot="icon"
-                         src="https://s3.amazonaws.com/uifaces/faces/twitter/adellecharles/128.jpg"></fort-icon>
+              <template is="dom-if" if="[[pageData.icon]]">
+                <fort-icon slot="icon" src="[[pageData.icon]]"></fort-icon>
+              </template>
               <h1 slot="header">[[pageData.title]]</h1>
               <div displace id="hero" slot="hero">
                 <slot name="hero"></slot>
