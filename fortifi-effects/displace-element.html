@@ -1,0 +1,61 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../app-layout/app-scroll-effects/app-scroll-effects-behavior.html">
+
+<script>
+  /**
+   * Vertically displace elements based on a factor of the scroll position.
+   * Effectively hiding certain elements from your sticky header.
+   */
+  Polymer.AppLayout.registerEffect(
+    'displace-element', {
+      setUp:    function setUp(config)
+                {
+                  if((!this._fxDisplaceElements) && this.offsetHeight)
+                  {
+                    var elements = this.querySelectorAll('[displace]');
+                    if(elements.length > 0)
+                    {
+                      var fx = {height: this.offsetHeight, elements: []};
+                      for(var i in elements)
+                      {
+                        if(elements.hasOwnProperty(i))
+                        {
+                          fx.elements.push({element: elements[i], height: elements[i].offsetHeight});
+                        }
+                      }
+                      this._fxDisplaceElements = fx;
+                    }
+                  }
+                },
+      run:      function run(p, y)
+                {
+                  if(this._fxDisplaceElements)
+                  {
+                    var fx = this._fxDisplaceElements;
+                    p = Math.max(0, this._scrollTop) / this._stickyElTop;
+
+                    for(var i in fx.elements)
+                    {
+                      if(fx.elements.hasOwnProperty(i))
+                      {
+                        var ele = fx.elements[i];
+                        if(p == 0)
+                        {
+                          ele.element.style.maxHeight = '';
+                        }
+                        else
+                        {
+                          ele.element.style.maxHeight = (ele.height * (1 - Math.min(1, p))) + 'px';
+                        }
+                      }
+                    }
+                    this._notifyLayoutChanged();
+                  }
+                },
+      tearDown: function tearDown()
+                {
+                  delete this._fxDisplaceElements;
+                }
+    }
+  );
+</script>
