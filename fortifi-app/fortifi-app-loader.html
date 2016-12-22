@@ -28,9 +28,12 @@
     <fortifi-app-definition gaid="[[routeData.vendor]]/[[routeData.app]]"
                             app-data="{{appData}}"></fortifi-app-definition>
 
-    <fort-resource auto auth url="[[_appDataPath]]" xhr="{{_pageXhr}}" data="{{_pageData}}"
+    <fort-resource auto auth url="[[_integrationsPath]]" data="{{_integrations}}"
                    headers="[[_appDataHeaders]]"></fort-resource>
-    <fortifi-app id="app" app-data="[[appData]]" page-data="[[pageData]]">
+    <fort-resource auto auth url="[[_appDataPath]]" data="{{_pageData}}" xhr="{{_pageXhr}}"
+                   headers="[[_appDataHeaders]]"></fort-resource>
+
+    <fortifi-app id="app" app-data="[[appData]]" page-data="[[pageData]]" integrations="[[_integrations]]">
       <fortifi-drawer-content slot="drawer-content" id="appDrawerContent">
         <fortifi-app-menu app-data="[[appData]]"></fortifi-app-menu>
       </fortifi-drawer-content>
@@ -42,12 +45,13 @@
       {
         is:         'fortifi-app-loader',
         properties: {
-          _addLoader:      {type: Number, value: 0},
-          _loadedPath:     {type: String, value: ''},
-          _appDataPath:    {type: String},
-          _appDataHeaders: {type: Object, computed: '_getHeaders(routeData.org)'},
-          _pageXhr:        {type: Object},
-          _pageData:       {type: Object}
+          _addLoader:        {type: Number, value: 0},
+          _loadedPath:       {type: String, value: ''},
+          _appDataPath:      {type: String},
+          _integrationsPath: {type: String},
+          _appDataHeaders:   {type: Object, computed: '_getHeaders(routeData.org)'},
+          _pageXhr:          {type: Object},
+          _pageData:         {type: Object}
         },
         observers:  [
           '_pathChanged(route.path)',
@@ -77,16 +81,19 @@
                             var vendor = this.routeData.vendor,
                               app = this.routeData.app,
                               path = this.appPath.path.replace(/^\//, ''),
-                              appNode = Polymer.dom(this.$.app);
+                              appNode = Polymer.dom(this.$.app),
+                              fullPath = vendor + '/' + app + (path ? '/' + path : '');
 
                             this._addLoader = setTimeout(
                               function () { appNode.appendChild(document.createElement('fort-loader')); }, 50
                             );
-                            this._appDataPath = '//' + this.getServiceHost('apps') + '/' + vendor + '/' + app + (path ? '/' + path : '');
+                            this._integrationsPath = '//' + this.getServiceHost('apps') + '/fortifi/integrations/integrations.json?hook=/' + fullPath;
+                            this._appDataPath = '//' + this.getServiceHost('apps') + '/' + fullPath;
                           }
                         }
                         else
                         {
+                          this._integrationsPath = null;
                           this._appDataPath = null;
                           this._loadedPath = null;
                           this.routeData = {};
