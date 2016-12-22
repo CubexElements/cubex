@@ -12,6 +12,7 @@
 <link rel="import" href="../../app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../../app-layout/app-header/app-header.html">
 <link rel="import" href="../../app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../fortifi-effects/displace-element.html">
 
 
 <!--
@@ -27,7 +28,7 @@ Example:
 @hero hero.svg
 -->
 
-<dom-module id="fortifi-app" attributes="app-data page-data">
+<dom-module id="fortifi-app" attributes="app-data page-data integrations">
   <template>
     <style>
       :host {
@@ -48,7 +49,7 @@ Example:
       }
 
       #app-container {
-        margin-top: 0;
+        margin-top: var(--fortifi-drawer-offset-top, 0);
         border-bottom-left-radius: 3px;
         border-bottom-right-radius: 3px;
         @apply --theme-600;
@@ -56,7 +57,6 @@ Example:
 
         border-top-left-radius: 3px;
         border-top-right-radius: 3px;
-        padding-top: 64px;
 
         overflow: hidden;
       }
@@ -72,11 +72,22 @@ Example:
 
       :host app-toolbar {
         padding: 0;
+        height: auto;
+      }
+
+      :host fortifi-app-header {
+        /*@apply --shadow-elevation-2dp;*/
       }
 
       :host app-header {
         margin-top: var(--fortifi-drawer-offset-top, 0);
         transition: left ease 0.2s, right ease 0.2s !important;
+      }
+
+      :host #hero {
+        overflow: hidden;
+        position: relative;
+        @apply --accent-700;
       }
 
       :host([drawer-disabled]) {
@@ -93,12 +104,16 @@ Example:
     <fortifi-drawer id="appDrawer" hover-popout swipe-open position="left" preferred-state="{{appDrawerState}}">
       <slot slot="drawer-content" name="drawer-content"></slot>
       <app-header-layout>
-        <app-header id="ah" slot="header" condenses reveals effects="waterfall">
+        <app-header id="ah" slot="header" reveals condenses effects="displace-element waterfall">
           <fortifi-breadcrumb></fortifi-breadcrumb>
           <app-toolbar sticky>
-            <fortifi-app-header actions="[[appData.actions]]">
-              <!--<fort-icon slot="icon" src="https://s3.amazonaws.com/uifaces/faces/twitter/adellecharles/128.jpg"></fort-icon>-->
+            <fortifi-app-header actions="[[integrations.HeaderActions]]" menu="[[integrations.HeaderMenuItems]]">
+              <fort-icon slot="icon"
+                         src="https://s3.amazonaws.com/uifaces/faces/twitter/adellecharles/128.jpg"></fort-icon>
               <h1 slot="header">[[pageData.title]]</h1>
+              <div displace id="hero" slot="hero">
+                <slot name="hero"></slot>
+              </div>
             </fortifi-app-header>
           </app-toolbar>
         </app-header>
