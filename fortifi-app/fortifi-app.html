@@ -107,7 +107,8 @@ Example:
         <app-header id="ah" slot="header" reveals condenses effects="displace-element waterfall">
           <fortifi-breadcrumb></fortifi-breadcrumb>
           <app-toolbar sticky>
-            <fortifi-app-header actions="[[integrations.HeaderActions]]" menu="[[integrations.HeaderMenuItems]]">
+            <fortifi-app-header back-path="[[pageData.backPath]]" actions="[[integrations.HeaderActions]]"
+                                menu="[[integrations.HeaderMenuItems]]">
               <fort-icon slot="icon"
                          src="https://s3.amazonaws.com/uifaces/faces/twitter/adellecharles/128.jpg"></fort-icon>
               <h1 slot="header">[[pageData.title]]</h1>

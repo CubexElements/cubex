@@ -9,7 +9,7 @@
 <link rel="import" href="../../fort-behavior/fort-iterator-behavior.html">
 <link rel="import" href="../../fort-behavior/fort-i18n-behavior.html">
 
-<dom-module id="fortifi-app-header" attributes="icon show-back actions menu">
+<dom-module id="fortifi-app-header" attributes="icon back-path actions menu">
   <template strip-whitespace>
     <style>
       :host {
@@ -28,16 +28,13 @@
         overflow: hidden;
       }
 
-      :host([show-back]) #topHeader {
-        padding-left: 72px;
+      :host #app-back {
+        margin-left: -24px;
+        margin-right: 8px;
       }
 
-      :host #app-back {
+      :host #app-back fort-action {
         color: var(--accent-400-color);
-        left: 0;
-        top: 0;
-        bottom: 0;
-        position: absolute;
       }
 
       .flexchild {
@@ -164,8 +161,10 @@
 
     <div id="topHeader">
       <iron-media-query query="(max-width: 700px)" query-matches="{{_small}}"></iron-media-query>
-      <template is="dom-if" if="[[showBack]]" strip-whitespace>
-        <fort-action icon="icons:arrow-back" size="24" id="app-back"></fort-action>
+      <template is="dom-if" if="[[backPath]]" strip-whitespace>
+        <a id="app-back" href="[[backPath]]">
+          <fort-action icon="icons:arrow-back" size="24"></fort-action>
+        </a>
       </template>
       <slot id="iconSlot" name="icon"></slot>
 
@@ -205,11 +204,7 @@
       is:         'fortifi-app-header',
       properties: {
         actions:  {type: Array, value: []},
-        showBack: {
-          type:               Boolean,
-          value:              true,
-          reflectToAttribute: true
-        },
+        backPath: {type: String},
         _small:   {type: Boolean}
       },
 
