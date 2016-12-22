@@ -51,7 +51,8 @@
           _integrationsPath: {type: String},
           _appDataHeaders:   {type: Object, computed: '_getHeaders(routeData.org)'},
           _pageXhr:          {type: Object},
-          _pageData:         {type: Object}
+          _pageData:         {type: Object},
+          pageData:          {type: Object, notify: true}
         },
         observers:  [
           '_pathChanged(route.path)',
@@ -110,9 +111,10 @@
 
                        if(this._pageXhr)
                        {
+                         var fn = function (_, v) { return v.toUpperCase(); };
                          while(matches = fortHeaderRegex.exec(this._pageXhr.getAllResponseHeaders()))
                          {
-                           headers[matches[1]] = matches[2];
+                           headers[matches[1].replace(/-([a-z])/, fn)] = matches[2];
                          }
                        }
 
