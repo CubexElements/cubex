@@ -24,13 +24,14 @@
                       }
                       this._fxDisplaceElements = fx;
                     }
+                    this._notifyLayoutChanged();
                   }
                 },
       run:      function run(p, y)
                 {
                   if(this._fxDisplaceElements)
                   {
-                    var fx = this._fxDisplaceElements;
+                    var fx = this._fxDisplaceElements, changed = false;
                     p = Math.max(0, this._scrollTop) / this._stickyElTop;
 
                     for(var i in fx.elements)
@@ -38,6 +39,7 @@
                       if(fx.elements.hasOwnProperty(i))
                       {
                         var ele = fx.elements[i];
+                        var oldHeight = ele.element.style.maxHeight;
                         if(p == 0)
                         {
                           ele.element.style.maxHeight = '';
@@ -46,9 +48,16 @@
                         {
                           ele.element.style.maxHeight = (ele.height * (1 - Math.min(1, p))) + 'px';
                         }
+                        if(ele.element.style.maxHeight !== oldHeight)
+                        {
+                          changed = true;
+                        }
                       }
                     }
-                    this._notifyLayoutChanged();
+                    if(changed)
+                    {
+                      this._notifyLayoutChanged();
+                    }
                   }
                 },
       tearDown: function tearDown()

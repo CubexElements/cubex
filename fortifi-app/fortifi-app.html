@@ -103,7 +103,7 @@ Example:
     <fort-preferences name="appDrawerPosition" value="{{appDrawerState}}"></fort-preferences>
     <fortifi-drawer id="appDrawer" hover-popout swipe-open position="left" preferred-state="{{appDrawerState}}">
       <slot slot="drawer-content" name="drawer-content"></slot>
-      <app-header-layout>
+      <app-header-layout id="ahl">
         <app-header id="ah" slot="header" reveals condenses effects="displace-element waterfall">
           <fortifi-breadcrumb></fortifi-breadcrumb>
           <app-toolbar sticky>
@@ -136,7 +136,7 @@ Example:
         properties:      {
           narrow:         {type: Boolean, value: true, reflectToAttribute: true, observer: '_updateMaxState'},
           appData:        {type: Object},
-          pageData:       {type: Object},
+          pageData:       {type: Object, observer: '_pageUpdated'},
           drawerDisabled: {
             type:               Boolean,
             value:              false,
@@ -159,6 +159,15 @@ Example:
                            {
                              this.$.appDrawer.setMaxState(2);
                            }
+                         },
+        _pageUpdated:    function ()
+                         {
+                           Polymer.RenderStatus.afterNextRender(
+                             this, function ()
+                             {
+                               this.$.ahl.resetLayout();
+                             }
+                           );
                          },
         ready:           function ()
                          {
