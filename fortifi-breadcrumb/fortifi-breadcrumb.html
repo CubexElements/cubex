@@ -2,7 +2,7 @@
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout.html"/>
 <link rel="import" href="fortifi-breadcrumb-item.html"/>
 
-<dom-module id="fortifi-breadcrumb">
+<dom-module id="fortifi-breadcrumb" attributes="crumbs">
   <template>
     <style>
       :host {
@@ -37,8 +37,8 @@
     <div class="left-column">
       <fortifi-breadcrumb-item href="/[[routeData.org]]">Home</fortifi-breadcrumb-item>
       <template id="crumbList" is="dom-repeat" items="[[crumbs]]">
-        <fortifi-breadcrumb-item href="/[[routeData.org]]/[[_trimPath(item.href)]]">
-          [[item.name]]
+        <fortifi-breadcrumb-item href="/[[routeData.org]]/[[_trimPath(item.Url)]]">
+          [[item.Title]]
         </fortifi-breadcrumb-item>
       </template>
     </div>
@@ -50,50 +50,14 @@
   <script>
     Polymer(
       {
-        is:            'fortifi-breadcrumb',
-        properties:    {
-          crumbs: {
-            type:     Array,
-            readOnly: true,
-            notify:   true,
-            value:    []
-          },
-          color:  {
-            type:     String,
-            readOnly: true,
-            notify:   true,
-            observer: '_colorChanged'
-          }
+        is:         'fortifi-breadcrumb',
+        properties: {
+          crumbs: {type: Array, value: []}
         },
-        clearColor:    function ()
-                       {
-                         this.setColor('');
-                       },
-        setColor:      function (color)
-                       {
-                         this._setColor(color);
-                       },
-        _colorChanged: function ()
-                       {
-                         this.updateStyles({'--fortifi-breadcrumb-background': this.color});
-                       },
-        clearCrumbs:   function ()
-                       {
-                         this.splice('crumbs', 0);
-                       },
-        addCrumb:      function (crumb)
-                       {
-                         this.push('crumbs', crumb);
-                       },
-        attached:      function ()
-                       {
-                         this._colorChanged();
-                       },
-
-        _trimPath: function (path)
-                   {
-                     return path.replace(/^\/+/, '');
-                   }
+        _trimPath:  function (path)
+                    {
+                      return path.replace(/^\/+/, '');
+                    }
       }
     );
   </script>

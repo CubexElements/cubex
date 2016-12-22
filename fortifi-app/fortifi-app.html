@@ -105,7 +105,7 @@ Example:
       <slot slot="drawer-content" name="drawer-content"></slot>
       <app-header-layout id="ahl">
         <app-header id="ah" slot="header" reveals condenses effects="displace-element waterfall">
-          <fortifi-breadcrumb></fortifi-breadcrumb>
+          <fortifi-breadcrumb crumbs="[[breadcrumbs]]"></fortifi-breadcrumb>
           <app-toolbar sticky>
             <fortifi-app-header back-path="[[pageData.backPath]]" actions="[[integrations.HeaderActions]]"
                                 menu="[[integrations.HeaderMenuItems]]">
@@ -138,6 +138,7 @@ Example:
           narrow:         {type: Boolean, value: true, reflectToAttribute: true, observer: '_updateMaxState'},
           appData:        {type: Object},
           pageData:       {type: Object, observer: '_pageUpdated'},
+          breadcrumbs:    {type: Object, computed: '_updateCrumbs(pageData)'},
           drawerDisabled: {
             type:               Boolean,
             value:              false,
@@ -160,6 +161,14 @@ Example:
                            {
                              this.$.appDrawer.setMaxState(2);
                            }
+                         },
+        _updateCrumbs:   function (pageData)
+                         {
+                           if(pageData && pageData.breadcrumb)
+                           {
+                             return JSON.parse(pageData.breadcrumb);
+                           }
+                           return [];
                          },
         _pageUpdated:    function ()
                          {
