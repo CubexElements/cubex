@@ -6,23 +6,29 @@
 <link rel="import" href="../../paper-styles/typography.html">
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../iron-media-query/iron-media-query.html">
+<link rel="import" href="../../fort-behavior/fort-iterator-behavior.html">
+<link rel="import" href="../../fort-behavior/fort-i18n-behavior.html">
 
-<dom-module id="fortifi-app-header" attributes="icon show-back actions">
+<dom-module id="fortifi-app-header" attributes="icon show-back actions menu">
   <template strip-whitespace>
     <style>
       :host {
+        width: 100%;
+        display: block;
+        background: var(--theme-200-color);
+        border-bottom: 1px solid var(--theme-700-color);
+      }
+
+      :host #topHeader {
         @apply --layout-horizontal;
         position: relative;
         height: 64px;
-        width: 100%;
-        background: var(--theme-50-color);
         padding-left: 24px;
-        border-bottom: 1px solid var(--theme-600-color);
         line-height: 64px;
         overflow: hidden;
       }
 
-      :host([show-back]) {
+      :host([show-back]) #topHeader {
         padding-left: 72px;
       }
 
@@ -123,6 +129,28 @@
         display: none;
       }
 
+      :host #menu {
+        height: 48px;
+      }
+
+      :host #menu fort-action {
+        @apply --paper-font-body2;
+        padding: 12px 11px 10px 11px;
+        text-transform: uppercase;
+        border-bottom: 2px solid transparent;
+        margin-left: 8px;
+        --paper-button-ink-color: var(--accent-400-color);
+      }
+
+      :host #menu fort-action:not([active]) {
+        @apply --text-secondary;
+      }
+
+      :host #menu fort-action[active] {
+        border-bottom-color: var(--accent-400-color);
+        color: var(--accent-400-color);
+      }
+
       @media all and (max-width: 700px) {
         :host fort-action[primary] {
           display: none;
@@ -134,29 +162,41 @@
       }
     </style>
 
-    <iron-media-query query="(max-width: 700px)" query-matches="{{_small}}"></iron-media-query>
-    <template is="dom-if" if="[[showBack]]" strip-whitespace>
-      <fort-action icon="icons:arrow-back" size="24" id="app-back"></fort-action>
-    </template>
-    <slot id="iconSlot" name="icon"></slot>
-
-    <slot name="header"></slot>
-
-    <div class="flexchild"></div>
-    <div id="actions">
-      <template is="dom-repeat" items="[[actions]]" filter="{{_filter(_small,1)}}" sort="_sort" observe="primary">
-        <fort-action icon="[[item.icon]]"></fort-action>
+    <div id="topHeader">
+      <iron-media-query query="(max-width: 700px)" query-matches="{{_small}}"></iron-media-query>
+      <template is="dom-if" if="[[showBack]]" strip-whitespace>
+        <fort-action icon="icons:arrow-back" size="24" id="app-back"></fort-action>
       </template>
-      <fort-dropdown horizontal-align="right" hidden$="[[!_hasDropdownActions(actions,_small,1)}}">
-        <fort-action icon="icons:more-vert" slot="trigger" id="more-actions"></fort-action>
-        <fort-list-menu>
-          <template is="dom-repeat" items="[[actions]]" filter="{{_filter(_small,0)}}" sort="_sort" observe="primary">
-            <fort-li>
-              [[item.title]]
-            </fort-li>
-          </template>
-        </fort-list-menu>
-      </fort-dropdown>
+      <slot id="iconSlot" name="icon"></slot>
+
+      <slot name="header"></slot>
+
+      <div class="flexchild"></div>
+      <div id="actions">
+        <template is="dom-repeat" items="[[actions]]" filter="{{_filter(_small,1)}}" sort="_sort" observe="primary">
+          <fort-action icon="[[item.Icon]]"></fort-action>
+        </template>
+        <fort-dropdown horizontal-align="right" hidden$="[[!_hasDropdownActions(actions,_small,1)}}">
+          <fort-action icon="icons:more-vert" slot="trigger" id="more-actions"></fort-action>
+          <fort-list-menu>
+            <template is="dom-repeat" items="[[actions]]" filter="{{_filter(_small,0)}}" sort="_sort" observe="primary">
+              <a href="[[item.Path]]">
+                <fort-li>[[item.Title]]</fort-li>
+              </a>
+            </template>
+          </fort-list-menu>
+        </fort-dropdown>
+      </div>
+    </div>
+
+    <slot name="hero"></slot>
+
+    <div id="menu">
+      <template is="dom-repeat" items="[[menu]]">
+        <a href="[[item.Path]]">
+          <fort-action>[[item.Title]]</fort-action>
+        </a>
+      </template>
     </div>
   </template>
 
