@@ -126,6 +126,18 @@
         display: none;
       }
 
+      :host #menu a {
+        text-decoration: none;
+      }
+
+      :host #menu a:hover {
+        color: var(--accent-400-color);
+      }
+
+      :host #menu a:hover fort-action {
+        @apply --text-primary;
+      }
+
       :host #menu fort-action {
         @apply --paper-font-body2;
         padding: 12px 11px 10px 11px;
