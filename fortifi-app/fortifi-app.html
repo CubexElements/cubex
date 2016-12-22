@@ -49,6 +49,7 @@ Example:
       }
 
       #app-container {
+        margin-top: var(--fortifi-drawer-offset-top, 0);
         border-bottom-left-radius: 3px;
         border-bottom-right-radius: 3px;
         @apply --theme-600;
@@ -79,8 +80,7 @@ Example:
       }
 
       :host app-header {
-        box-sizing: border-box;
-        border-top: solid transparent var(--fortifi-drawer-offset-top, 0);
+        margin-top: var(--fortifi-drawer-offset-top, 0);
         transition: left ease 0.2s, right ease 0.2s !important;
       }
 
