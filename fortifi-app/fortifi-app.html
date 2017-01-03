@@ -39,30 +39,44 @@ Example:
       fortifi-app-header {
         border-top-left-radius: 3px;
         border-top-right-radius: 3px;
-
+        overflow: hidden;
       }
 
       app-header-layout {
-        padding-bottom: 24px;
-        margin: 0 24px;
         min-width: 100px;
+        @apply --shadow-elevation-2dp;
+        margin: calc(60px + var(--fortifi-drawer-offset-top, 0)) 24px 24px;
+        border-radius: 3px;
       }
 
       #app-container {
-        margin-top: var(--fortifi-drawer-offset-top, 0);
+        margin-top: calc(-1 * var(--fortifi-drawer-offset-top, 0));
         border-bottom-left-radius: 3px;
         border-bottom-right-radius: 3px;
         @apply --theme-600;
-        @apply --shadow-elevation-2dp;
-
-        border-top-left-radius: 3px;
-        border-top-right-radius: 3px;
-
         overflow: hidden;
       }
 
       #app-content {
         margin: 40px;
+      }
+
+      #app-content-main {
+        display: block;
+      }
+
+      #app-sidebar {
+        position: absolute;
+        display: none;
+        width: 192px;
+      }
+
+      :host([has-sidebar]) #app-sidebar {
+        display: block;
+      }
+
+      :host([has-sidebar]) #app-content-main {
+        margin-left: 232px;
       }
 
       fortifi-breadcrumb {
@@ -75,13 +89,15 @@ Example:
         height: auto;
       }
 
-      :host fortifi-app-header {
-        /*@apply --shadow-elevation-2dp;*/
-      }
-
       :host app-header {
         margin-top: var(--fortifi-drawer-offset-top, 0);
         transition: left ease 0.2s, right ease 0.2s !important;
+      }
+
+      :host app-header::after {
+        @apply --shadow-elevation-2dp;
+        bottom: 1px;
+        height: 1px;
       }
 
       :host #hero {
@@ -93,6 +109,16 @@ Example:
       :host([drawer-disabled]) {
         --fortifi-drawer-peek-width: 0;
         --fortifi-drawer-width: 0;
+      }
+
+      @media (max-width: 1000px) {
+        #app-content {
+          margin: 20px;
+        }
+
+        :host([has-sidebar]) #app-content-main {
+          margin-left: 212px;
+        }
       }
     </style>
 
@@ -122,7 +148,12 @@ Example:
 
         <div id="app-container">
           <div id="app-content">
-            <slot></slot>
+            <div id="app-sidebar">
+              SIDEBAR
+            </div>
+            <div id="app-content-main">
+              <slot></slot>
+            </div>
           </div>
         </div>
       </app-header-layout>
@@ -132,9 +163,14 @@ Example:
   <script>
     Polymer(
       {
-        is:              'fortifi-app',
-        behaviors:       [Polymer.FortTouchEnabledBehavior, Polymer.FortServiceBehavior],
-        properties:      {
+        is:         'fortifi-app',
+        behaviors:  [Polymer.FortTouchEnabledBehavior, Polymer.FortServiceBehavior],
+        properties: {
+          hasSidebar:     {
+            type:               Boolean,
+            reflectToAttribute: true,
+            computed:           '_computeHasSidebar(integrations,integrations.*)'
+          },
           narrow:         {type: Boolean, value: true, reflectToAttribute: true, observer: '_updateMaxState'},
           appData:        {type: Object},
           pageData:       {type: Object, observer: '_pageUpdated'},
@@ -147,10 +183,57 @@ Example:
           _lock:          {type: Boolean, value: false},
           _peek:          {type: Boolean, value: false}
         },
-        observers:       [
+        observers:  [
           '_viewChanged(_lock,_peek,narrow)',
           '_updateDrawer(appData)'
         ],
+
+        ready: function ()
+               {
+                 document.addEventListener(
+                   'fortifi-drawer-state-changed', function (e)
+                   {
+                     if(e.detail.position == 'left')
+                     {
+                       this.$.ah.style.left = (e.detail.offset + 24) + 'px';
+                     }
+                     else if(e.detail.position == 'right')
+                     {
+                       this.$.ah.style.right = (e.detail.offset + 24) + 'px';
+                     }
+                   }.bind(this)
+                 );
+                 this.async(function () {this._viewChanged(this._lock, this._peek);});
+               },
+
+        _filterIntegrations: function (i)
+                             {
+                               // match full path with org prefix
+                               return (new RegExp('^\/[^\/]+/' + i.Hook.replace(/:[a-z]+/, '[^\/]+') + '$'))
+                                 .test(window.location.pathname);
+                             },
+
+        _computeHasSidebar: function (integrations)
+                            {
+                              var items = 0;
+                              if(integrations)
+                              {
+                                if(integrations.PageActions)
+                                {
+                                  items += integrations.PageActions.filter(this._filterIntegrations).length;
+                                }
+                                if(integrations.PageMenuItems)
+                                {
+                                  items += integrations.PageMenuItems.filter(this._filterIntegrations).length;
+                                }
+                                if(integrations.Panels)
+                                {
+                                  items += integrations.Panels.filter(this._filterIntegrations).length;
+                                }
+                              }
+                              return items > 0;
+                            },
+
         _updateDrawer:   function (appData)
                          {
                            if(!(appData && appData.Navigation && appData.Navigation.length))
@@ -178,23 +261,6 @@ Example:
                                this.$.ahl.resetLayout();
                              }
                            );
-                         },
-        ready:           function ()
-                         {
-                           document.addEventListener(
-                             'fortifi-drawer-state-changed', function (e)
-                             {
-                               if(e.detail.position == 'left')
-                               {
-                                 this.$.ah.style.left = (e.detail.offset + 24) + 'px';
-                               }
-                               else if(e.detail.position == 'right')
-                               {
-                                 this.$.ah.style.right = (e.detail.offset + 24) + 'px';
-                               }
-                             }.bind(this)
-                           );
-                           this.async(function () {this._viewChanged(this._lock, this._peek);});
                          },
         _viewChanged:    function (lock, peek, narrow)
                          {
@@ -227,15 +293,16 @@ Example:
                              this.drawer.maxState = narrow ? 1 : 2;
                            }
                          },
-        setDrawerState:  function (state)
-                         {
-                           var drawer = this.drawer;
-                           drawer.setState(state);
-                           if(state == 1)
-                           {
-                             drawer.close();
-                           }
-                         },
+
+        setDrawerState: function (state)
+                        {
+                          var drawer = this.drawer;
+                          drawer.setState(state);
+                          if(state == 1)
+                          {
+                            drawer.close();
+                          }
+                        },
 
         /**
          * Retrieve the drawer element for this app
