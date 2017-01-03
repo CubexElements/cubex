@@ -105,6 +105,10 @@
         @apply --accent-700;
       }
 
+      #toggler fort-icon {
+        position: relative;
+      }
+
       #toggler fort-icon:before,
       #toggler fort-icon:after {
         content: '';
@@ -114,14 +118,20 @@
         top: 8px;
       }
 
+      #toggler fort-icon:before {
+        left: -12px;
+      }
+
+      #toggler fort-icon:after {
+        right: -12px;
+      }
+
       #toggler[drawer-open] fort-icon:before {
         border-right-color: var(--accent-400-text-color);
-        left: -12px;
       }
 
       #toggler:not([drawer-open]) fort-icon:after {
         border-left-color: var(--accent-400-text-color);
-        right: -12px;
       }
     </style>
 
