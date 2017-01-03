@@ -37,7 +37,7 @@
     <div class="left-column">
       <fortifi-breadcrumb-item href="/[[routeData.org]]">Home</fortifi-breadcrumb-item>
       <template id="crumbList" is="dom-repeat" items="[[crumbs]]">
-        <fortifi-breadcrumb-item href="/[[routeData.org]]/[[_trimPath(item.Url)]]">
+        <fortifi-breadcrumb-item href="/[[_trimPath(item.Url)]]">
           [[item.Title]]
         </fortifi-breadcrumb-item>
       </template>
