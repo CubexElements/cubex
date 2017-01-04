@@ -13,6 +13,8 @@
 <link rel="import" href="../../app-layout/app-header/app-header.html">
 <link rel="import" href="../../app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../fortifi-effects/displace-element.html">
+<link rel="import" href="../../fort-list/fort-list.html">
+<link rel="import" href="../../fort-list/fort-li.html">
 
 
 <!--
@@ -59,6 +61,7 @@ Example:
 
       #app-content {
         margin: 40px;
+        min-height: 50px;
       }
 
       #app-content-main {
@@ -66,13 +69,14 @@ Example:
       }
 
       #app-sidebar {
-        position: absolute;
         display: none;
+        float: left;
         width: 192px;
+        flex-direction: column;
       }
 
       :host([has-sidebar]) #app-sidebar {
-        display: block;
+        display: flex;
       }
 
       :host([has-sidebar]) #app-content-main {
@@ -109,6 +113,62 @@ Example:
       :host([drawer-disabled]) {
         --fortifi-drawer-peek-width: 0;
         --fortifi-drawer-width: 0;
+      }
+
+      #app-page-actions a {
+        display: block;
+        --fort-action-style: {
+          display: block;
+          @apply --paper-font-body2;
+          background: var(--theme-100-color);
+          color: var(--accent-400-color);
+          text-align: center;
+          border-radius: 3px;
+          border: 1px solid var(--theme-700-color);
+          text-transform: uppercase;
+          padding: 2px 7px 2px 2px;
+        }
+      }
+
+      #app-sidebar .sidebar-group {
+        margin: 5px 0;
+      }
+
+      #app-sidebar .sidebar-group:first-child {
+        margin-top: 0;
+      }
+
+      #app-sidebar .sidebar-group:last-child {
+        margin-bottom: 0;
+      }
+
+      #app-page-actions > a {
+        margin-bottom: 5px;
+      }
+
+      #app-page-actions > a:last-of-type {
+        margin-bottom: 0 !important;
+      }
+
+      #app-page-menu, #app-page-panels {
+        background: var(--theme-400-color);
+        border-radius: 3px;
+        border: 1px solid var(--theme-700-color);
+        --fort-list-double-border-color: white;
+        --fort-li-style: {
+          @apply --paper-font-body2;
+          @apply --text-secondary;
+        };
+      }
+
+      #app-page-menu a {
+        @apply --text-secondary;
+        color: var(--theme-text);
+      }
+
+      #app-page-menu a[active] {
+        @apply --text-primary;
+        color: var(--accent-400-color);
       }
 
       @media (max-width: 1000px) {
@@ -149,11 +209,42 @@ Example:
         <div id="app-container">
           <div id="app-content">
             <div id="app-sidebar">
-              SIDEBAR
+              <template is="dom-if" if="[[integrations.PageActions]]">
+                <div id="app-page-actions" class="sidebar-group">
+                  <template is="dom-repeat" items="[[integrations.PageActions]]">
+                    <a id="page-action-[[item.ID]]" href="[[item.Path]]">
+                      <fort-action icon="[[item.Icon]]">[[item.Title]]</fort-action>
+                    </a>
+                  </template>
+                </div>
+              </template>
+
+              <template is="dom-if" if="[[integrations.PageMenuItems]]">
+                <fort-list id="app-page-menu" class="sidebar-group" border double-border bottom-border>
+                  <template is="dom-repeat" items="[[integrations.PageMenuItems]]">
+                    <a id="page-menu-[[item.ID]]" href="[[item.Path]]" title="[[item.Description]]">
+                      <fort-li>[[item.Title]]</fort-li>
+                    </a>
+                  </template>
+                </fort-list>
+              </template>
+
+              <template is="dom-if" if="[[integrations.Panels]]">
+                <fort-list id="app-page-panels" class="sidebar-group" border double-border bottom-border>
+                  <template is="dom-repeat" items="[[integrations.Panels]]">
+                    <fort-li>
+                      <fort-pagelet auto auth url="//[[getServiceHost('apps')]][[item.Path]]"></fort-pagelet>
+                    </fort-li>
+                  </template>
+                </fort-list>
+              </template>
             </div>
+
             <div id="app-content-main">
               <slot></slot>
             </div>
+
+            <div style="clear:both"></div>
           </div>
         </div>
       </app-header-layout>
@@ -206,13 +297,6 @@ Example:
                  this.async(function () {this._viewChanged(this._lock, this._peek);});
                },
 
-        _filterIntegrations: function (i)
-                             {
-                               // match full path with org prefix
-                               return (new RegExp('^\/[^\/]+/' + i.Hook.replace(/:[a-z]+/, '[^\/]+') + '$'))
-                                 .test(window.location.pathname);
-                             },
-
         _computeHasSidebar: function (integrations)
                             {
                               var items = 0;
@@ -220,15 +304,15 @@ Example:
                               {
                                 if(integrations.PageActions)
                                 {
-                                  items += integrations.PageActions.filter(this._filterIntegrations).length;
+                                  items += integrations.PageActions.length;
                                 }
                                 if(integrations.PageMenuItems)
                                 {
-                                  items += integrations.PageMenuItems.filter(this._filterIntegrations).length;
+                                  items += integrations.PageMenuItems.length;
                                 }
                                 if(integrations.Panels)
                                 {
-                                  items += integrations.Panels.filter(this._filterIntegrations).length;
+                                  items += integrations.Panels.length;
                                 }
                               }
                               return items > 0;
