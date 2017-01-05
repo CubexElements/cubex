@@ -270,7 +270,7 @@ Example:
           narrow:         {type: Boolean, value: true, reflectToAttribute: true, observer: '_updateMaxState'},
           appData:        {type: Object},
           pageData:       {type: Object, observer: '_resetLayout'},
-          breadcrumbs:    {type: Object, computed: '_updateCrumbs(pageData)'},
+          breadcrumbs:    {type: Object, computed: '_updateCrumbs(pageData,organisation)'},
           drawerDisabled: {
             type:               Boolean,
             value:              false,
@@ -340,7 +340,7 @@ Example:
                            if(pageData && pageData.breadcrumb)
                            {
                              var bc = JSON.parse(pageData.breadcrumb);
-                             if(this.appData && this.appData.Group)
+                             if(this.appData && this.appData.Group && this.organisation)
                              {
                                bc.unshift(
                                  {
