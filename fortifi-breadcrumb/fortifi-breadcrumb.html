@@ -21,7 +21,7 @@
 
       #home fort-icon {
         padding: 0;
-        margin-top: 16px;
+        margin-top: 21px;
       }
 
       .stretch {
@@ -33,7 +33,7 @@
     <app-route route="{{route}}" pattern="/:org" data="{{routeData}}"></app-route>
 
     <fortifi-breadcrumb-item id="home" href="/[[routeData.org]]">
-      <fort-icon icon="icons:home"></fort-icon>
+      <fort-icon icon="icons:home" size="16"></fort-icon>
     </fortifi-breadcrumb-item>
     <template id="crumbList" is="dom-repeat" items="[[crumbs]]">
       <fortifi-breadcrumb-item href="/[[_trimPath(item.Url)]]">
