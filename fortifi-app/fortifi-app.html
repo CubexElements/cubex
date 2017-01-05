@@ -3,6 +3,7 @@
 <link rel="import" href="../../iron-media-query/iron-media-query.html">
 <link rel="import" href="../../fort-behavior/fort-touch-enabled-behavior.html">
 <link rel="import" href="../../fort-behavior/fort-service-behavior.html">
+<link rel="import" href="../../fort-behavior/fort-i18n-behavior.html">
 <link rel="import" href="../../app-layout/app-header-layout/app-header-layout.html">
 <link rel="import" href="../../app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../../app-layout/app-header/app-header.html">
@@ -260,7 +261,7 @@ Example:
     Polymer(
       {
         is:         'fortifi-app',
-        behaviors:  [Polymer.FortTouchEnabledBehavior, Polymer.FortServiceBehavior],
+        behaviors:  [Polymer.FortTouchEnabledBehavior, Polymer.FortServiceBehavior, Polymer.FortI18nBehavior],
         properties: {
           hasSidebar:     {
             type:               Boolean,
@@ -268,7 +269,7 @@ Example:
             computed:           '_computeHasSidebar(integrations,integrations.*)'
           },
           narrow:         {type: Boolean, value: true, reflectToAttribute: true, observer: '_updateMaxState'},
-          appData:        {type: Object},
+          appData:        {type: Object, observer: '_updateResources'},
           pageData:       {type: Object, observer: '_resetLayout'},
           breadcrumbs:    {type: Object, computed: '_updateCrumbs(pageData,organisation)'},
           drawerDisabled: {
@@ -337,11 +338,17 @@ Example:
                          },
         _updateCrumbs:   function (pageData)
                          {
-                           if(pageData && pageData.breadcrumb)
+                           if(pageData)
                            {
-                             var bc = JSON.parse(pageData.breadcrumb);
+                             var bc = pageData.breadcrumb ? JSON.parse(pageData.breadcrumb) : [];
                              if(this.appData && this.organisation)
                              {
+                               bc.unshift(
+                                 {
+                                   Url:   '/' + this.organisation.id + '/' + this.appData.GlobalAppID,
+                                   Title: this.i18n('app_name')
+                                 }
+                               );
                                if(this.appData.Group)
                                {
                                  bc.unshift(
@@ -412,6 +419,15 @@ Example:
                             drawer.close();
                           }
                         },
+
+        _updateResources: function (appData)
+                          {
+                            this.resources = [];
+                            if(appData)
+                            {
+                              this.hydrateResources(this.resources, 'app_name', appData.Name);
+                            }
+                          },
 
         /**
          * Retrieve the drawer element for this app
