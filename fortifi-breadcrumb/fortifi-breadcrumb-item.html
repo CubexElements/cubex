@@ -3,13 +3,18 @@
 <dom-module id="fortifi-breadcrumb-item" attributes="href">
   <template>
     <style>
+      :host {
+        display: inline-block;
+        user-select: none;
+      }
+
       :host(:first-of-type) > i {
         display: none;
       }
 
       :host > i {
         padding: 0 4px;
-        cursor: pointer;
+        cursor: default;
         @apply --text-secondary;
       }
 
