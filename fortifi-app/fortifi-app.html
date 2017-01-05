@@ -54,6 +54,13 @@ Example:
         border-radius: 3px;
       }
 
+      @media (max-width: 1000px) {
+        app-header-layout {
+          margin-left: 16px;
+          margin-right: 16px;
+        }
+      }
+
       #app-container {
         margin-top: calc(-1 * var(--fortifi-drawer-offset-top, 0));
         border-bottom-left-radius: 3px;
@@ -63,7 +70,7 @@ Example:
       }
 
       #app-content {
-        margin: 40px;
+        margin: 32px;
         min-height: 50px;
       }
 
@@ -83,7 +90,7 @@ Example:
       }
 
       :host([has-sidebar]) #app-content-main {
-        margin-left: 232px;
+        margin-left: 224px;
       }
 
       fortifi-breadcrumb {
@@ -181,7 +188,7 @@ Example:
 
       @media (max-width: 1000px) {
         #app-content {
-          margin: 20px;
+          margin: 16px;
         }
 
         :host([has-sidebar]) #app-content-main {
