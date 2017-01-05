@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="fortifi-app-spinner-styles.html">
+<link rel="import" href="../iron-scroll-target-behavior/iron-scroll-target-behavior.html">
 
 <!--
 An element providing a solution to no problem in particular.
@@ -26,7 +27,7 @@ Example:
         pointer-events: none;
       }
 
-      .loader {
+      #spinner {
         position: absolute;
         top: 0;
         left: 0;
@@ -37,13 +38,13 @@ Example:
         height: 74px;
       }
 
-      .loader svg {
+      #spinner svg {
         width: 100%;
         height: 100%;
       }
     </style>
 
-    <div class="loader">
+    <div id="spinner">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 770 889">
         <polygon style="fill: #424e63;"
                  points="0 667 385 889 770 667 770 222 385 0 0 222 0 667"></polygon>
@@ -66,7 +67,23 @@ Example:
   <script>
     Polymer(
       {
-        is: 'fortifi-app-spinner'
+        is: 'fortifi-app-spinner',
+
+        properties: {hidden: {type: Boolean, observer: '_scrollHandler'}},
+
+        _scrollHandler: function ()
+                        {
+                          if(this.offsetHeight > this._scrollTargetHeight)
+                          {
+                            this.$.spinner.style.marginTop = ( (this._scrollTargetHeight / 2) + this._scrollTop - 150 ) + 'px';
+                          }
+                          else
+                          {
+                            this.$.spinner.style.marginTop = '';
+                          }
+                        },
+
+        behaviors: [Polymer.IronScrollTargetBehavior]
       }
     );
   </script>
