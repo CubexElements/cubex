@@ -162,13 +162,21 @@ Example:
       }
 
       #app-page-menu fortifi-link {
-        @apply --text-secondary;
-        color: var(--theme-text);
+        --fortifi-link-style: {
+          @apply --text-secondary;
+          color: var(--theme-text);
+        }
       }
 
+      #app-page-menu fortifi-link:hover,
       #app-page-menu fortifi-link[active] {
-        @apply --text-primary;
-        color: var(--accent-400-color);
+        --fortifi-link-style: {
+          @apply --text-primary;
+          color: var(--accent-400-color);
+        };
+        --fort-li-style: {
+          @apply --text-primary;
+        };
       }
 
       @media (max-width: 1000px) {
