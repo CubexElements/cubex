@@ -36,9 +36,7 @@
       <fort-icon icon="icons:home" size="16"></fort-icon>
     </fortifi-breadcrumb-item>
     <template id="crumbList" is="dom-repeat" items="[[crumbs]]">
-      <fortifi-breadcrumb-item href="/[[_trimPath(item.Url)]]">
-        [[item.Title]]
-      </fortifi-breadcrumb-item>
+      <fortifi-breadcrumb-item href="/[[_trimPath(item.Url)]]">[[item.Title]]</fortifi-breadcrumb-item>
     </template>
     <div class="stretch"></div>
     <slot name="actions"></slot>
