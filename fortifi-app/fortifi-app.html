@@ -336,7 +336,17 @@ Example:
                          {
                            if(pageData && pageData.breadcrumb)
                            {
-                             return JSON.parse(pageData.breadcrumb);
+                             var bc = JSON.parse(pageData.breadcrumb);
+                             if(this.appData && this.appData.Group)
+                             {
+                               bc.unshift(
+                                 {
+                                   "Url":   "/blue-org/vendorid/" + this.appData.Group,
+                                   "Title": this.appData.Group
+                                 }
+                               );
+                             }
+                             return bc;
                            }
                            return [];
                          },
