@@ -353,36 +353,32 @@ Example:
                          },
         _updateCrumbs:   function (pageData)
                          {
-                           if(pageData)
+                           var bc = pageData && pageData.breadcrumb ? JSON.parse(pageData.breadcrumb) : [];
+                           if(this.appData && pageData && this.organisation)
                            {
-                             var bc = pageData.breadcrumb ? JSON.parse(pageData.breadcrumb) : [];
-                             if(this.appData && this.organisation)
+                             bc.unshift(
+                               {
+                                 Url:   '/' + this.organisation.id + '/' + this.appData.GlobalAppID,
+                                 Title: this.i18n('app_name')
+                               }
+                             );
+                             if(this.appData.Group)
                              {
                                bc.unshift(
                                  {
-                                   Url:   '/' + this.organisation.id + '/' + this.appData.GlobalAppID,
-                                   Title: this.i18n('app_name')
-                                 }
-                               );
-                               if(this.appData.Group)
-                               {
-                                 bc.unshift(
-                                   {
-                                     Url:   '/' + this.organisation.id + '/' + this.appData.Vendor + '/' + this.appData.Group,
-                                     Title: this.appData.Group
-                                   }
-                                 );
-                               }
-                               bc.unshift(
-                                 {
-                                   Url:   '/' + this.organisation.id + '/' + this.appData.Category,
-                                   Title: this.appData.Category
+                                   Url:   '/' + this.organisation.id + '/' + this.appData.Vendor + '/' + this.appData.Group,
+                                   Title: this.appData.Group
                                  }
                                );
                              }
-                             return bc;
+                             bc.unshift(
+                               {
+                                 Url:   '/' + this.organisation.id + '/' + this.appData.Category,
+                                 Title: this.appData.Category
+                               }
+                             );
                            }
-                           return [];
+                           return bc;
                          },
         _resetLayout:    function ()
                          {
