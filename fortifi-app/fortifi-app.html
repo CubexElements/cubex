@@ -267,7 +267,7 @@ Example:
           },
           narrow:         {type: Boolean, value: true, reflectToAttribute: true, observer: '_updateMaxState'},
           appData:        {type: Object},
-          pageData:       {type: Object, observer: '_pageUpdated'},
+          pageData:       {type: Object, observer: '_resetLayout'},
           breadcrumbs:    {type: Object, computed: '_updateCrumbs(pageData)'},
           drawerDisabled: {
             type:               Boolean,
@@ -284,6 +284,7 @@ Example:
 
         ready: function ()
                {
+                 HTMLImports.whenReady(function () {this._resetLayout();}.bind(this));
                  document.addEventListener(
                    'fortifi-drawer-state-changed', function (e)
                    {
@@ -350,7 +351,7 @@ Example:
                            }
                            return [];
                          },
-        _pageUpdated:    function ()
+        _resetLayout:    function ()
                          {
                            Polymer.RenderStatus.afterNextRender(
                              this, function ()
