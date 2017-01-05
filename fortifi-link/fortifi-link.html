@@ -1,9 +1,24 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../paper-dialog/paper-dialog.html">
 <link rel="import" href="../../fort-pagelet/fort-pagelet.html">
+<link rel="import" href="../../paper-ripple/paper-ripple.html">
 
 <dom-module id="fortifi-link" attributes="mode href hash">
   <template>
+    <style>
+      :host {
+        display: block;
+        position: relative;
+      }
+
+      :host a {
+        @apply --fortifi-link-style;
+      }
+
+      paper-ripple {
+        color: var(--accent-200-color);
+      }
+    </style>
     <template is="dom-if" if="[[_isMode('page',mode)]]">
       <a href="[[href]]">
         <slot></slot>
@@ -24,6 +39,7 @@
         <slot></slot>
       </div>
     </template>
+    <paper-ripple center class="circle"></paper-ripple>
   </template>
   <script>
     Polymer(
