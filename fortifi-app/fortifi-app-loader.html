@@ -22,6 +22,7 @@
       }
     </style>
 
+    <iron-location hash="{{__hash}}"></iron-location>
     <app-route id="route" route="[[route]]" pattern="/:org/:vendor/:app" data="{{routeData}}"
                tail="{{appPath}}" query-params="{{appQuery}}"></app-route>
 
@@ -37,7 +38,13 @@
       <fortifi-drawer-content slot="drawer-content" id="appDrawerContent">
         <fortifi-app-menu app-data="[[appData]]"></fortifi-app-menu>
       </fortifi-drawer-content>
-      <fort-loader></fort-loader>
+      <fort-loader hidden$="[[!_loaderVisible]]"></fort-loader>
+
+      <fort-pagelet auto auth url="[[_pageletPath]]"></fort-pagelet>
+
+      <dom-if restamp if="[[!_pageletPath]]">
+        <template id="pageContent"></template>
+      </dom-if>
     </fortifi-app>
   </template>
   <script>
@@ -45,6 +52,7 @@
       {
         is:         'fortifi-app-loader',
         properties: {
+          _loaderVisible:    {type: Boolean, value: false},
           _addLoader:        {type: Number, value: 0},
           _loadedPath:       {type: String, value: ''},
           _appDataPath:      {type: String},
@@ -56,7 +64,8 @@
         },
         observers:  [
           '_pathChanged(route.path)',
-          '_updateData(_pageXhr,_pageData)'
+          '_updateData(_pageXhr, _pageData)',
+          '_updateWithHash(__hash, _integrations)'
         ],
         attached:   function ()
                     {
@@ -79,14 +88,14 @@
                           if(this.route.path !== this._loadedPath)
                           {
                             this._loadedPath = this.route.path;
-                            var vendor = this.routeData.vendor,
+                            var self = this,
+                              vendor = this.routeData.vendor,
                               app = this.routeData.app,
                               path = this.appPath.path.replace(/^\//, ''),
-                              appNode = Polymer.dom(this.$.app),
                               fullPath = vendor + '/' + app + (path ? '/' + path : '');
 
                             this._addLoader = setTimeout(
-                              function () { appNode.appendChild(document.createElement('fort-loader')); }, 50
+                              function () { self._loaderVisible = true; }, 50
                             );
                             this._integrationsPath = '//' + this.getServiceHost('apps') + '/fortifi/integrations/integrations.json?hook=/' + fullPath;
                             this._appDataPath = '//' + this.getServiceHost('apps') + '/' + fullPath;
@@ -101,6 +110,37 @@
                           this.appData = {};
                         }
                       },
+
+        _updateWithHash: function ()
+                         {
+                           if(this.__hash && this._integrations)
+                           {
+                             var items = null;
+                             if(this.__hash.substr(0, 2) == 'm-')
+                             {
+                               items = this._integrations.PageMenuItems;
+                             }
+                             else if(this.__hash.substr(0, 2) == 'a-')
+                             {
+                               items = this._integrations.PageActions;
+                             }
+                             if(items)
+                             {
+                               for(var i in items)
+                               {
+                                 if(items.hasOwnProperty(i))
+                                 {
+                                   if(items[i].ID == this.__hash.substr(2))
+                                   {
+                                     this._pageletPath = '//' + this.getServiceHost('apps') + items[i].Path;
+                                     return;
+                                   }
+                                 }
+                               }
+                             }
+                           }
+                           this._pageletPath = '';
+                         },
 
         _updateData: function ()
                      {
@@ -131,19 +171,14 @@
                        {
                          clearTimeout(this._addLoader);
                        }
+                       this._loaderVisible = false;
 
-                       var appNode = Polymer.dom(this.$.app);
-                       this.iterate(
-                         appNode.getEffectiveChildNodes(),
-                         function (node)
-                         {
-                           if(node.nodeType == 3 || node.id !== 'appDrawerContent')
-                           {
-                             appNode.removeChild(node);
-                           }
-                         }
-                       );
-                       appNode.appendChild(frag);
+                       // modify the dom-if template
+                       this.$.pageContent._content = frag;
+                       // rebuild dom-if template instance
+                       this.$.pageContent.parentNode._teardownInstance();
+                       this.$.pageContent.parentNode._render();
+
                        this.pageData = headers;
                      },
 

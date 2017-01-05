@@ -1,9 +1,4 @@
 <link rel="import" href="../../polymer/polymer.html">
-<link rel="import" href="../fortifi-drawer/fortifi-drawer.html">
-<link rel="import" href="../fortifi-drawer/fortifi-drawer-content.html">
-<link rel="import" href="../fortifi-breadcrumb/fortifi-breadcrumb.html">
-<link rel="import" href="../fortifi-app/fortifi-app-definition.html">
-<link rel="import" href="../fortifi-app/fortifi-app-header.html">
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../iron-media-query/iron-media-query.html">
 <link rel="import" href="../../fort-behavior/fort-touch-enabled-behavior.html">
@@ -12,10 +7,16 @@
 <link rel="import" href="../../app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../../app-layout/app-header/app-header.html">
 <link rel="import" href="../../app-layout/app-toolbar/app-toolbar.html">
-<link rel="import" href="../fortifi-effects/displace-element.html">
 <link rel="import" href="../../fort-list/fort-list.html">
 <link rel="import" href="../../fort-list/fort-li.html">
 <link rel="import" href="../../fort-pagelet/fort-pagelet.html">
+<link rel="import" href="../fortifi-drawer/fortifi-drawer.html">
+<link rel="import" href="../fortifi-drawer/fortifi-drawer-content.html">
+<link rel="import" href="../fortifi-breadcrumb/fortifi-breadcrumb.html">
+<link rel="import" href="../fortifi-app/fortifi-app-definition.html">
+<link rel="import" href="../fortifi-app/fortifi-app-header.html">
+<link rel="import" href="../fortifi-effects/displace-element.html">
+<link rel="import" href="../fortifi-link/fortifi-link.html">
 
 
 <!--
@@ -116,19 +117,16 @@ Example:
         --fortifi-drawer-width: 0;
       }
 
-      #app-page-actions a {
+      #app-page-actions fort-action {
         display: block;
-        --fort-action-style: {
-          display: block;
-          @apply --paper-font-body2;
-          background: var(--theme-100-color);
-          color: var(--accent-400-color);
-          text-align: center;
-          border-radius: 3px;
-          border: 1px solid var(--theme-700-color);
-          text-transform: uppercase;
-          padding: 2px 7px 2px 2px;
-        }
+        @apply --paper-font-body2;
+        background: var(--theme-100-color);
+        color: var(--accent-400-color);
+        text-align: center;
+        border-radius: 3px;
+        border: 1px solid var(--theme-700-color);
+        text-transform: uppercase;
+        padding: 2px 7px 2px 2px;
       }
 
       #app-sidebar .sidebar-group {
@@ -143,11 +141,11 @@ Example:
         margin-bottom: 0;
       }
 
-      #app-page-actions > a {
+      #app-page-actions > fortifi-link {
         margin-bottom: 5px;
       }
 
-      #app-page-actions > a:last-of-type {
+      #app-page-actions > fortifi-link:last-of-type {
         margin-bottom: 0 !important;
       }
 
@@ -162,12 +160,12 @@ Example:
         };
       }
 
-      #app-page-menu a {
+      #app-page-menu fortifi-link {
         @apply --text-secondary;
         color: var(--theme-text);
       }
 
-      #app-page-menu a[active] {
+      #app-page-menu fortifi-link[active] {
         @apply --text-primary;
         color: var(--accent-400-color);
       }
@@ -213,9 +211,11 @@ Example:
               <template is="dom-if" if="[[integrations.PageActions]]">
                 <div id="app-page-actions" class="sidebar-group">
                   <template is="dom-repeat" items="[[integrations.PageActions]]">
-                    <a id="page-action-[[item.ID]]" href="[[item.Path]]">
+                    <fortifi-link id="a-[[item.ID]]" hash="a-[[item.ID]]"
+                                  href="//[[getServiceHost('apps')]][[item.Path]]"
+                                  mode="[[item.Mode]]" title="[[item.Description]]">
                       <fort-action icon="[[item.Icon]]">[[item.Title]]</fort-action>
-                    </a>
+                    </fortifi-link>
                   </template>
                 </div>
               </template>
@@ -223,9 +223,11 @@ Example:
               <template is="dom-if" if="[[integrations.PageMenuItems]]">
                 <fort-list id="app-page-menu" class="sidebar-group" border double-border bottom-border>
                   <template is="dom-repeat" items="[[integrations.PageMenuItems]]">
-                    <a id="page-menu-[[item.ID]]" href="[[item.Path]]" title="[[item.Description]]">
+                    <fortifi-link id="m-[[item.ID]]" hash="m-[[item.ID]]"
+                                  href="//[[getServiceHost('apps')]][[item.Path]]"
+                                  mode="[[item.Mode]]" title="[[item.Description]]">
                       <fort-li>[[item.Title]]</fort-li>
-                    </a>
+                    </fortifi-link>
                   </template>
                 </fort-list>
               </template>
