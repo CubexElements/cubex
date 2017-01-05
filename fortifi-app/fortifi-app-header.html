@@ -55,6 +55,7 @@
 
       :host ::slotted(h1) {
         @apply --paper-font-title;
+        font-weight: normal;
         margin: 0;
         padding: 0;
         line-height: 64px;
@@ -145,10 +146,6 @@
         border-bottom: 2px solid transparent;
         margin-left: 8px;
         --paper-button-ink-color: var(--accent-400-color);
-      }
-
-      :host #menu fort-action:not([active]) {
-        @apply --text-secondary;
       }
 
       :host #menu fort-action[active] {
