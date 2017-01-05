@@ -15,8 +15,19 @@ Example:
 <dom-module id="fortifi-app-spinner">
   <template>
     <style include="fortifi-app-spinner-styles">
+      :host {
+        background: rgba(255, 255, 255, 0.5);
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1;
+        pointer-events: none;
+      }
+
       .loader {
-        position: fixed;
+        position: absolute;
         top: 0;
         left: 0;
         right: 0;
