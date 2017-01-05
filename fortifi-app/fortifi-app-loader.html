@@ -1,16 +1,16 @@
 <link rel="import" href="../../polymer/polymer.html">
-<link rel="import" href="../fortifi-drawer/fortifi-drawer.html">
-<link rel="import" href="../../fort-loader/fort-loader.html">
+<link rel="import" href="../../app-route/app-route.html">
 <link rel="import" href="../../fort-action/fort-action.html">
 <link rel="import" href="../../fort-list/fort-li.html">
+<link rel="import" href="../../fort-pagelet/fort-pagelet-content.html">
+<link rel="import" href="../../fort-behavior/fort-iterator-behavior.html">
+<link rel="import" href="../../fort-behavior/fort-service-behavior.html">
+<link rel="import" href="../fortifi-drawer/fortifi-drawer.html">
 <link rel="import" href="fortifi-app.html">
 <link rel="import" href="fortifi-app-title.html">
 <link rel="import" href="fortifi-app-header.html">
 <link rel="import" href="fortifi-app-menu.html">
-<link rel="import" href="../../fort-pagelet/fort-pagelet-content.html">
-<link rel="import" href="../../app-route/app-route.html">
-<link rel="import" href="../../fort-behavior/fort-iterator-behavior.html">
-<link rel="import" href="../../fort-behavior/fort-service-behavior.html">
+<link rel="import" href="fortifi-app-spinner.html">
 
 <dom-module id="fortifi-app-loader" attributes="route vendor">
   <template strip-whitespace>
@@ -38,7 +38,7 @@
       <fortifi-drawer-content slot="drawer-content" id="appDrawerContent">
         <fortifi-app-menu app-data="[[appData]]"></fortifi-app-menu>
       </fortifi-drawer-content>
-      <fort-loader hidden$="[[!_loaderVisible]]"></fort-loader>
+      <fortifi-app-spinner hidden$="[[!_loaderVisible]]"></fortifi-app-spinner>
 
       <fort-pagelet auto auth url="[[_pageletPath]]"></fort-pagelet>
 
