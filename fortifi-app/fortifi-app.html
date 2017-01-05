@@ -340,12 +340,21 @@ Example:
                            if(pageData && pageData.breadcrumb)
                            {
                              var bc = JSON.parse(pageData.breadcrumb);
-                             if(this.appData && this.appData.Group && this.organisation)
+                             if(this.appData && this.organisation)
                              {
+                               if(this.appData.Group)
+                               {
+                                 bc.unshift(
+                                   {
+                                     Url:   '/' + this.organisation.id + '/' + this.appData.Vendor + '/' + this.appData.Group,
+                                     Title: this.appData.Group
+                                   }
+                                 );
+                               }
                                bc.unshift(
                                  {
-                                   Url:   '/' + this.organisation.id + '/' + this.appData.Vendor + '/' + this.appData.Group,
-                                   Title: this.appData.Group
+                                   Url:   '/' + this.organisation.id + '/' + this.appData.Category,
+                                   Title: this.appData.Category
                                  }
                                );
                              }
