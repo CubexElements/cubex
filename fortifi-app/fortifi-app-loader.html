@@ -60,6 +60,7 @@
           _appDataHeaders:   {type: Object, computed: '_getHeaders(routeData.org)'},
           _pageXhr:          {type: Object},
           _pageData:         {type: Object},
+          appData:           {type: Object, notify: true},
           pageData:          {type: Object, notify: true}
         },
         observers:  [
@@ -107,7 +108,8 @@
                           this._appDataPath = null;
                           this._loadedPath = null;
                           this.routeData = {};
-                          this.appData = {};
+                          this.pageData = null;
+                          this.appData = null;
                         }
                       },
 
