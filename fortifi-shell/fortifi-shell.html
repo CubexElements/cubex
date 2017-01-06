@@ -77,6 +77,11 @@
         @apply(--app-header-shadow);
       }
 
+      app-drawer-layout {
+        /* fix over scrolling on small content pages */
+        height: 0;
+      }
+
       app-header {
         position: fixed;
         top: 0;
