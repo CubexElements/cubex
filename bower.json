@@ -22,7 +22,8 @@
     "app-layout": "PolymerElements/app-layout#2.0-preview",
     "app-storage": "PolymerElements/app-storage#2.0-preview",
     "moment-element": "^0.4.3",
-    "shadycss": "TomK/shadycss#issue-21"
+    "shadycss": "TomK/shadycss#issue-21",
+    "page-title": "^2.0.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

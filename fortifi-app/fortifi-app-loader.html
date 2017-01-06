@@ -5,6 +5,7 @@
 <link rel="import" href="../../fort-pagelet/fort-pagelet-content.html">
 <link rel="import" href="../../fort-behavior/fort-iterator-behavior.html">
 <link rel="import" href="../../fort-behavior/fort-service-behavior.html">
+<link rel="import" href="../../page-title/page-title.html">
 <link rel="import" href="../fortifi-drawer/fortifi-drawer.html">
 <link rel="import" href="fortifi-app.html">
 <link rel="import" href="fortifi-app-title.html">
@@ -33,6 +34,8 @@
                    headers="[[_appDataHeaders]]"></fort-resource>
     <fort-resource auto auth url="[[_appDataPath]]" data="{{_pageData}}" xhr="{{_pageXhr}}"
                    headers="[[_appDataHeaders]]"></fort-resource>
+
+    <page-title base-title="Fortifi" title="[[pageData.title]]"></page-title>
 
     <fortifi-app id="app" app-data="[[appData]]" page-data="[[pageData]]" integrations="[[_integrations]]">
       <fortifi-drawer-content slot="drawer-content" id="appDrawerContent">
