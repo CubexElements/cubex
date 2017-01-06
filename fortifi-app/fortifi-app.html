@@ -161,8 +161,7 @@ Example:
         background: var(--theme-400-color);
         border-radius: 3px;
         border: 1px solid var(--theme-700-color);
-        --fort-list-double-border-color: white;
-        --fort-li-style: {
+        --fort-li-content-style: {
           @apply --paper-font-body2;
           @apply --text-secondary;
         };
@@ -172,17 +171,33 @@ Example:
         --fortifi-link-style: {
           @apply --text-secondary;
           color: var(--theme-text);
-        }
-      }
-
-      #app-page-menu fortifi-link:hover,
-      #app-page-menu fortifi-link[active] {
-        --fortifi-link-style: {
+        };
+        --fortifi-link-active-style: {
           @apply --text-primary;
           color: var(--accent-400-color);
         };
-        --fort-li-style: {
+        --fortifi-link-hover-style: {
           @apply --text-primary;
+          color: var(--accent-400-color);
+        };
+      }
+
+      #app-page-menu fortifi-link[active] {
+        --fort-list-border-color: transparent;
+        --fort-list-double-border-color: transparent;
+        --fort-li-style: {
+          background: var(--accent-50-color) !important;
+        };
+        --fort-li-content-style: {
+          @apply --paper-font-body2;
+          @apply --text-primary;
+        }
+      }
+
+      #app-page-menu fortifi-link:hover {
+        --fort-li-content-style: {
+          @apply --text-primary;
+          @apply --paper-font-body2;
         };
       }
 
