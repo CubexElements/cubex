@@ -127,30 +127,27 @@
         display: none;
       }
 
-      :host #menu a {
-        text-decoration: none;
-      }
-
-      :host #menu a:hover {
+      :host #menu fortifi-link:hover {
         color: var(--accent-400-color);
-      }
-
-      :host #menu a:hover fort-action {
         @apply --text-primary;
       }
 
-      :host #menu fort-action {
+      :host #menu fortifi-link {
+        display: inline-block;
         @apply --paper-font-body2;
-        padding: 12px 11px 10px 11px;
         text-transform: uppercase;
-        border-bottom: 2px solid transparent;
         margin-left: 8px;
-        --paper-button-ink-color: var(--accent-400-color);
-      }
 
-      :host #menu fort-action[active] {
-        border-bottom-color: var(--accent-400-color);
-        color: var(--accent-400-color);
+        --fortifi-link-style: {
+          display: block;
+          padding: 12px 11px 10px 11px;
+          text-decoration: none;
+          border-bottom: 2px solid transparent;
+        };
+        --fortifi-link-active-style: {
+          border-bottom: 2px solid var(--accent-400-color);
+          color: var(--accent-400-color);
+        };
       }
 
       @media all and (max-width: 700px) {
@@ -197,9 +194,7 @@
 
     <div id="menu">
       <template is="dom-repeat" items="[[menu]]">
-        <a href="[[item.Path]]">
-          <fort-action>[[item.Title]]</fort-action>
-        </a>
+        <fortifi-link href="[[item.Path]]">[[item.Title]]</fortifi-link>
       </template>
     </div>
   </template>
