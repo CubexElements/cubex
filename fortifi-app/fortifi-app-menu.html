@@ -62,19 +62,28 @@
         user-select: none;
 
         width: 100%;
-      }
 
-      :host fort-li {
         color: var(--text-color-secondary);
       }
 
-      :host fort-li:hover {
-        background: var(--theme-500-color);
+      :host fortifi-link:hover {
+        --fort-li-style: {
+          @apply --paper-font-body2;
+          background: var(--theme-500-color);
+        };
+        --fort-li-content-style: {
+          color: var(--accent-400-color);
+        };
       }
 
-      :host fort-li[active] {
-        background: var(--accent-100-color) !important;
-        color: var(--accent-700-color);
+      :host fortifi-link[active] {
+        --fort-li-style: {
+          @apply --paper-font-body2;
+          background: var(--accent-50-color) !important;
+        };
+        --fort-li-content-style: {
+          color: var(--accent-400-color);
+        };
       }
 
       :host fort-li[active]:before {
@@ -149,13 +158,14 @@
       <template restamp is="dom-if" if="[[appData.Navigation.length]]">
         <fort-list>
           <template is="dom-repeat" items="[[appData.Navigation]]">
-            <a href="/[[routeData.org]]/[[appData.GlobalAppID]]/[[_trimPath(item.Path)]]" on-tap="_collapseDrawer">
+            <fortifi-link href="/[[routeData.org]]/[[appData.GlobalAppID]]/[[_trimPath(item.Path)]]"
+                          on-tap="_collapseDrawer">
               <fort-li>
                 <fort-icon slot="icon" icon="[[item.Icon]]"></fort-icon>
                 [[i18n_c4t('nav_', item.ID, '_name')]]
                 <paper-ripple></paper-ripple>
               </fort-li>
-            </a>
+            </fortifi-link>
           </template>
         </fort-list>
       </template>
