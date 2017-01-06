@@ -7,7 +7,7 @@
   <template>
     <style>
       :host {
-        display: block;
+        display: inline;
         position: relative;
       }
 
@@ -15,10 +15,17 @@
         @apply --fortifi-link-style;
       }
 
+      :host([active]) a {
+        @apply --fortifi-link-active-style;
+      }
+
       paper-ripple {
-        color: var(--accent-200-color);
+        @apply --fortifi-link-style;
       }
     </style>
+
+    <iron-location path="{{__path}}" query="{{__query}}" hash="{{__hash}}"></iron-location>
+
     <template is="dom-if" if="[[_isMode('page',mode)]]">
       <a href="[[href]]">
         <slot></slot>
@@ -46,12 +53,47 @@
       {
         is:         'fortifi-link',
         properties: {
+          active:   {type: Boolean, reflectToAttribute: true, value: false},
           mode:     {type: String, value: 'page'},
           href:     {type: String},
           hash:     {type: String},
           _dlg:     {type: Object},
           _pagelet: {type: Object}
         },
+
+        observers: ['_activeState(__path,__query,__hash)'],
+
+        _activeState: function (path, query, hash)
+                      {
+                        if(this.mode == 'page')
+                        {
+                          if(this.href == '#' + hash)
+                          {
+                            this.active = true;
+                          }
+                          else if(this.href == '?' + query)
+                          {
+                            this.active = true;
+                          }
+                          else if(this.href && this.href == path)
+                          {
+                            this.active = true;
+                          }
+                          else
+                          {
+                            this.active = false;
+                          }
+                        }
+                        else if(this.mode == 'pagelet' && this.hash == hash)
+                        {
+                          this.active = true;
+                        }
+                        else
+                        {
+                          this.active = false;
+                        }
+                      },
+
         _isMode:    function (test, mode)
                     {
                       return test == mode;
