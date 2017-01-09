@@ -53,10 +53,7 @@
       {
         is:         'fortifi-pinned-apps',
         properties: {
-          pinnedApps: {
-            type:  Array,
-            value: []
-          }
+          pinnedApps: {type: Array, value: function () {return [];}}
         },
         _pinnedSub: function (e, msg)
                     {
