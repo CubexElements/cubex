@@ -47,7 +47,7 @@
       {
         is:         'fortifi-breadcrumb',
         properties: {
-          crumbs: {type: Array, value: []}
+          crumbs: {type: Array, value: function () {return [];}}
         },
         _trimPath:  function (path)
                     {
