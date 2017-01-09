@@ -1,5 +1,6 @@
 <link href="../../polymer/polymer.html" rel="import">
 <link href="../fortifi-registry/fortifi-registry.html" rel="import">
+<link href="../fortifi-category/fortifi-category.html" rel="import">
 <link href="../fortifi-organisation/fortifi-organisation.html" rel="import">
 <link href="../../iron-selector/iron-selector.html" rel="import">
 <link href="../../paper-button/paper-button.html" rel="import">
@@ -126,7 +127,8 @@
         <fortifi-shell-drawer-panel>
           <fort-list-menu show-filter filter-label="{{i18n('filter_apps')}}">
             <template is="dom-repeat" items="[[__appGroups(_orgRegistryData)]]" as="group">
-              <fort-list-group title="[[group.name]]">
+              <fort-list-group>
+                <fortifi-category key="[[group.name]]" slot="title"></fortifi-category>
                 <template is="dom-repeat" items="[[group.apps]]" as="app">
                   <a href="/[[organisation.id]]/[[app.vendor_id]]/[[app.id]]" on-tap="_toggleParent">
                     <fort-li>
