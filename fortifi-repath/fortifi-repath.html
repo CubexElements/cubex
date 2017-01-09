@@ -1,0 +1,50 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../app-route/app-location.html">
+<link rel="import" href="../../app-route/app-route.html">
+<link rel="import" href="../../fort-behavior/fort-service-behavior.html">
+
+<dom-module id="fortifi-repath" attributes="in service gaid out">
+  <template>
+    <app-location route="{{route}}"></app-location>
+    <app-route route="[[route]]" pattern="/:org/:vendor/:app" data="{{routeData}}"></app-route>
+  </template>
+  <script>
+    Polymer(
+      {
+        is:         'fortifi-repath',
+        properties: {
+          'in':      {type: String},
+          'service': {type: String},
+          'gaid':    {type: String, computed: '_computeGaid(routeData.vendor,routeData.app)'},
+          'out':     {type: String, notify: true, computed: '_computePath(in,service,gaid,routeData.org)'}
+        },
+
+        _computeGaid: function ()
+                      {
+                        return this.routeData.vendor + '/' + this.routeData.app;
+                      },
+
+        _computePath: function (inPath, service, gaid, org)
+                      {
+                        if(inPath && gaid)
+                        {
+                          if(service)
+                          {
+                            return '//' + this.getServiceHost(service)
+                              + '/' + gaid
+                              + '/' + inPath.replace(/^\//, '');
+                          }
+                          else if(org)
+                          {
+                            return '/' + org
+                              + '/' + gaid
+                              + '/' + inPath.replace(/^\//, '');
+                          }
+                        }
+                      },
+
+        behaviors: [Polymer.FortServiceBehavior]
+      }
+    );
+  </script>
+</dom-module>
