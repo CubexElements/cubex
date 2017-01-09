@@ -2,7 +2,15 @@
 <link rel="import" href="../../fort-behavior/fort-i18n-behavior.html">
 
 <dom-module id="fortifi-category" attributes="key short">
-  <template strip-whitespace>[[i18n(i18nKeys)]]</template>
+  <template strip-whitespace>
+    <style>
+      :host {
+        display: inline;
+        @apply --fortifi-category-style;
+      }
+    </style>
+    [[i18n(i18nKeys)]]
+  </template>
   <script>
     Polymer(
       {
