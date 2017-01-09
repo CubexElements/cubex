@@ -223,7 +223,7 @@ Example:
       <slot slot="drawer-content" name="drawer-content"></slot>
       <app-header-layout id="ahl">
         <app-header id="ah" slot="header" reveals condenses effects="displace-element waterfall">
-          <fortifi-breadcrumb crumbs="[[breadcrumbs]]"></fortifi-breadcrumb>
+          <fortifi-breadcrumb crumbs="[[breadcrumbs]]" category="[[appData.Category]]"></fortifi-breadcrumb>
           <app-toolbar sticky>
             <fortifi-app-header back-path="[[pageData.backPath]]" actions="[[integrations.HeaderActions]]"
                                 menu="[[integrations.HeaderMenuItems]]">
@@ -387,12 +387,6 @@ Example:
                                  }
                                );
                              }
-                             bc.unshift(
-                               {
-                                 Url:   '/' + this.organisation.id + '/' + this.appData.Category,
-                                 Title: this.appData.Category
-                               }
-                             );
                            }
                            return bc;
                          },

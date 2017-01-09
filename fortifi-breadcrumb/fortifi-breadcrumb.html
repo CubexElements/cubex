@@ -1,6 +1,7 @@
 <link rel="import" href="../../polymer/polymer.html"/>
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout.html"/>
 <link rel="import" href="fortifi-breadcrumb-item.html"/>
+<link rel="import" href="../fortifi-category/fortifi-category.html"/>
 
 <dom-module id="fortifi-breadcrumb" attributes="crumbs">
   <template>
@@ -35,6 +36,11 @@
     <fortifi-breadcrumb-item id="home" href="/[[routeData.org]]">
       <fort-icon icon="icons:home" size="16"></fort-icon>
     </fortifi-breadcrumb-item>
+    <template is="dom-if" if="[[category]]">
+      <fortifi-breadcrumb-item id="category" href="/[[routeData.org]]/[[category]]">
+        <fortifi-category key="[[category]]" short></fortifi-category>
+      </fortifi-breadcrumb-item>
+    </template>
     <template id="crumbList" is="dom-repeat" items="[[crumbs]]">
       <fortifi-breadcrumb-item href="/[[_trimPath(item.Url)]]">[[item.Title]]</fortifi-breadcrumb-item>
     </template>
@@ -47,7 +53,8 @@
       {
         is:         'fortifi-breadcrumb',
         properties: {
-          crumbs: {type: Array, value: function () {return [];}}
+          crumbs:   {type: Array, value: function () {return [];}},
+          category: {type: String}
         },
         _trimPath:  function (path)
                     {
