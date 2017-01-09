@@ -1,0 +1,64 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../fort-behavior/fort-i18n-behavior.html">
+
+<dom-module id="fortifi-category" attributes="key short">
+  <template strip-whitespace>[[i18n(i18nKeys)]]</template>
+  <script>
+    Polymer(
+      {
+        is:         'fortifi-category',
+        properties: {
+          key:       {
+            type:  String,
+            value: ""
+          },
+          short:     {
+            type:  Boolean,
+            value: false
+          },
+          i18nKeys:  {
+            type:     Array,
+            computed: 'makekey(key,short)'
+          },
+          resources: {
+            type:  Object,
+            value: {
+              "en": {
+                "support":             "Support",
+                "finance":             "Finance",
+                "logistics":           "Logistics",
+                "purchasing":          "Purchasing",
+                "planning":            "Planning",
+                "research":            "Research",
+                "products":            "Products",
+                "it":                  "Information Technology",
+                "short_it":            "IT",
+                "communication":       "Communications",
+                "short_communication": "Comms",
+                "admin":               "Administration",
+                "marketing":           "Sales & Marketing",
+                "operations":          "Operations",
+                "development":         "Development",
+                "pr":                  "Public Relations",
+                "short_pr":            "PR",
+                "hr":                  "Human Resources",
+                "short_hr":            "HR",
+                "other":               "Other"
+              },
+              "fr": {
+                "support": "Supporte"
+              }
+            }
+          }
+        },
+        makekey:    function (key, short)
+                    {
+                      return short ? ['short_' + key, key] : [key]
+                    },
+        behaviors:  [
+          Polymer.FortI18nBehavior
+        ]
+      }
+    );
+  </script>
+</dom-module>
