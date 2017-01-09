@@ -203,7 +203,7 @@
     {
       is:         'fortifi-app-header',
       properties: {
-        actions:  {type: Array, value: []},
+        actions:  {type: Array, value: function () {return [];}},
         backPath: {type: String},
         _small:   {type: Boolean}
       },
