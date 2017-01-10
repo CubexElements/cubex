@@ -39,7 +39,7 @@
                             app-data="{{appData}}"></fortifi-app-definition>
 
     <fort-resource auto auth url="[[_integrationsPath]]" data="{{_integrations}}"
-                   headers="[[_appDataHeaders]]"></fort-resource>
+                   headers="[[_appDataHeaders]]" ttl="3600"></fort-resource>
     <fort-resource auto auth url="[[_appDataPath]]" data="{{_pageData}}" xhr="{{_pageXhr}}"
                    headers="[[_appDataHeaders]]"></fort-resource>
 
