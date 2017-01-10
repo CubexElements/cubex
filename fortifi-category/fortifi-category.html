@@ -32,6 +32,7 @@
             type:  Object,
             value: {
               "en": {
+                "no_category":         "Unsupported",
                 "support":             "Support",
                 "finance":             "Finance",
                 "logistics":           "Logistics",
@@ -59,11 +60,13 @@
             }
           }
         },
-        makekey:    function (key, short)
-                    {
-                      return short ? ['short_' + key, key] : [key]
-                    },
-        behaviors:  [
+
+        makekey: function (key, short)
+                 {
+                   return short ? ['short_' + key, key, "no_category"] : [key, "no_category"]
+                 },
+
+        behaviors: [
           Polymer.FortI18nBehavior
         ]
       }
