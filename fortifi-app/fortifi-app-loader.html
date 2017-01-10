@@ -51,13 +51,16 @@
       </fortifi-drawer-content>
       <fortifi-app-spinner slot="spinner" hidden$="[[!_loaderVisible]]"></fortifi-app-spinner>
 
-      <fort-pagelet auto auth url="[[_pageletPath]]"></fort-pagelet>
+      <fortifi-repath in="[[_integration.Path]]" service="apps" gaid="[[_integration.GlobalAppID]]"
+                      out="{{_integrationPath}}"></fortifi-repath>
+      <fort-pagelet auto auth url="[[_integrationPath]]"></fort-pagelet>
 
-      <dom-if restamp if="[[!_pageletPath]]">
+      <dom-if restamp if="[[!_integration]]">
         <template id="pageContent"></template>
       </dom-if>
     </fortifi-app>
   </template>
+
   <script>
     Polymer(
       {
@@ -71,13 +74,14 @@
           _appDataHeaders:   {type: Object, computed: '_getHeaders(routeData.org)'},
           _pageXhr:          {type: Object},
           _pageData:         {type: Object},
+          _integration:      {type: Object, value: null},
           appData:           {type: Object, notify: true},
           pageData:          {type: Object, notify: true}
         },
         observers:  [
           '_pathChanged(route.path)',
           '_updateData(_pageXhr, _pageData)',
-          '_updateWithHash(__hash, _integrations)'
+          '_updateIntegration(__hash, _integrations)'
         ],
         attached:   function ()
                     {
@@ -124,36 +128,37 @@
                         }
                       },
 
-        _updateWithHash: function ()
-                         {
-                           if(this.__hash && this._integrations)
-                           {
-                             var items = null;
-                             if(this.__hash.substr(0, 2) == 'm-')
-                             {
-                               items = this._integrations.PageMenuItems;
-                             }
-                             else if(this.__hash.substr(0, 2) == 'a-')
-                             {
-                               items = this._integrations.PageActions;
-                             }
-                             if(items)
-                             {
-                               for(var i in items)
-                               {
-                                 if(items.hasOwnProperty(i))
-                                 {
-                                   if(items[i].ID == this.__hash.substr(2))
-                                   {
-                                     this._pageletPath = '//' + this.getServiceHost('apps') + items[i].Path;
-                                     return;
-                                   }
-                                 }
-                               }
-                             }
-                           }
-                           this._pageletPath = '';
-                         },
+        _updateIntegration: function ()
+                            {
+                              if(this.__hash && this._integrations)
+                              {
+                                var items = null,
+                                  type = this.__hash.substr(0, 2);
+                                if(type == 'm-')
+                                {
+                                  items = this._integrations.PageMenuItems;
+                                }
+                                else if(type == 'a-')
+                                {
+                                  items = this._integrations.PageActions;
+                                }
+                                if(items)
+                                {
+                                  for(var i in items)
+                                  {
+                                    if(items.hasOwnProperty(i))
+                                    {
+                                      if(items[i].ID == this.__hash.substr(2))
+                                      {
+                                        this._integration = items[i];
+                                        return;
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                              this._integration = null;
+                            },
 
         _updateData: function ()
                      {
