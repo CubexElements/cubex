@@ -23,7 +23,8 @@
     "app-storage": "PolymerElements/app-storage#2.0-preview",
     "moment-element": "^0.4.3",
     "shadycss": "TomK/shadycss#issue-21",
-    "page-title": "^2.0.0"
+    "page-title": "^2.0.0",
+    "murmurHash3js": "murmurhash3js#^3.0.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
