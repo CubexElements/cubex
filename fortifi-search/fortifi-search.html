@@ -123,7 +123,7 @@
     <app-route route="[[route]]" pattern="/:org" data="{{routeData}}"></app-route>
 
     <fort-resource auto auth url="//[[getServiceHost('apps')]]/fortifi/searchactions/search.json"
-                   headers="[[_headers]]" data="{{_search}}"></fort-resource>
+                   headers="[[_headers]]" data="{{_search}}" ttl="3600"></fort-resource>
 
     <div id="scrim" hidden="[[!focused]]"></div>
 

@@ -41,8 +41,7 @@
     <app-route route="[[route]]" pattern="/:org" data="{{routeData}}"></app-route>
 
     <fort-resource auto auth url="//[[getServiceHost('apps')]]/fortifi/quickactions/actions.json"
-                   headers="[[_headers]]" data="{{actions}}"></fort-resource>
-
+                   headers="[[_headers]]" data="{{actions}}" ttl="3600"></fort-resource>
 
     <fort-dropdown horizontal-align="right" id="qadrop">
       <template is="dom-if" if="[[actions.Actions]]">

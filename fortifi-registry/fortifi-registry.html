@@ -10,9 +10,9 @@
     <app-route route="[[route]]" pattern="/:org" data="{{routeData}}"></app-route>
 
     <fort-resource auto auth url="//[[getServiceHost('apps')]]/fortifi/registry/organisation.json"
-                   data="{{orgData}}" headers="[[_headers]]"></fort-resource>
+                   data="{{orgData}}" headers="[[_headers]]" ttl="3600"></fort-resource>
     <fort-resource auto auth url="//[[getServiceHost('apps')]]/fortifi/registry/user.json"
-                   data="{{userData}}" headers="[[_headers]]"></fort-resource>
+                   data="{{userData}}" headers="[[_headers]]" ttl="3600"></fort-resource>
   </template>
   <script>
     Polymer(
