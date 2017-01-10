@@ -16,33 +16,44 @@
         properties: {
           'in':      {type: String},
           'service': {type: String},
-          'gaid':    {type: String, computed: '_computeGaid(routeData.vendor,routeData.app)'},
-          'out':     {type: String, notify: true, computed: '_computePath(in,service,gaid,routeData.org)'}
+          'gaid':    {type: String},
+          'out':     {
+            type:     String,
+            notify:   true,
+            computed: '_computePath(in,service,gaid,routeData.org,routeData.vendor,routeData.app)'
+          }
         },
 
-        _computeGaid: function ()
+        _computePath: function (inPath, service, gaid, org, vendor, app)
                       {
-                        return this.routeData.vendor + '/' + this.routeData.app;
-                      },
-
-        _computePath: function (inPath, service, gaid, org)
-                      {
-                        if(inPath && gaid)
+                        if(inPath && (service || org) && (gaid || (vendor && app)))
                         {
+                          var paths = [];
                           if(service)
                           {
-                            return '//' + this.getServiceHost(service)
-                              + '/' + gaid
-                              + '/' + inPath.replace(/^\//, '');
+                            paths.push('/' + this.getServiceHost(service));
                           }
                           else if(org)
                           {
-                            return '/' + org
-                              + '/' + gaid
-                              + '/' + inPath.replace(/^\//, '');
+                            paths.push(org);
                           }
+
+                          if((gaid === undefined) && vendor && app)
+                          {
+                            gaid = vendor + '/' + app;
+                          }
+
+                          if(gaid)
+                          {
+                            paths.push(gaid);
+                          }
+                          if(inPath)
+                          {
+                            paths.push(inPath.replace(/^\//, ''));
+                          }
+
+                          return '/' + paths.join('/');
                         }
-                        return inPath;
                       },
 
         behaviors: [Polymer.FortServiceBehavior]
