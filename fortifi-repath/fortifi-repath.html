@@ -8,6 +8,7 @@
     <app-location route="{{route}}"></app-location>
     <app-route route="[[route]]" pattern="/:org/:vendor/:app" data="{{routeData}}"></app-route>
   </template>
+
   <script>
     Polymer(
       {
@@ -41,6 +42,7 @@
                               + '/' + inPath.replace(/^\//, '');
                           }
                         }
+                        return inPath;
                       },
 
         behaviors: [Polymer.FortServiceBehavior]
