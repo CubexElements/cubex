@@ -216,7 +216,11 @@
 
       _getMenuTitle: function (orgData, item)
                      {
-                       return orgData.AppSummary[item.GlobalAppID].category;
+                       if(orgData && orgData.AppSummary && orgData.AppSummary[item.GlobalAppID])
+                       {
+                         return orgData.AppSummary[item.GlobalAppID].category;
+                       }
+                       return item.Title;
                      },
 
       _filter: function (small, position)
