@@ -372,19 +372,27 @@ Example:
                            var bc = pageData && pageData.breadcrumb ? JSON.parse(pageData.breadcrumb) : [];
                            if(this.appData && pageData && this.organisation)
                            {
+                             var prefix = '/' + this.organisation.id + '/' + this.appData.GlobalAppID;
+                             for(var i in bc)
+                             {
+                               if(bc.hasOwnProperty(i))
+                               {
+                                 bc[i].Url = prefix + '/' + bc[i].Url.replace(/^\//, '');
+                               }
+                             }
+
                              bc.unshift(
                                {
                                  Title: this.i18n('app_name'),
-                                 Url:   '/'
+                                 Url:   prefix
                                }
                              );
                              if(this.appData.Group)
                              {
                                bc.unshift(
                                  {
-                                   Title:   this.appData.Group,
-                                   Url:     '/' + this.organisation.id + '/' + this.appData.Vendor + '/' + this.appData.Group,
-                                   FullUrl: true
+                                   Title: this.appData.Group,
+                                   Url:   '/' + this.organisation.id + '/' + this.appData.Vendor + '/' + this.appData.Group
                                  }
                                );
                              }

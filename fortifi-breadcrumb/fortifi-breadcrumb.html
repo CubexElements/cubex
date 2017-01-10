@@ -44,14 +44,7 @@
     </template>
 
     <template is="dom-repeat" items="[[crumbs]]">
-      <template is="dom-if" if="[[item.FullUrl]]">
-        <fortifi-breadcrumb-item href="[[item.Url]]">[[item.Title]]</fortifi-breadcrumb-item>
-      </template>
-
-      <template is="dom-if" if="[[!item.FullUrl]]">
-        <fortifi-repath in="[[item.Url]]" out="{{item.crumbPath}}"></fortifi-repath>
-        <fortifi-breadcrumb-item href="[[item.crumbPath]]">[[item.Title]]</fortifi-breadcrumb-item>
-      </template>
+      <fortifi-breadcrumb-item href="[[item.Url]]">[[item.Title]]</fortifi-breadcrumb-item>
     </template>
 
     <div class="stretch"></div>
