@@ -374,16 +374,17 @@ Example:
                            {
                              bc.unshift(
                                {
-                                 Url:   '/' + this.organisation.id + '/' + this.appData.GlobalAppID,
-                                 Title: this.i18n('app_name')
+                                 Title: this.i18n('app_name'),
+                                 Url:   '/'
                                }
                              );
                              if(this.appData.Group)
                              {
                                bc.unshift(
                                  {
-                                   Url:   '/' + this.organisation.id + '/' + this.appData.Vendor + '/' + this.appData.Group,
-                                   Title: this.appData.Group
+                                   Title:   this.appData.Group,
+                                   Url:     '/' + this.organisation.id + '/' + this.appData.Vendor + '/' + this.appData.Group,
+                                   FullUrl: true
                                  }
                                );
                              }

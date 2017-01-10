@@ -2,6 +2,7 @@
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout.html"/>
 <link rel="import" href="fortifi-breadcrumb-item.html"/>
 <link rel="import" href="../fortifi-category/fortifi-category.html"/>
+<link rel="import" href="../fortifi-repath/fortifi-repath.html">
 
 <dom-module id="fortifi-breadcrumb" attributes="crumbs">
   <template>
@@ -30,21 +31,31 @@
       }
     </style>
 
-    <app-location route="{{route}}"></app-location>
-    <app-route route="{{route}}" pattern="/:org" data="{{routeData}}"></app-route>
-
-    <fortifi-breadcrumb-item id="home" href="/[[routeData.org]]">
+    <fortifi-repath in="/" gaid="" out="{{orgPath}}"></fortifi-repath>
+    <fortifi-breadcrumb-item id="home" href="[[orgPath]]">
       <fort-icon icon="icons:home" size="16"></fort-icon>
     </fortifi-breadcrumb-item>
+
     <template is="dom-if" if="[[category]]">
-      <fortifi-breadcrumb-item id="category" href="/[[routeData.org]]/[[category]]">
+      <fortifi-repath in="/[[category]]" gaid="" out="{{catPath}}"></fortifi-repath>
+      <fortifi-breadcrumb-item id="category" href="[[catPath]]">
         <fortifi-category key="[[category]]" short></fortifi-category>
       </fortifi-breadcrumb-item>
     </template>
-    <template id="crumbList" is="dom-repeat" items="[[crumbs]]">
-      <fortifi-breadcrumb-item href="/[[_trimPath(item.Url)]]">[[item.Title]]</fortifi-breadcrumb-item>
+
+    <template is="dom-repeat" items="[[crumbs]]">
+      <template is="dom-if" if="[[item.FullUrl]]">
+        <fortifi-breadcrumb-item href="[[item.Url]]">[[item.Title]]</fortifi-breadcrumb-item>
+      </template>
+
+      <template is="dom-if" if="[[!item.FullUrl]]">
+        <fortifi-repath in="[[item.Url]]" out="{{item.crumbPath}}"></fortifi-repath>
+        <fortifi-breadcrumb-item href="[[item.crumbPath]]">[[item.Title]]</fortifi-breadcrumb-item>
+      </template>
     </template>
+
     <div class="stretch"></div>
+
     <slot name="actions"></slot>
   </template>
 
@@ -55,11 +66,7 @@
         properties: {
           crumbs:   {type: Array, value: function () {return [];}},
           category: {type: String}
-        },
-        _trimPath:  function (path)
-                    {
-                      return path.replace(/^\/+/, '');
-                    }
+        }
       }
     );
   </script>
