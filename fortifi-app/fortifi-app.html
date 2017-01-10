@@ -18,7 +18,7 @@
 <link rel="import" href="../fortifi-app/fortifi-app-header.html">
 <link rel="import" href="../fortifi-effects/displace-element.html">
 <link rel="import" href="../fortifi-link/fortifi-link.html">
-
+<link rel="import" href="../fortifi-hash/fortifi-hash.html">
 
 <!--
 An element providing a solution to no problem in particular.
@@ -245,7 +245,7 @@ Example:
               <template is="dom-if" if="[[integrations.PageActions]]">
                 <div id="app-page-actions" class="sidebar-group">
                   <template is="dom-repeat" items="[[integrations.PageActions]]">
-                    <fortifi-link id="a-[[item.ID]]" hash="a-[[item.ID]]"
+                    <fortifi-link hash="a-[[_hash32(item.GlobalAppID,'/',item.ID)]]"
                                   href="//[[getServiceHost('apps')]][[item.Path]]"
                                   mode="[[item.Mode]]" title="[[item.Description]]">
                       <fort-action icon="[[item.Icon]]">[[item.Title]]</fort-action>
@@ -257,7 +257,7 @@ Example:
               <template is="dom-if" if="[[integrations.PageMenuItems]]">
                 <fort-list id="app-page-menu" class="sidebar-group" border double-border bottom-border>
                   <template is="dom-repeat" items="[[integrations.PageMenuItems]]">
-                    <fortifi-link id="m-[[item.ID]]" hash="m-[[item.ID]]"
+                    <fortifi-link hash="m-[[_hash32(item.GlobalAppID,'/',item.ID)]]"
                                   href="//[[getServiceHost('apps')]][[item.Path]]"
                                   mode="[[item.Mode]]" title="[[item.Description]]">
                       <fort-li>[[item.Title]]</fort-li>
@@ -292,7 +292,6 @@ Example:
     Polymer(
       {
         is:         'fortifi-app',
-        behaviors:  [Polymer.FortTouchEnabledBehavior, Polymer.FortServiceBehavior, Polymer.FortI18nBehavior],
         properties: {
           hasSidebar:     {
             type:               Boolean,
@@ -466,7 +465,14 @@ Example:
         get drawer()
         {
           return this.querySelector('#appDrawer') || this.root.querySelector('#appDrawer');
-        }
+        },
+
+        behaviors: [
+          Polymer.FortTouchEnabledBehavior,
+          Polymer.FortServiceBehavior,
+          Polymer.FortI18nBehavior,
+          Polymer.FortHashBehavior
+        ]
       }
     )
   </script>

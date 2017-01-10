@@ -8,6 +8,8 @@
 <link rel="import" href="../../iron-media-query/iron-media-query.html">
 <link rel="import" href="../../fort-behavior/fort-iterator-behavior.html">
 <link rel="import" href="../../fort-behavior/fort-i18n-behavior.html">
+<link rel="import" href="../fortifi-category/fortifi-category.html">
+<link rel="import" href="../fortifi-hash/fortifi-hash.html">
 
 <dom-module id="fortifi-app-header" attributes="icon back-path actions menu">
   <template strip-whitespace>
@@ -193,8 +195,12 @@
     <slot name="hero"></slot>
 
     <div id="menu">
+      <fortifi-registry org-data="{{orgData}}"></fortifi-registry>
       <template is="dom-repeat" items="[[menu]]">
-        <fortifi-link href="[[item.Path]]">[[item.Title]]</fortifi-link>
+        <fortifi-repath in="[[item.Path]]" gaid="[[item.GlobalAppID]]" out="{{item.mp}}"></fortifi-repath>
+        <fortifi-link href="[[item.mp]]" mode="pagelet" hash="h-[[_hash32(item.GlobalAppID,'/',item.ID)]]">
+          <fortifi-category short key="[[_getMenuTitle(orgData,item)]]"></fortifi-category>
+        </fortifi-link>
       </template>
     </div>
   </template>
@@ -207,6 +213,11 @@
         backPath: {type: String},
         _small:   {type: Boolean}
       },
+
+      _getMenuTitle: function (orgData, item)
+                     {
+                       return orgData.AppSummary[item.GlobalAppID].category;
+                     },
 
       _filter: function (small, position)
                {
@@ -237,7 +248,9 @@
                              {
                                return actions.slice(0).filter(this._filter(small, 0), this).length > 0;
                              }
-                           }
+                           },
+
+      behaviors: [Polymer.FortHashBehavior]
     }
   )</script>
 </dom-module>

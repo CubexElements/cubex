@@ -7,6 +7,7 @@
 <link rel="import" href="../../fort-behavior/fort-service-behavior.html">
 <link rel="import" href="../../page-title/page-title.html">
 <link rel="import" href="../fortifi-drawer/fortifi-drawer.html">
+<link rel="import" href="../fortifi-hash/fortifi-hash.html">
 <link rel="import" href="fortifi-app.html">
 <link rel="import" href="fortifi-app-title.html">
 <link rel="import" href="fortifi-app-header.html">
@@ -142,13 +143,17 @@
                                 {
                                   items = this._integrations.PageActions;
                                 }
+                                else if(type == 'h-')
+                                {
+                                  items = this._integrations.HeaderMenuItems;
+                                }
                                 if(items)
                                 {
                                   for(var i in items)
                                   {
                                     if(items.hasOwnProperty(i))
                                     {
-                                      if(items[i].ID == this.__hash.substr(2))
+                                      if(this._hash32(items[i].GlobalAppID + '/' + items[i].ID) == this.__hash.substr(2))
                                       {
                                         this._integration = items[i];
                                         return;
@@ -202,7 +207,8 @@
 
         behaviors: [
           Polymer.FortIteratorBehavior,
-          Polymer.FortServiceBehavior
+          Polymer.FortServiceBehavior,
+          Polymer.FortHashBehavior
         ]
       }
     )
