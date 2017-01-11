@@ -71,7 +71,12 @@
                       {
                         if(this.mode == 'page')
                         {
-                          if(this.href == '#' + hash)
+                          var concat = (path ? path : '') + (query ? '?' + query : '') + (hash ? '#' + hash : '');
+                          if(this.href == concat)
+                          {
+                            this.active = true;
+                          }
+                          else if(this.href == '#' + hash)
                           {
                             this.active = true;
                           }
