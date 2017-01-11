@@ -33,7 +33,7 @@ Example:
 @hero hero.svg
 -->
 
-<dom-module id="fortifi-app" attributes="app-data page-data integrations">
+<dom-module id="fortifi-app" attributes="app-data page-data header-menu header-actions page-menu page-actions panels">
   <template>
     <style>
       :host {
@@ -225,8 +225,9 @@ Example:
         <app-header id="ah" slot="header" reveals condenses effects="displace-element waterfall">
           <fortifi-breadcrumb crumbs="[[breadcrumbs]]" category="[[appData.Category]]"></fortifi-breadcrumb>
           <app-toolbar sticky>
-            <fortifi-app-header back-path="[[pageData.backPath]]" actions="[[integrations.HeaderActions]]"
-                                menu="[[integrations.HeaderMenuItems]]">
+            <fortifi-app-header back-path="[[pageData.backPath]]"
+                                actions="[[headerActions]]"
+                                menu="[[headerMenu]]">
               <template is="dom-if" if="[[pageData.icon]]">
                 <fort-icon slot="icon" src="[[pageData.icon]]"></fort-icon>
               </template>
@@ -242,9 +243,9 @@ Example:
         <div id="app-container">
           <div id="app-content">
             <div id="app-sidebar">
-              <template is="dom-if" if="[[integrations.PageActions]]">
+              <template is="dom-if" if="[[pageActions]]">
                 <div id="app-page-actions" class="sidebar-group">
-                  <template is="dom-repeat" items="[[integrations.PageActions]]">
+                  <template is="dom-repeat" items="[[pageActions]]">
                     <fortifi-link hash="a-[[_hash32(item.GlobalAppID,'/',item.ID)]]"
                                   href="//[[getServiceHost('apps')]][[item.Path]]"
                                   mode="[[item.Mode]]" title="[[item.Description]]">
@@ -254,9 +255,9 @@ Example:
                 </div>
               </template>
 
-              <template is="dom-if" if="[[integrations.PageMenuItems]]">
+              <template is="dom-if" if="[[pageMenu]]">
                 <fort-list id="app-page-menu" class="sidebar-group" border double-border bottom-border>
-                  <template is="dom-repeat" items="[[integrations.PageMenuItems]]">
+                  <template is="dom-repeat" items="[[pageMenu]]">
                     <fortifi-link hash="m-[[_hash32(item.GlobalAppID,'/',item.ID)]]"
                                   href="//[[getServiceHost('apps')]][[item.Path]]"
                                   mode="[[item.Mode]]" title="[[item.Description]]">
@@ -266,9 +267,9 @@ Example:
                 </fort-list>
               </template>
 
-              <template is="dom-if" if="[[integrations.Panels]]">
+              <template is="dom-if" if="[[panels]]">
                 <fort-list id="app-page-panels" class="sidebar-group" border double-border bottom-border>
-                  <template is="dom-repeat" items="[[integrations.Panels]]">
+                  <template is="dom-repeat" items="[[panels]]">
                     <fort-li>
                       <fort-pagelet auto auth url="//[[getServiceHost('apps')]][[item.Path]]"></fort-pagelet>
                     </fort-li>
@@ -296,7 +297,7 @@ Example:
           hasSidebar:     {
             type:               Boolean,
             reflectToAttribute: true,
-            computed:           '_computeHasSidebar(integrations,integrations.*)'
+            computed:           '_computeHasSidebar(pageMenu,pageActions,panels)'
           },
           narrow:         {type: Boolean, value: true, reflectToAttribute: true, observer: '_updateMaxState'},
           appData:        {type: Object, observer: '_updateResources'},
@@ -334,23 +335,20 @@ Example:
                  this.async(function () {this._viewChanged(this._lock, this._peek);});
                },
 
-        _computeHasSidebar: function (integrations)
+        _computeHasSidebar: function (pageMenu, pageActions, panels)
                             {
                               var items = 0;
-                              if(integrations)
+                              if(pageMenu)
                               {
-                                if(integrations.PageActions)
-                                {
-                                  items += integrations.PageActions.length;
-                                }
-                                if(integrations.PageMenuItems)
-                                {
-                                  items += integrations.PageMenuItems.length;
-                                }
-                                if(integrations.Panels)
-                                {
-                                  items += integrations.Panels.length;
-                                }
+                                items += pageMenu.length;
+                              }
+                              if(pageActions)
+                              {
+                                items += pageActions.length;
+                              }
+                              if(panels)
+                              {
+                                items += panels.length;
                               }
                               return items > 0;
                             },

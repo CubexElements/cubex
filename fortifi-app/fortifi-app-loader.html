@@ -46,7 +46,10 @@
 
     <page-title base-title="Fortifi" page-title="[[pageData.title]]"></page-title>
 
-    <fortifi-app id="app" app-data="[[appData]]" page-data="[[pageData]]" integrations="[[_integrations]]">
+    <fortifi-app id="app" app-data="[[appData]]" page-data="[[pageData]]"
+                 header-menu="[[_integrations.HeaderMenuItems]]" header-actions="[[_integrations.HeaderActions]]"
+                 page-menu="[[_integrations.PageMenuItems]]" page-actions="[[_integrations.PageActions]]"
+                 panels="[[_integrations.Panels]]">
       <fortifi-drawer-content slot="drawer-content" id="appDrawerContent">
         <fortifi-app-menu app-data="[[appData]]"></fortifi-app-menu>
       </fortifi-drawer-content>
