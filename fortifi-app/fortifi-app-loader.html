@@ -8,6 +8,7 @@
 <link rel="import" href="../../page-title/page-title.html">
 <link rel="import" href="../fortifi-drawer/fortifi-drawer.html">
 <link rel="import" href="../fortifi-hash/fortifi-hash.html">
+<link rel="import" href="../fortifi-category/fortifi-category.html">
 <link rel="import" href="fortifi-app.html">
 <link rel="import" href="fortifi-app-title.html">
 <link rel="import" href="fortifi-app-header.html">
@@ -36,6 +37,8 @@
     <app-route id="route" route="[[route]]" pattern="/:org/:vendor/:app" data="{{routeData}}"
                tail="{{appPath}}" query-params="{{appQuery}}"></app-route>
 
+    <fortifi-registry org-data="{{orgData}}"></fortifi-registry>
+
     <fortifi-app-definition gaid="[[routeData.vendor]]/[[routeData.app]]"
                             app-data="{{appData}}"></fortifi-app-definition>
 
@@ -47,17 +50,22 @@
     <page-title base-title="Fortifi" page-title="[[pageData.title]]"></page-title>
 
     <fortifi-app id="app" app-data="[[appData]]" page-data="[[pageData]]"
-                 header-menu="[[_integrations.HeaderMenuItems]]" header-actions="[[_integrations.HeaderActions]]"
-                 page-menu="[[_integrations.PageMenuItems]]" page-actions="[[_integrations.PageActions]]"
+                 header-menu="[[_getHeaderMenu(_integrations.HeaderMenuItems)]]"
+                 header-actions="[[_integrations.HeaderActions]]"
+                 page-menu="[[_getPageMenu(_integrations.PageMenuItems)]]" page-actions="[[_integrations.PageActions]]"
                  panels="[[_integrations.Panels]]">
       <fortifi-drawer-content slot="drawer-content" id="appDrawerContent">
         <fortifi-app-menu app-data="[[appData]]"></fortifi-app-menu>
       </fortifi-drawer-content>
       <fortifi-app-spinner slot="spinner" hidden$="[[!_loaderVisible]]"></fortifi-app-spinner>
 
-      <fortifi-repath in="[[_integration.Path]]" service="apps" gaid="[[_integration.GlobalAppID]]"
-                      out="{{_integrationPath}}"></fortifi-repath>
-      <fort-pagelet auto auth url="[[_integrationPath]]"></fort-pagelet>
+      <dom-if restamp if="[[_integration]]">
+        <template>
+          <fortifi-repath in="[[_integration.Path]]" service="apps" gaid="[[_integration.GlobalAppID]]"
+                          out="{{_integrationPath}}"></fortifi-repath>
+          <fort-pagelet auto auth url="[[_integrationPath]]"></fort-pagelet>
+        </template>
+      </dom-if>
 
       <dom-if restamp if="[[!_integration]]">
         <template id="pageContent"></template>
@@ -101,6 +109,53 @@
                        return {};
                      },
 
+        _getHeaderMenu: function (headerMenu)
+                        {
+                          var newMenu = [];
+                          if(headerMenu)
+                          {
+                            headerMenu = headerMenu.sort(
+                              function (a, b)
+                              {
+                                return (a.Hook.indexOf(a.GlobalAppID) === 0) >= (b.Hook.indexOf(b.GlobalAppID) === 0) ? -1 : 1
+                              }
+                            );
+
+                            for(var i in headerMenu)
+                            {
+                              if(headerMenu.hasOwnProperty(i))
+                              {
+                                if(headerMenu[i].Hook.indexOf(headerMenu[i].GlobalAppID) === 0)
+                                {
+                                  newMenu.push(
+                                    {
+                                      Title: headerMenu[i].Title,
+                                      Path:  '/' + this.routeData.org + '/' + headerMenu[i].GlobalAppID + '/' + headerMenu[i].Path
+                                    }
+                                  );
+                                }
+                                else
+                                {
+                                  newMenu.push(
+                                    {
+                                      Title:    this.orgData.AppSummary[headerMenu[i].GlobalAppID].category,
+                                      Category: true,
+                                      Path:     '/' + this.routeData.org + '/' + headerMenu[i].Hook
+                                                + '#h-' + this._hash32(headerMenu[i].GlobalAppID + '/' + headerMenu[i].ID)
+                                    }
+                                  );
+                                }
+                              }
+                            }
+                          }
+                          return newMenu;
+                        },
+
+        _getPageMenu: function (pageMenu)
+                      {
+                        return pageMenu;
+                      },
+
         _pathChanged: function ()
                       {
                         if(this.$.route.active)
@@ -109,16 +164,14 @@
                           {
                             this._loadedPath = this.route.path;
                             var self = this,
-                              vendor = this.routeData.vendor,
-                              app = this.routeData.app,
                               path = this.appPath.path.replace(/^\//, ''),
-                              fullPath = vendor + '/' + app + (path ? '/' + path : '');
+                              fullPath = '/' + this.routeData.vendor + '/' + this.routeData.app + (path ? '/' + path : '');
 
                             this._addLoader = setTimeout(
                               function () { self._loaderVisible = true; }, 50
                             );
-                            this._integrationsPath = '//' + this.getServiceHost('apps') + '/fortifi/integrations/integrations.json?hook=/' + fullPath;
-                            this._appDataPath = '//' + this.getServiceHost('apps') + '/' + fullPath;
+                            this._integrationsPath = '//' + this.getServiceHost('apps') + '/fortifi/integrations/integrations.json?hook=' + fullPath;
+                            this._appDataPath = '//' + this.getServiceHost('apps') + fullPath;
                           }
                         }
                         else
