@@ -243,7 +243,7 @@ Example:
         <div id="app-container">
           <div id="app-content">
             <div id="app-sidebar">
-              <template is="dom-if" if="[[pageActions]]">
+              <template is="dom-if" if="[[pageActions.length]]">
                 <div id="app-page-actions" class="sidebar-group">
                   <template is="dom-repeat" items="[[pageActions]]">
                     <fortifi-link hash="a-[[_hash32(item.GlobalAppID,'/',item.ID)]]"
@@ -255,11 +255,10 @@ Example:
                 </div>
               </template>
 
-              <template is="dom-if" if="[[pageMenu]]">
+              <template is="dom-if" if="[[pageMenu.length]]">
                 <fort-list id="app-page-menu" class="sidebar-group" border double-border bottom-border>
                   <template is="dom-repeat" items="[[pageMenu]]">
-                    <fortifi-link hash="m-[[_hash32(item.GlobalAppID,'/',item.ID)]]"
-                                  href="//[[getServiceHost('apps')]][[item.Path]]"
+                    <fortifi-link hash="[[item.Hash]]" href="[[item.Path]]"
                                   mode="[[item.Mode]]" title="[[item.Description]]">
                       <fort-li>[[item.Title]]</fort-li>
                     </fortifi-link>
@@ -267,7 +266,7 @@ Example:
                 </fort-list>
               </template>
 
-              <template is="dom-if" if="[[panels]]">
+              <template is="dom-if" if="[[panels.length]]">
                 <fort-list id="app-page-panels" class="sidebar-group" border double-border bottom-border>
                   <template is="dom-repeat" items="[[panels]]">
                     <fort-li>

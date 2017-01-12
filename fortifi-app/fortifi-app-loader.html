@@ -31,6 +31,10 @@
       :link:hover {
         color: var(--accent-700-color);
       }
+
+      #pageContentContainer {
+        position: relative;
+      }
     </style>
 
     <iron-location hash="{{__hash}}"></iron-location>
@@ -50,26 +54,29 @@
     <page-title base-title="Fortifi" page-title="[[pageData.title]]"></page-title>
 
     <fortifi-app id="app" app-data="[[appData]]" page-data="[[pageData]]"
-                 header-menu="[[_getHeaderMenu(_integrations.HeaderMenuItems)]]"
+                 header-menu="[[_headerMenus]]"
                  header-actions="[[_integrations.HeaderActions]]"
-                 page-menu="[[_getPageMenu(_integrations.PageMenuItems)]]" page-actions="[[_integrations.PageActions]]"
-                 panels="[[_integrations.Panels]]">
+                 page-menu="[[_pageMenus]]"
+                 page-actions="[[_pageActions]]"
+                 panels="[[_panels]]">
       <fortifi-drawer-content slot="drawer-content" id="appDrawerContent">
         <fortifi-app-menu app-data="[[appData]]"></fortifi-app-menu>
       </fortifi-drawer-content>
-      <fortifi-app-spinner slot="spinner" hidden$="[[!_loaderVisible]]"></fortifi-app-spinner>
+      <fortifi-app-spinner slot="spinner" hidden$="[[!_pageSpinnerVisible]]"></fortifi-app-spinner>
 
-      <dom-if restamp if="[[_integration]]">
-        <template>
-          <fortifi-repath in="[[_integration.Path]]" service="apps" gaid="[[_integration.GlobalAppID]]"
-                          out="{{_integrationPath}}"></fortifi-repath>
-          <fort-pagelet auto auth url="[[_integrationPath]]"></fort-pagelet>
-        </template>
-      </dom-if>
+      <div id="pageContentContainer">
+        <dom-if restamp if="[[_integration]]">
+          <template>
+            <fortifi-repath in="[[_integration.Path]]" service="apps" gaid="[[_integration.GlobalAppID]]"
+                            out="{{_integrationPath}}"></fortifi-repath>
+            <fort-pagelet auto auth url="[[_integrationPath]]"></fort-pagelet>
+          </template>
+        </dom-if>
 
-      <dom-if restamp if="[[!_integration]]">
-        <template id="pageContent"></template>
-      </dom-if>
+        <dom-if restamp if="[[!_integration]]">
+          <template id="pageContent"></template>
+        </dom-if>
+      </div>
     </fortifi-app>
   </template>
 
@@ -78,22 +85,31 @@
       {
         is:         'fortifi-app-loader',
         properties: {
-          _loaderVisible:    {type: Boolean, value: false},
-          _addLoader:        {type: Number, value: 0},
-          _loadedPath:       {type: String, value: ''},
-          _appDataPath:      {type: String},
-          _integrationsPath: {type: String},
-          _appDataHeaders:   {type: Object, computed: '_getHeaders(routeData.org)'},
-          _pageXhr:          {type: Object},
-          _pageData:         {type: Object},
-          _integration:      {type: Object, value: null},
-          appData:           {type: Object, notify: true},
-          pageData:          {type: Object, notify: true}
+          _pageSpinnerVisible:    {type: Boolean, value: false},
+          _pageletSpinnerVisible: {type: Boolean, value: false},
+          _addLoader:             {type: Number, value: 0},
+          _loadedPath:            {type: String, value: ''},
+          _appDataPath:           {type: String},
+          _integrationsPath:      {type: String},
+          _appDataHeaders:        {type: Object, computed: '_getHeaders(routeData.org)'},
+          _pageXhr:               {type: Object},
+          _pageData:              {type: Object},
+          _integration:           {type: Object, value: null},
+
+          _headerMenus: {type: Array},
+          _pageMenus:   {type: Array},
+          _pageActions: {type: Array},
+          _panels:      {type: Array},
+
+          appData:  {type: Object, notify: true},
+          pageData: {type: Object, notify: true}
         },
         observers:  [
           '_pathChanged(route.path)',
           '_updateData(_pageXhr, _pageData)',
-          '_updateIntegration(__hash, _integrations)'
+          '_updateIntegration(__hash, _integrations)',
+          '_updateHeaderMenu(_integration,_integrations,appData)',
+          '_updateSidebar(_integration,_integrations)'
         ],
         attached:   function ()
                     {
@@ -109,52 +125,130 @@
                        return {};
                      },
 
-        _getHeaderMenu: function (headerMenu)
-                        {
-                          var newMenu = [];
-                          if(headerMenu)
-                          {
-                            headerMenu = headerMenu.sort(
-                              function (a, b)
-                              {
-                                return (a.Hook.indexOf(a.GlobalAppID) === 0) >= (b.Hook.indexOf(b.GlobalAppID) === 0) ? -1 : 1
-                              }
-                            );
+        _updateHeaderMenu: function (integration, integrations, appData)
+                           {
+                             if(integrations)
+                             {
+                               var headerMenu = this._integrations.HeaderMenuItems;
+                               var newMenu = [];
+                               var self = this;
+                               if(headerMenu && appData)
+                               {
+                                 headerMenu = headerMenu.sort(
+                                   function (a, b)
+                                   {
+                                     // if one item is within the current app and one isn't, move the current one up
+                                     if((a.Hook.indexOf(a.GlobalAppID) == 0) != (b.Hook.indexOf(b.GlobalAppID) == 0))
+                                     {
+                                       return (a.GlobalAppID == appData.GlobalAppID) ? -1 : 1;
+                                     }
+                                     var cA = a.Title, cB = b.Title;
+                                     // if not current app, use category
+                                     if(a.Hook.indexOf(a.GlobalAppID) !== 0 && b.Hook.indexOf(b.GlobalAppID) !== 0)
+                                     {
+                                       cA = self.orgData.AppSummary[a.GlobalAppID].category;
+                                       cB = self.orgData.AppSummary[b.GlobalAppID].category;
+                                     }
+                                     // comparisons match, no change
+                                     if(cA == cB)
+                                     {
+                                       return 0;
+                                     }
+                                     // A is less than B, move A up
+                                     return (cA < cB) ? -1 : 1;
+                                   }
+                                 );
 
-                            for(var i in headerMenu)
+                                 var categoriesAdded = [];
+                                 for(var i in headerMenu)
+                                 {
+                                   if(headerMenu.hasOwnProperty(i))
+                                   {
+                                     if(headerMenu[i].Hook.indexOf(headerMenu[i].GlobalAppID) === 0)
+                                     {
+                                       newMenu.push(
+                                         {
+                                           Title: headerMenu[i].Title,
+                                           Path:  '/' + this.routeData.org + '/' + headerMenu[i].GlobalAppID + '/' + headerMenu[i].Path,
+                                           Mode:  'page'
+                                         }
+                                       );
+                                     }
+                                     else
+                                     {
+                                       var category = this.orgData.AppSummary[headerMenu[i].GlobalAppID].category;
+                                       if(categoriesAdded.indexOf(category) == -1)
+                                       {
+                                         newMenu.push(
+                                           {
+                                             Title:    category,
+                                             Category: true,
+                                             Path:     '/' + this.routeData.org + '/' + headerMenu[i].Hook
+                                                       + '#h-' + this._hash32(category),
+                                             Hash:     'h-' + this._hash32(category),
+                                             Mode:     'page'
+                                           }
+                                         );
+                                         categoriesAdded.push(category);
+                                       }
+                                     }
+                                   }
+                                 }
+                               }
+                             }
+                             this._headerMenus = newMenu;
+                           },
+
+        _updateSidebar: function (integration, integrations)
+                        {
+                          var pageMenus = [],
+                            pageActions = [],
+                            panels = [];
+
+                          if(integrations)
+                          {
+                            if(integration && this.__hash.substr(0, 2) == 'h-')
                             {
-                              if(headerMenu.hasOwnProperty(i))
+                              var
+                                intData = this.orgData.AppSummary[integration.GlobalAppID],
+                                category = intData.category,
+                                headerMenu = this._integrations.HeaderMenuItems;
+
+                              for(var i in headerMenu)
                               {
-                                if(headerMenu[i].Hook.indexOf(headerMenu[i].GlobalAppID) === 0)
+                                if(headerMenu.hasOwnProperty(i))
                                 {
-                                  newMenu.push(
-                                    {
-                                      Title: headerMenu[i].Title,
-                                      Path:  '/' + this.routeData.org + '/' + headerMenu[i].GlobalAppID + '/' + headerMenu[i].Path
-                                    }
-                                  );
+                                  if(this.orgData.AppSummary[headerMenu[i].GlobalAppID].category == category)
+                                  {
+                                    pageMenus.push(
+                                      {
+                                        Title:       headerMenu[i].Title,
+                                        Description: headerMenu[i].Description,
+                                        Hash:        'h-' + this._hash32(category)
+                                                     + (pageMenus.length > 0 ? '/' + this._hash32(headerMenu[i].GlobalAppID + '/' + headerMenu[i].ID) : ''),
+                                        Href:        '//' + this.getServiceHost('apps') + '/' + headerMenu[i].Path,
+                                        Mode:        headerMenu[i].Mode == 'page' ? 'pagelet' : headerMenu[i].Mode
+                                      }
+                                    );
+                                  }
                                 }
-                                else
-                                {
-                                  newMenu.push(
-                                    {
-                                      Title:    this.orgData.AppSummary[headerMenu[i].GlobalAppID].category,
-                                      Category: true,
-                                      Path:     '/' + this.routeData.org + '/' + headerMenu[i].Hook
-                                                + '#h-' + this._hash32(headerMenu[i].GlobalAppID + '/' + headerMenu[i].ID)
-                                    }
-                                  );
-                                }
+                              }
+                              if(pageMenus.length === 1)
+                              {
+                                pageMenus = [];
                               }
                             }
+                            else
+                            {
+                              pageMenus = this._integrations.PageMenuItems;
+                              pageActions = this._integrations.PageActions;
+                              panels = this._integrations.Panels;
+                            }
                           }
-                          return newMenu;
+                          this._pageMenus = pageMenus;
+                          this._pageActions = pageActions;
+                          this._panels = panels;
                         },
-
-        _getPageMenu: function (pageMenu)
-                      {
-                        return pageMenu;
-                      },
 
         _pathChanged: function ()
                       {
@@ -167,8 +261,8 @@
                               path = this.appPath.path.replace(/^\//, ''),
                               fullPath = '/' + this.routeData.vendor + '/' + this.routeData.app + (path ? '/' + path : '');
 
-                            this._addLoader = setTimeout(
-                              function () { self._loaderVisible = true; }, 50
+                            this._addPageSpinner = setTimeout(
+                              function () { self._pageSpinnerVisible = true; }, 50
                             );
                             this._integrationsPath = '//' + this.getServiceHost('apps') + '/fortifi/integrations/integrations.json?hook=' + fullPath;
                             this._appDataPath = '//' + this.getServiceHost('apps') + fullPath;
@@ -187,32 +281,41 @@
 
         _updateIntegration: function ()
                             {
-                              if(this.__hash && this._integrations)
+                              if(this._integrations)
                               {
-                                var items = null,
-                                  type = this.__hash.substr(0, 2);
-                                if(type == 'm-')
+                                if(this.__hash)
                                 {
-                                  items = this._integrations.PageMenuItems;
-                                }
-                                else if(type == 'a-')
-                                {
-                                  items = this._integrations.PageActions;
-                                }
-                                else if(type == 'h-')
-                                {
-                                  items = this._integrations.HeaderMenuItems;
-                                }
-                                if(items)
-                                {
-                                  for(var i in items)
+                                  var items = null,
+                                    hashType = this.__hash.substr(0, 2),
+                                    hash = this.__hash.substr(2);
+                                  if(hashType == 'm-')
                                   {
-                                    if(items.hasOwnProperty(i))
+                                    items = this._integrations.PageMenuItems;
+                                  }
+                                  else if(hashType == 'a-')
+                                  {
+                                    items = this._integrations.PageActions;
+                                  }
+                                  else if(hashType == 'h-')
+                                  {
+                                    items = this._integrations.HeaderMenuItems;
+                                  }
+                                  if(items)
+                                  {
+                                    for(var i in items)
                                     {
-                                      if(this._hash32(items[i].GlobalAppID + '/' + items[i].ID) == this.__hash.substr(2))
+                                      if(items.hasOwnProperty(i))
                                       {
-                                        this._integration = items[i];
-                                        return;
+                                        var catHash = this._hash32(this.orgData.AppSummary[items[i].GlobalAppID].category),
+                                          gaidHash = this._hash32(items[i].GlobalAppID + '/' + items[i].ID);
+                                        if(
+                                          (catHash + '/' + gaidHash == hash)
+                                          || (catHash == hash)
+                                        )
+                                        {
+                                          this._integration = items[i];
+                                          return;
+                                        }
                                       }
                                     }
                                   }
@@ -246,11 +349,11 @@
                          }
                        }
 
-                       if(this._addLoader)
+                       if(this._addPageSpinner)
                        {
-                         clearTimeout(this._addLoader);
+                         clearTimeout(this._addPageSpinner);
                        }
-                       this._loaderVisible = false;
+                       this._pageSpinnerVisible = false;
 
                        // modify the dom-if template
                        this.$.pageContent._content = frag;
