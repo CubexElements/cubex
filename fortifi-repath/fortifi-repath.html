@@ -6,7 +6,9 @@
 <dom-module id="fortifi-repath" attributes="in service gaid out">
   <template>
     <app-location route="{{route}}"></app-location>
-    <app-route route="[[route]]" pattern="/:org/:vendor/:app" data="{{routeData}}"></app-route>
+    <app-route route="[[route]]" pattern="/:org" data="{{routeData}}" tail="{{routeTail}}"></app-route>
+    <app-route route="[[routeTail]]" pattern="/:category" data="{{catData}}"></app-route>
+    <app-route route="[[routeTail]]" pattern="/:vendor/:app" data="{{gaidData}}"></app-route>
   </template>
 
   <script>
@@ -20,13 +22,13 @@
           'out':     {
             type:     String,
             notify:   true,
-            computed: '_computePath(in,service,gaid,routeData.org,routeData.vendor,routeData.app)'
+            computed: '_computePath(in,service,gaid,routeData.org,gaidData.vendor,gaidData.app,catData.category)'
           }
         },
 
-        _computePath: function (inPath, service, gaid, org, vendor, app)
+        _computePath: function (inPath, service, gaid, org, vendor, app, category)
                       {
-                        if(inPath && (service || org) && (gaid || (vendor && app)))
+                        if(inPath && (service || org) && (category || gaid !== undefined || (vendor && app)))
                         {
                           var paths = [];
                           if(service)
@@ -41,6 +43,10 @@
                           if((gaid === undefined) && vendor && app)
                           {
                             gaid = vendor + '/' + app;
+                          }
+                          else if(category !== undefined && gaid === undefined)
+                          {
+                            paths.push(category);
                           }
 
                           if(gaid)
