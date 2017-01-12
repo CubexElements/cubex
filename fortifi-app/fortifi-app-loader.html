@@ -375,6 +375,7 @@
                                         )
                                         {
                                           this._integration = items[i];
+                                          this.$.app._resetLayout();
                                           return;
                                         }
                                       }
@@ -383,6 +384,7 @@
                                 }
                               }
                               this._integration = null;
+                              this.$.app._resetLayout();
                             },
 
         _updateData: function ()
