@@ -251,7 +251,32 @@
                             }
                             else
                             {
-                              pageMenus = this._integrations.PageMenuItems;
+                              var items = this._integrations.PageMenuItems.sort(
+                                function (a, b)
+                                {
+                                  if(a.Title == b.Title)
+                                  {
+                                    return 0;
+                                  }
+                                  return (a.Title < b.Title) ? -1 : 1;
+                                }
+                              );
+                              for(var j in items)
+                              {
+                                if(items.hasOwnProperty(j))
+                                {
+                                  pageMenus.push(
+                                    {
+                                      Title:       items[j].Title,
+                                      Description: items[j].Description,
+                                      Hash:        'm-' + this._hash32(items[j].GlobalAppID + '/' + items[j].ID),
+                                      Href:        '//' + this.getServiceHost('apps') + '/' + items[j].Path,
+                                      Mode:        items[j].Mode
+                                    }
+                                  );
+                                }
+                              }
+
                               pageActions = this._integrations.PageActions;
                               panels = this._integrations.Panels;
                             }
@@ -332,6 +357,7 @@
                                         if(
                                           (catHash + '/' + gaidHash == hash)
                                           || (catHash == hash)
+                                          || (gaidHash == hash)
                                         )
                                         {
                                           this._integration = items[i];
