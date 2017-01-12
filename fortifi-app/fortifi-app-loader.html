@@ -31,10 +31,6 @@
       :link:hover {
         color: var(--accent-700-color);
       }
-
-      #pageContentContainer {
-        position: relative;
-      }
     </style>
 
     <iron-location hash="{{__hash}}"></iron-location>
@@ -64,19 +60,17 @@
       </fortifi-drawer-content>
       <fortifi-app-spinner slot="spinner" hidden$="[[!_pageSpinnerVisible]]"></fortifi-app-spinner>
 
-      <div id="pageContentContainer">
-        <dom-if restamp if="[[_integration]]">
-          <template>
-            <fortifi-repath in="[[_integration.Path]]" service="apps" gaid="[[_integration.GlobalAppID]]"
-                            out="{{_integrationPath}}"></fortifi-repath>
-            <fort-pagelet auto auth url="[[_integrationPath]]"></fort-pagelet>
-          </template>
-        </dom-if>
+      <dom-if restamp if="[[_integration]]">
+        <template>
+          <fortifi-repath in="[[_integration.Path]]" service="apps" gaid="[[_integration.GlobalAppID]]"
+                          out="{{_integrationPath}}"></fortifi-repath>
+          <fort-pagelet auto auth url="[[_integrationPath]]"></fort-pagelet>
+        </template>
+      </dom-if>
 
-        <dom-if restamp if="[[!_integration]]">
-          <template id="pageContent"></template>
-        </dom-if>
-      </div>
+      <dom-if restamp if="[[!_integration]]">
+        <template id="pageContent"></template>
+      </dom-if>
     </fortifi-app>
   </template>
 
