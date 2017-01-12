@@ -33,7 +33,7 @@
       }
     </style>
 
-    <iron-location hash="{{__hash}}"></iron-location>
+    <iron-location path="{{__path}}" hash="{{__hash}}"></iron-location>
     <app-route id="route" route="[[route]]" pattern="/:org/:vendor/:app" data="{{routeData}}"
                tail="{{appPath}}" query-params="{{appQuery}}"></app-route>
 
@@ -50,6 +50,7 @@
     <page-title base-title="Fortifi" page-title="[[pageData.title]]"></page-title>
 
     <fortifi-app id="app" app-data="[[appData]]" page-data="[[pageData]]"
+                 back-path="[[_backPath]]"
                  header-menu="[[_headerMenus]]"
                  header-actions="[[_integrations.HeaderActions]]"
                  page-menu="[[_pageMenus]]"
@@ -89,6 +90,10 @@
           _pageXhr:               {type: Object},
           _pageData:              {type: Object},
           _integration:           {type: Object, value: null},
+          _backPath:              {
+            type:     String,
+            computed: '_computedBackPath(routeData.org,appData.GlobalAppID,pageData.backPath,__hash,__path)'
+          },
 
           _headerMenus: {type: Array},
           _pageMenus:   {type: Array},
@@ -119,6 +124,18 @@
                        return {};
                      },
 
+        _computedBackPath: function (org, gaid, path, hash, urlPath)
+                           {
+                             if(hash)
+                             {
+                               return urlPath;
+                             }
+                             if(org && path && path.length > 0)
+                             {
+                               return '/' + org + '/' + gaid + path;
+                             }
+                             return '';
+                           },
         _updateHeaderMenu: function (integration, integrations, appData)
                            {
                              if(integrations)
@@ -314,7 +331,7 @@
 
         _updateIntegration: function ()
                             {
-                              if(this._integrations)
+                              if(this._integrations && this.orgData && this.orgData.AppSummary)
                               {
                                 if(this.__hash)
                                 {

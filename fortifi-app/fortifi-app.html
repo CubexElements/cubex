@@ -33,7 +33,8 @@ Example:
 @hero hero.svg
 -->
 
-<dom-module id="fortifi-app" attributes="app-data page-data header-menu header-actions page-menu page-actions panels">
+<dom-module id="fortifi-app"
+            attributes="app-data page-data header-menu header-actions page-menu page-actions panels back-path">
   <template>
     <style>
       :host {
@@ -303,8 +304,7 @@ Example:
             computed:           '_computeHasSidebar(pageMenu,pageActions,panels)'
           },
           backPath:       {
-            type:     String,
-            computed: '_computedBackPath(organisation.id,appData.GlobalAppID,pageData.backPath)'
+            type: String
           },
           narrow:         {type: Boolean, value: true, reflectToAttribute: true, observer: '_updateMaxState'},
           appData:        {type: Object, observer: '_updateResources'},
@@ -358,14 +358,6 @@ Example:
                                 items += panels.length;
                               }
                               return items > 0;
-                            },
-        _computedBackPath:  function (org, gaid, path)
-                            {
-                              if(path && path.length > 0)
-                              {
-                                return '/' + org + '/' + gaid + path;
-                              }
-                              return '';
                             },
 
         _updateDrawer:   function (appData)
