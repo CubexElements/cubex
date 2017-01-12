@@ -132,7 +132,7 @@
                                var headerMenu = this._integrations.HeaderMenuItems;
                                var newMenu = [];
                                var self = this;
-                               if(headerMenu && appData)
+                               if(headerMenu && appData && this.orgData.AppSummary)
                                {
                                  headerMenu = headerMenu.sort(
                                    function (a, b)
@@ -205,7 +205,7 @@
                             pageActions = [],
                             panels = [];
 
-                          if(integrations)
+                          if(integrations && this.orgData.AppSummary)
                           {
                             if(integration && this.__hash.substr(0, 2) == 'h-')
                             {
