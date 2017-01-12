@@ -3,7 +3,7 @@
 <link rel="import" href="../../fort-pagelet/fort-pagelet.html">
 <link rel="import" href="../../paper-ripple/paper-ripple.html">
 
-<dom-module id="fortifi-link" attributes="mode href hash">
+<dom-module id="fortifi-link" attributes="mode href hash start-match">
   <template>
     <style>
       :host {
@@ -57,26 +57,27 @@
       {
         is:         'fortifi-link',
         properties: {
-          active:   {type: Boolean, reflectToAttribute: true, value: false},
-          mode:     {type: String, value: 'page'},
-          href:     {type: String},
-          hash:     {type: String},
-          _dlg:     {type: Object},
-          _pagelet: {type: Object}
+          active:     {type: Boolean, reflectToAttribute: true, value: false},
+          startMatch: {type: Boolean, value: false},
+          mode:       {type: String, value: 'page'},
+          href:       {type: String},
+          hash:       {type: String},
+          _dlg:       {type: Object},
+          _pagelet:   {type: Object}
         },
 
-        observers: ['_activeState(__path,__query,__hash)'],
+        observers: ['_activeState(__path,__query,__hash,hash,href,mode,startMatch)'],
 
-        _activeState: function (path, query, hash)
+        _activeState: function (path, query, urlHash)
                       {
                         if(this.mode == 'page')
                         {
-                          var concat = (path ? path : '') + (query ? '?' + query : '') + (hash ? '#' + hash : '');
+                          var concat = (path ? path : '') + (query ? '?' + query : '') + (urlHash ? '#' + urlHash : '');
                           if(this.href == concat)
                           {
                             this.active = true;
                           }
-                          else if(this.href == '#' + hash)
+                          else if(this.href == '#' + urlHash)
                           {
                             this.active = true;
                           }
@@ -84,7 +85,7 @@
                           {
                             this.active = true;
                           }
-                          else if(this.href && path.indexOf(this.href) == 0)
+                          else if(this.href && concat.indexOf(this.href) == 0)
                           {
                             this.active = true;
                           }
@@ -93,7 +94,11 @@
                             this.active = false;
                           }
                         }
-                        else if(this.mode == 'pagelet' && this.hash == hash)
+                        else if(this.mode == 'pagelet' && (
+                            (urlHash == this.hash)
+                            || (this.startMatch && urlHash.indexOf(this.hash) == 0)
+                          )
+                        )
                         {
                           this.active = true;
                         }
