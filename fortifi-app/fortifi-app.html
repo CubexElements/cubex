@@ -228,9 +228,10 @@ Example:
         <app-header id="ah" slot="header" reveals condenses effects="displace-element waterfall">
           <fortifi-breadcrumb crumbs="[[breadcrumbs]]" category="[[appData.Category]]"></fortifi-breadcrumb>
           <app-toolbar sticky>
-            <fortifi-app-header back-path="[[pageData.backPath]]"
-                                actions="[[headerActions]]"
-                                menu="[[headerMenu]]">
+            <fortifi-app-header
+              back-path="[[backPath]]"
+              actions="[[headerActions]]"
+              menu="[[headerMenu]]">
               <template is="dom-if" if="[[pageData.icon]]">
                 <fort-icon slot="icon" src="[[pageData.icon]]"></fort-icon>
               </template>
@@ -301,6 +302,10 @@ Example:
             reflectToAttribute: true,
             computed:           '_computeHasSidebar(pageMenu,pageActions,panels)'
           },
+          backPath:       {
+            type:     String,
+            computed: '_computedBackPath(organisation.id,appData.GlobalAppID,pageData.backPath)'
+          },
           narrow:         {type: Boolean, value: true, reflectToAttribute: true, observer: '_updateMaxState'},
           appData:        {type: Object, observer: '_updateResources'},
           pageData:       {type: Object, observer: '_resetLayout'},
@@ -353,6 +358,14 @@ Example:
                                 items += panels.length;
                               }
                               return items > 0;
+                            },
+        _computedBackPath:  function (org, gaid, path)
+                            {
+                              if(path && path.length > 0)
+                              {
+                                return '/' + org + '/' + gaid + path;
+                              }
+                              return '';
                             },
 
         _updateDrawer:   function (appData)
