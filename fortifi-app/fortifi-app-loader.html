@@ -126,7 +126,7 @@
                                var headerMenu = this._integrations.HeaderMenuItems;
                                var newMenu = [];
                                var self = this;
-                               if(headerMenu && appData && this.orgData.AppSummary)
+                               if(headerMenu && appData && this.orgData && this.orgData.AppSummary)
                                {
                                  headerMenu = headerMenu.sort(
                                    function (a, b)
