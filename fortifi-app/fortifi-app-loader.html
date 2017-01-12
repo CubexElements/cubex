@@ -199,7 +199,7 @@
                             pageActions = [],
                             panels = [];
 
-                          if(integrations && this.orgData.AppSummary)
+                          if(integrations && this.orgData && this.orgData.AppSummary)
                           {
                             if(integration && this.__hash.substr(0, 2) == 'h-')
                             {
@@ -245,29 +245,32 @@
                             }
                             else
                             {
-                              var items = this._integrations.PageMenuItems.sort(
-                                function (a, b)
-                                {
-                                  if(a.Title == b.Title)
-                                  {
-                                    return 0;
-                                  }
-                                  return (a.Title < b.Title) ? -1 : 1;
-                                }
-                              );
-                              for(var j in items)
+                              if(this._integrations.PageMenuItems)
                               {
-                                if(items.hasOwnProperty(j))
-                                {
-                                  pageMenus.push(
+                                var items = this._integrations.PageMenuItems.sort(
+                                  function (a, b)
+                                  {
+                                    if(a.Title == b.Title)
                                     {
-                                      Title:       items[j].Title,
-                                      Description: items[j].Description,
-                                      Hash:        'm-' + this._hash32(items[j].GlobalAppID + '/' + items[j].ID),
-                                      Href:        '//' + this.getServiceHost('apps') + '/' + items[j].Path,
-                                      Mode:        items[j].Mode
+                                      return 0;
                                     }
-                                  );
+                                    return (a.Title < b.Title) ? -1 : 1;
+                                  }
+                                );
+                                for(var j in items)
+                                {
+                                  if(items.hasOwnProperty(j))
+                                  {
+                                    pageMenus.push(
+                                      {
+                                        Title:       items[j].Title,
+                                        Description: items[j].Description,
+                                        Hash:        'm-' + this._hash32(items[j].GlobalAppID + '/' + items[j].ID),
+                                        Href:        '//' + this.getServiceHost('apps') + '/' + items[j].Path,
+                                        Mode:        items[j].Mode
+                                      }
+                                    );
+                                  }
                                 }
                               }
 
