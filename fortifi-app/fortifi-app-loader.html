@@ -31,9 +31,14 @@
       :link:hover {
         color: var(--accent-700-color);
       }
+
+      #hero {
+        width: 100%;
+        align-self: flex-end;
+      }
     </style>
 
-    <iron-location path="{{__path}}" hash="{{__hash}}"></iron-location>
+    <iron-location path="{{__path}}"></iron-location>
     <app-route id="route" route="[[route]]" pattern="/:org/:vendor/:app" data="{{routeData}}"
                tail="{{appPath}}" query-params="{{appQuery}}"></app-route>
 
@@ -43,9 +48,9 @@
                             app-data="{{appData}}"></fortifi-app-definition>
 
     <fort-resource auto auth url="[[_integrationsPath]]" data="{{_integrations}}"
-                   headers="[[_appDataHeaders]]" ttl="3600"></fort-resource>
-    <fort-resource auto auth url="[[_appDataPath]]" data="{{_pageData}}" xhr="{{_pageXhr}}"
-                   headers="[[_appDataHeaders]]"></fort-resource>
+                   headers="[[_pageDefinitionHeaders]]" ttl="3600"></fort-resource>
+    <fort-resource auto auth url="[[_pageDefinitionPath]]" data="{{_pageData}}" xhr="{{_pageXhr}}"
+                   headers="[[_pageDefinitionHeaders]]"></fort-resource>
 
     <page-title base-title="Fortifi" page-title="[[pageData.title]]"></page-title>
 
@@ -61,17 +66,8 @@
       </fortifi-drawer-content>
       <fortifi-app-spinner slot="spinner" hidden$="[[!_pageSpinnerVisible]]"></fortifi-app-spinner>
 
-      <dom-if restamp if="[[_integration]]">
-        <template>
-          <fortifi-repath in="[[_integration.Path]]" service="apps" gaid="[[_integration.GlobalAppID]]"
-                          out="{{_integrationPath}}"></fortifi-repath>
-          <fort-pagelet auto auth url="[[_integrationPath]]"></fort-pagelet>
-        </template>
-      </dom-if>
-
-      <dom-if restamp if="[[!_integration]]">
-        <template id="pageContent"></template>
-      </dom-if>
+      <fort-pagelet-content id="hero" slot="hero" html="[[_pageDefinitionContent]]"></fort-pagelet-content>
+      <fort-pagelet auto auth url="[[_pageContentPath]]" headers="[[_pageContentHeaders]]"></fort-pagelet>
     </fortifi-app>
   </template>
 
@@ -80,56 +76,72 @@
       {
         is:         'fortifi-app-loader',
         properties: {
-          _pageSpinnerVisible:    {type: Boolean, value: false},
-          _pageletSpinnerVisible: {type: Boolean, value: false},
-          _addLoader:             {type: Number, value: 0},
+          _org: {type: String},
+
+          _pageDefinitionPath:    {type: String},
           _loadedPath:            {type: String, value: ''},
-          _appDataPath:           {type: String},
-          _integrationsPath:      {type: String},
-          _appDataHeaders:        {type: Object, computed: '_getHeaders(routeData.org)'},
           _pageXhr:               {type: Object},
           _pageData:              {type: Object},
-          _integration:           {type: Object, value: null},
+          _pageDefinitionHeaders: {type: Object, computed: '_computeHeaders(_org,"page-definition")'},
+          _pageDefinitionContent: {type: String},
+          _pageSpinnerVisible:    {type: Boolean, value: false},
+          pageData:               {type: Object, notify: true},
+          appData:                {type: Object, notify: true},
           _backPath:              {
             type:     String,
-            computed: '_computedBackPath(routeData.org,appData.GlobalAppID,pageData.backPath,__hash,__path)'
+            computed: '_computedBackPath(routeData.org,appData.GlobalAppID,pageData.backPath)'
           },
+
+          _pageContentPath:            {type: String},
+          _pageContentHeaders:         {type: Object, computed: '_computeHeaders(_org)'},
+          __pageContentSpinnerVisible: {type: Boolean, value: false},
+
+          _integrationsPath: {type: String},
+          _integration:      {type: Object, value: null},
 
           _headerMenus: {type: Array},
           _pageMenus:   {type: Array},
           _pageActions: {type: Array},
-          _panels:      {type: Array},
-
-          appData:  {type: Object, notify: true},
-          pageData: {type: Object, notify: true}
+          _panels:      {type: Array}
         },
         observers:  [
+          '_updateOrg(routeData.org)',
           '_pathChanged(route.path)',
-          '_updateData(_pageXhr, _pageData)',
-          '_updateIntegration(__hash, _integrations)',
+          '_updateData(_pageXhr,_pageData)',
+          '_updateIntegration(_integrations,appPath)',
           '_updateHeaderMenu(_integration,_integrations,appData)',
-          '_updateSidebar(_integration,_integrations)'
+          '_updateSidebar(_integration,_integrations,__path)'
         ],
-        attached:   function ()
+
+        _updateOrg: function (org)
                     {
-                      this.async(this._pathChanged);
+                      if(this._org !== org)
+                      {
+                        this._org = org;
+                      }
                     },
 
-        _getHeaders: function (org)
-                     {
-                       if(org)
-                       {
-                         return {'X-FORT-ORG': org};
-                       }
-                       return {};
-                     },
+        attached: function ()
+                  {
+                    this.async(this._pathChanged);
+                  },
 
-        _computedBackPath: function (org, gaid, path, hash, urlPath)
+        _computeHeaders: function (org, resourceType)
+                         {
+                           var headers = {};
+                           if(org)
                            {
-                             if(hash)
-                             {
-                               return urlPath;
-                             }
+                             headers['X-FORT-ORG'] = org;
+                           }
+                           if(resourceType)
+                           {
+                             headers['X-FORT-RESOURCE-TYPE'] = resourceType;
+                           }
+                           return headers;
+                         },
+
+        _computedBackPath: function (org, gaid, path)
+                           {
                              if(org && path && path.length > 0)
                              {
                                return '/' + org + '/' + gaid + path;
@@ -180,7 +192,7 @@
                                        newMenu.push(
                                          {
                                            Title: headerMenu[i].Title,
-                                           Path:  '/' + this.routeData.org + '/' + headerMenu[i].GlobalAppID + '/' + headerMenu[i].Path,
+                                           Path:  '/' + this.routeData.org + '/' + headerMenu[i].Hook + '/_/' + headerMenu[i].ID,
                                            Mode:  'page'
                                          }
                                        );
@@ -194,9 +206,7 @@
                                            {
                                              Title:    category,
                                              Category: true,
-                                             Path:     '/' + this.routeData.org + '/' + headerMenu[i].Hook
-                                                       + '#h-' + this._hash32(category),
-                                             Hash:     'h-' + this._hash32(category),
+                                             Path:     '/' + this.routeData.org + '/' + headerMenu[i].Hook + '/~/' + category,
                                              Mode:     'page'
                                            }
                                          );
@@ -218,7 +228,8 @@
 
                           if(integrations && this.orgData && this.orgData.AppSummary)
                           {
-                            if(integration && this.__hash.substr(0, 2) == 'h-')
+                            var pathMatches = this._parsePath(this.appPath.path);
+                            if(integration && pathMatches.type == '~')
                             {
                               var
                                 intData = this.orgData.AppSummary[integration.GlobalAppID],
@@ -246,10 +257,9 @@
                                       {
                                         Title:       headerMenu[i].Title,
                                         Description: headerMenu[i].Description,
-                                        Hash:        'h-' + this._hash32(category)
-                                                     + (pageMenus.length > 0 ? '/' + this._hash32(headerMenu[i].GlobalAppID + '/' + headerMenu[i].ID) : ''),
-                                        Href:        '//' + this.getServiceHost('apps') + '/' + headerMenu[i].Path,
-                                        Mode:        headerMenu[i].Mode == 'page' ? 'pagelet' : headerMenu[i].Mode
+                                        Path:        this._getBasePath() + pathMatches.pagePath + '/~/' + category
+                                                     + '/h-' + this._hash32(headerMenu[i].GlobalAppID + '/' + headerMenu[i].ID),
+                                        Mode:        'page'
                                       }
                                     );
                                   }
@@ -282,7 +292,6 @@
                                       {
                                         Title:       items[j].Title,
                                         Description: items[j].Description,
-                                        Hash:        'm-' + this._hash32(items[j].GlobalAppID + '/' + items[j].ID),
                                         Href:        '//' + this.getServiceHost('apps') + '/' + items[j].Path,
                                         Mode:        items[j].Mode
                                       }
@@ -307,21 +316,37 @@
                           if(this.route.path !== this._loadedPath)
                           {
                             this._loadedPath = this.route.path;
-                            var self = this,
-                              path = this.appPath.path.replace(/^\//, ''),
-                              fullPath = '/' + this.routeData.vendor + '/' + this.routeData.app + (path ? '/' + path : '');
 
-                            this._addPageSpinner = setTimeout(
-                              function () { self._pageSpinnerVisible = true; }, 50
-                            );
-                            this._integrationsPath = '//' + this.getServiceHost('apps') + '/fortifi/integrations/integrations.json?hook=' + fullPath;
-                            this._appDataPath = '//' + this.getServiceHost('apps') + fullPath;
+                            var self = this,
+                              pathMatches = this._parsePath(this.appPath.path),
+                              fullPath = '/' + this.routeData.vendor + '/' + this.routeData.app + pathMatches.pagePath,
+                              integrationPath = fullPath;
+
+                            if(pathMatches.type == '_')
+                            {
+                              integrationPath += '/_/' + pathMatches.typeId;
+                            }
+
+                            var ip = '//' + this.getServiceHost('apps') + '/fortifi/integrations/integrations.json?hook=' + integrationPath;
+                            if(this._integrationsPath != ip)
+                            {
+                              this._integrationsPath = ip;
+                            }
+
+                            var pdp = '//' + this.getServiceHost('apps') + fullPath;
+                            if(this._pageDefinitionPath != pdp)
+                            {
+                              this._addPageSpinner = setTimeout(
+                                function () { self._pageSpinnerVisible = true; }, 50
+                              );
+                              this._pageDefinitionPath = pdp;
+                            }
                           }
                         }
                         else
                         {
                           this._integrationsPath = null;
-                          this._appDataPath = null;
+                          this._pageDefinitionPath = null;
                           this._loadedPath = null;
                           this.routeData = {};
                           this.pageData = null;
@@ -331,13 +356,15 @@
 
         _updateIntegration: function ()
                             {
-                              if(this._integrations && this.orgData && this.orgData.AppSummary)
+                              if(this._integrations && this.orgData && this.orgData.AppSummary
+                                && this.appPath && this.appPath.path)
                               {
-                                if(this.__hash)
+                                var pathMatches = this._parsePath(this.appPath.path);
+                                var items = null;
+                                if(pathMatches.pageletId)
                                 {
-                                  var items = null,
-                                    hashType = this.__hash.substr(0, 2),
-                                    hash = this.__hash.substr(2);
+                                  var hashType = pathMatches.pageletId.substr(0, 2),
+                                    hash = pathMatches.pageletId.substr(2);
                                   if(hashType == 'm-')
                                   {
                                     items = this._integrations.PageMenuItems;
@@ -350,40 +377,58 @@
                                   {
                                     items = this._integrations.HeaderMenuItems;
                                   }
-                                  if(items)
-                                  {
-                                    items = items.sort(
-                                      function (a, b)
-                                      {
-                                        if(a.Title == b.Title)
-                                        {
-                                          return 0;
-                                        }
-                                        return (a.Title < b.Title) ? -1 : 1;
-                                      }
-                                    );
-                                    for(var i in items)
+                                }
+                                else if(pathMatches.type == '~' && pathMatches.typeId)
+                                {
+                                  items = this._integrations.HeaderMenuItems;
+                                }
+                                else if(pathMatches.type == '_' && pathMatches.typeId)
+                                {
+                                  items = this._integrations.HeaderMenuItems;
+                                }
+                                else
+                                {
+                                  this._pageContentPath = this._pageDefinitionPath;
+                                }
+
+                                if(items)
+                                {
+                                  items = items.sort(
+                                    function (a, b)
                                     {
-                                      if(items.hasOwnProperty(i))
+                                      if(a.Title == b.Title)
                                       {
-                                        var catHash = this._hash32(this.orgData.AppSummary[items[i].GlobalAppID].category),
-                                          gaidHash = this._hash32(items[i].GlobalAppID + '/' + items[i].ID);
-                                        if(
-                                          (catHash + '/' + gaidHash == hash)
-                                          || (catHash == hash)
-                                          || (gaidHash == hash)
+                                        return 0;
+                                      }
+                                      return (a.Title < b.Title) ? -1 : 1;
+                                    }
+                                  );
+                                  for(var i in items)
+                                  {
+                                    if(items.hasOwnProperty(i))
+                                    {
+                                      var gaidHash = this._hash32(items[i].GlobalAppID + '/' + items[i].ID);
+                                      if(
+                                        ((!pathMatches.pageletId)
+                                          && (pathMatches.type == '~' && pathMatches.typeId == this.orgData.AppSummary[items[i].GlobalAppID].category)
+                                          || (pathMatches.type == '_' && items[i].GlobalAppID == this.appData.GlobalAppID && items[i].ID == pathMatches.typeId)
                                         )
-                                        {
-                                          this._integration = items[i];
-                                          this.$.app._resetLayout();
-                                          return;
-                                        }
+                                        || (gaidHash == hash)
+                                      )
+                                      {
+                                        this._integration = items[i];
+                                        this._pageContentPath = '//' + this.getServiceHost('apps') + '/' + items[i].GlobalAppID + '/' + items[i].Path;
+                                        this.$.app._resetLayout();
+                                        return;
                                       }
                                     }
                                   }
                                 }
                               }
-                              this._integration = null;
+                              else
+                              {
+                                this._pageContentPath = this._pageDefinitionPath;
+                              }
                               this.$.app._resetLayout();
                             },
 
@@ -418,14 +463,39 @@
                        }
                        this._pageSpinnerVisible = false;
 
-                       // modify the dom-if template
-                       this.$.pageContent._content = frag;
-                       // rebuild dom-if template instance
-                       this.$.pageContent.parentNode._teardownInstance();
-                       this.$.pageContent.parentNode._render();
+                       var div = document.createElement('div');
+                       div.append(frag);
+                       this._pageDefinitionContent = div.innerHTML;
 
                        this.pageData = headers;
                      },
+
+        _parsePath: function (path)
+                    {
+                      var matches = path.match(/(.+?)(\/(_|~)(\/([^\/]+)(\/([^\/]+))?(.*)))?$/);
+                      if(matches)
+                      {
+                        return {
+                          pagePath:  matches[1],
+                          type:      matches[3],
+                          typeId:    matches[5],
+                          pageletId: matches[7],
+                          subPath:   matches[8]
+                        };
+                      }
+                      return {
+                        pagePath:  path,
+                        type:      '',
+                        typeId:    '',
+                        pageletId: '',
+                        subPath:   ''
+                      };
+                    },
+
+        _getBasePath: function ()
+                      {
+                        return '/' + this.routeData.org + '/' + this.routeData.vendor + '/' + this.routeData.app;
+                      },
 
         behaviors: [
           Polymer.FortIteratorBehavior,
