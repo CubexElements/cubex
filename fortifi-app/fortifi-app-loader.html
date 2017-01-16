@@ -365,6 +365,8 @@
 
         _updateIntegration: function ()
                             {
+                              var integration = null, contentPath = this._pageDefinitionPath;
+
                               if(this._integrations && this.orgData && this.orgData.AppSummary
                                 && this.appPath && this.appPath.path)
                               {
@@ -421,13 +423,21 @@
                                         || (gaidHash == hash)
                                       )
                                       {
-                                        this._integration = items[i];
-                                        this._pageContentPath = '//' + this.getServiceHost('apps') + '/' + items[i].GlobalAppID + '/' + items[i].Path;
+                                        integration = items[i];
+                                        contentPath = '//' + this.getServiceHost('apps') + '/' + items[i].GlobalAppID + '/' + items[i].Path;
                                         break;
                                       }
                                     }
                                   }
                                 }
+                              }
+                              if(integration != this._integration)
+                              {
+                                this._integration = integration;
+                              }
+                              if(contentPath != this._pageContentPath)
+                              {
+                                this._pageContentPath = contentPath;
                               }
                               this.$.app._resetLayout();
                             },
