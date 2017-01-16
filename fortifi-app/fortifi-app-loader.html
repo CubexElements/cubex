@@ -38,7 +38,6 @@
       }
     </style>
 
-    <iron-location path="{{__path}}"></iron-location>
     <app-route id="route" route="[[route]]" pattern="/:org/:vendor/:app" data="{{routeData}}"
                tail="{{appPath}}" query-params="{{appQuery}}"></app-route>
 
@@ -108,9 +107,9 @@
           '_updateOrg(routeData.org)',
           '_pathChanged(route.path)',
           '_updateData(_pageXhr,_pageData)',
-          '_updateIntegration(_integrations,appPath.path,_pageDefinitionPath)',
-          '_updateHeaderMenu(_integration,_integrations,appData)',
-          '_updateSidebar(_integration,_integrations,__path)'
+          '_updateIntegration(_integrations,appPath.path,_pageDefinitionPath,orgData)',
+          '_updateHeaderMenu(_integration,_integrations,appData,orgData)',
+          '_updateSidebar(_integration,_integrations,appPath,orgData)'
         ],
 
         _updateOrg: function (org)
@@ -342,6 +341,11 @@
                                 function () { self._pageSpinnerVisible = true; }, 50
                               );
                               this._pageDefinitionPath = pdp;
+
+                              if(!pathMatches.type)
+                              {
+                                this._pageContentPath = this._pageDefinitionPath;
+                              }
                             }
                           }
                         }
@@ -388,10 +392,6 @@
                                 {
                                   items = this._integrations.HeaderMenuItems;
                                 }
-                                else
-                                {
-                                  this._pageContentPath = this._pageDefinitionPath;
-                                }
 
                                 if(items)
                                 {
@@ -420,16 +420,11 @@
                                       {
                                         this._integration = items[i];
                                         this._pageContentPath = '//' + this.getServiceHost('apps') + '/' + items[i].GlobalAppID + '/' + items[i].Path;
-                                        this.$.app._resetLayout();
-                                        return;
+                                        break;
                                       }
                                     }
                                   }
                                 }
-                              }
-                              else
-                              {
-                                this._pageContentPath = this._pageDefinitionPath;
                               }
                               this.$.app._resetLayout();
                             },
