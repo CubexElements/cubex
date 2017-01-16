@@ -55,6 +55,7 @@
 
     <fortifi-app id="app" app-data="[[appData]]" page-data="[[pageData]]"
                  back-path="[[_backPath]]"
+                 page-path="[[_pagePath]]"
                  header-menu="[[_headerMenus]]"
                  header-actions="[[_integrations.HeaderActions]]"
                  page-menu="[[_pageMenus]]"
@@ -78,6 +79,7 @@
           _org: {type: String},
 
           _pageDefinitionPath:    {type: String},
+          _pagePath:              {type: String},
           _loadedPath:            {type: String, value: ''},
           _pageXhr:               {type: Object},
           _pageData:              {type: Object},
@@ -322,6 +324,7 @@
                               pathMatches = this._parsePath(this.appPath.path),
                               fullPath = '/' + this.routeData.vendor + '/' + this.routeData.app + pathMatches.pagePath,
                               integrationPath = fullPath;
+                            this._pagePath = '/' + this.routeData.org + fullPath;
 
                             if(pathMatches.type == '_')
                             {

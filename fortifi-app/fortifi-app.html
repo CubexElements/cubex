@@ -34,7 +34,7 @@ Example:
 -->
 
 <dom-module id="fortifi-app"
-            attributes="app-data page-data header-menu header-actions page-menu page-actions panels back-path">
+            attributes="app-data page-data header-menu header-actions page-menu page-actions panels back-path page-path">
   <template>
     <style>
       :host {
@@ -214,6 +214,11 @@ Example:
           margin-left: 212px;
         }
       }
+
+      #page-title {
+        text-decoration: none;
+        color: var(--theme-text)
+      }
     </style>
 
     <iron-media-query query="(max-width: 375px)" query-matches="{{narrow}}"></iron-media-query>
@@ -236,7 +241,7 @@ Example:
               <template is="dom-if" if="[[pageData.icon]]">
                 <fort-icon slot="icon" src="[[pageData.icon]]"></fort-icon>
               </template>
-              <h1 slot="header">[[pageData.title]]</h1>
+              <h1 slot="header"><a href="[[pagePath]]" id="page-title">[[pageData.title]]</a></h1>
               <div displace id="hero" slot="hero">
                 <slot name="hero"></slot>
               </div>
@@ -303,9 +308,8 @@ Example:
             reflectToAttribute: true,
             computed:           '_computeHasSidebar(pageMenu,pageActions,panels)'
           },
-          backPath:       {
-            type: String
-          },
+          backPath:       {type: String},
+          pagePath:       {type: String},
           narrow:         {type: Boolean, value: true, reflectToAttribute: true, observer: '_updateMaxState'},
           appData:        {type: Object, observer: '_updateResources'},
           pageData:       {type: Object, observer: '_resetLayout'},
