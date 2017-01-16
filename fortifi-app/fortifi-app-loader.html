@@ -108,7 +108,7 @@
           '_updateOrg(routeData.org)',
           '_pathChanged(route.path)',
           '_updateData(_pageXhr,_pageData)',
-          '_updateIntegration(_integrations,appPath)',
+          '_updateIntegration(_integrations,appPath.path,_pageDefinitionPath)',
           '_updateHeaderMenu(_integration,_integrations,appData)',
           '_updateSidebar(_integration,_integrations,__path)'
         ],
@@ -206,7 +206,9 @@
                                            {
                                              Title:    category,
                                              Category: true,
-                                             Path:     '/' + this.routeData.org + '/' + headerMenu[i].Hook + '/~/' + category,
+                                             Path:     '/' + this.routeData.org + '/' + headerMenu[i].Hook + '/~/' + category
+                                                       + '/h-' + this._hash32(headerMenu[i].GlobalAppID + '/' + headerMenu[i].ID),
+                                             Match:    '/' + this.routeData.org + '/' + headerMenu[i].Hook + '/~/' + category,
                                              Mode:     'page'
                                            }
                                          );

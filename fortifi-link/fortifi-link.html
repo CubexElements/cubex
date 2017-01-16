@@ -3,7 +3,7 @@
 <link rel="import" href="../../fort-pagelet/fort-pagelet.html">
 <link rel="import" href="../../paper-ripple/paper-ripple.html">
 
-<dom-module id="fortifi-link" attributes="mode href hash start-match">
+<dom-module id="fortifi-link" attributes="mode href hash match">
   <template>
     <style>
       :host {
@@ -36,12 +36,6 @@
       </a>
     </template>
 
-    <template is="dom-if" if="[[_isMode('pagelet',mode)]]">
-      <a href="#[[hash]]">
-        <slot></slot>
-      </a>
-    </template>
-
     <template is="dom-if" if="[[_isMode('dialog',mode)]]">
       <paper-dialog id="dialog" with-backdrop>
         <fort-pagelet id="pagelet" auth url="[[href]]"></fort-pagelet>
@@ -57,23 +51,27 @@
       {
         is:         'fortifi-link',
         properties: {
-          active:     {type: Boolean, reflectToAttribute: true, value: false},
-          startMatch: {type: Boolean, value: false},
-          mode:       {type: String, value: 'page'},
-          href:       {type: String},
-          hash:       {type: String},
-          _dlg:       {type: Object},
-          _pagelet:   {type: Object}
+          active:   {type: Boolean, reflectToAttribute: true, value: false},
+          match:    {type: Boolean, value: false},
+          mode:     {type: String, value: 'page'},
+          href:     {type: String},
+          hash:     {type: String},
+          _dlg:     {type: Object},
+          _pagelet: {type: Object}
         },
 
-        observers: ['_activeState(__path,__query,__hash,hash,href,mode,startMatch)'],
+        observers: ['_activeState(__path,__query,__hash,hash,href,mode,match)'],
 
         _activeState: function (path, query, urlHash)
                       {
                         if(this.mode == 'page')
                         {
                           var concat = (path ? path : '') + (query ? '?' + query : '') + (urlHash ? '#' + urlHash : '');
-                          if(this.href == concat)
+                          if(concat.indexOf(this.match) == 0)
+                          {
+                            this.active = true;
+                          }
+                          else if(this.href == concat)
                           {
                             this.active = true;
                           }
@@ -93,14 +91,6 @@
                           {
                             this.active = false;
                           }
-                        }
-                        else if(this.mode == 'pagelet' && (
-                            (urlHash == this.hash)
-                            || (this.startMatch && urlHash.indexOf(this.hash) == 0)
-                          )
-                        )
-                        {
-                          this.active = true;
                         }
                         else
                         {

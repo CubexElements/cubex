@@ -195,7 +195,7 @@
 
     <div id="menu">
       <template is="dom-repeat" items="[[menu]]">
-        <fortifi-link href="[[item.Path]]" hash="[[item.Hash]]" mode="[[item.Mode]]" start-match>
+        <fortifi-link href="[[item.Path]]" hash="[[item.Hash]]" mode="[[item.Mode]]" match="[[item.Match]]">
           <template is="dom-if" if="[[!item.Category]]">
             [[item.Title]]
           </template>
