@@ -35,6 +35,16 @@
       #hero {
         width: 100%;
         align-self: flex-end;
+        margin-top: -64px;
+      }
+
+      #hero fort-hero {
+        padding-top: 64px;
+        overflow: visible;
+      }
+
+      #hero[hidden] {
+        display: none;
       }
     </style>
 
@@ -60,13 +70,15 @@
                  header-actions="[[_integrations.HeaderActions]]"
                  page-menu="[[_pageMenus]]"
                  page-actions="[[_pageActions]]"
-                 panels="[[_panels]]">
+                 panels="[[_panels]]"
+                 has-hero="[[_pageDefinitionContentHasHero]]">
       <fortifi-drawer-content slot="drawer-content" id="appDrawerContent">
         <fortifi-app-menu app-data="[[appData]]"></fortifi-app-menu>
       </fortifi-drawer-content>
       <fortifi-app-spinner slot="spinner" hidden$="[[!_pageSpinnerVisible]]"></fortifi-app-spinner>
 
-      <fort-pagelet-content id="hero" slot="hero" html="[[_pageDefinitionContent]]"></fort-pagelet-content>
+      <fort-pagelet-content id="hero" slot="hero" html="[[_pageDefinitionContent]]"
+                            hidden$="[[!_pageDefinitionContentHasHero]]"></fort-pagelet-content>
       <fort-pagelet auto auth url="[[_pageContentPath]]" headers="[[_pageContentHeaders]]"></fort-pagelet>
     </fortifi-app>
   </template>
@@ -476,6 +488,7 @@
                        var div = document.createElement('div');
                        div.append(frag);
                        this._pageDefinitionContent = div.innerHTML;
+                       this._pageDefinitionContentHasHero = div.querySelector('fort-hero');
 
                        this.pageData = headers;
                      },

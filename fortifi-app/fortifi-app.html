@@ -34,7 +34,7 @@ Example:
 -->
 
 <dom-module id="fortifi-app"
-            attributes="app-data page-data header-menu header-actions page-menu page-actions panels back-path page-path">
+            attributes="app-data page-data header-menu header-actions page-menu page-actions panels back-path page-path has-hero">
   <template>
     <style>
       :host {
@@ -116,7 +116,6 @@ Example:
       }
 
       :host #hero {
-        overflow: hidden;
         position: relative;
         display: flex;
         flex-wrap: wrap;
@@ -215,9 +214,38 @@ Example:
         }
       }
 
-      #page-title {
+      #app-back {
+        margin-left: -24px;
+        margin-right: 8px;
+        color: var(--accent-400-color);
+      }
+
+      #app-back fort-action {
+        padding: 15px;
+      }
+
+      #app-heading {
+        @apply --paper-font-title;
+        font-weight: normal;
+        line-height: 64px;
+        margin: 0;
+        padding: 0;
+      }
+
+      #app-heading a {
+        @apply --paper-font-title;
+        font-weight: normal;
+
         text-decoration: none;
-        color: var(--theme-text)
+        color: var(--theme-text);
+      }
+
+      :host([has-hero]) #app-back {
+        color: white;
+      }
+
+      :host([has-hero]) #app-heading a {
+        color: white;
       }
     </style>
 
@@ -234,17 +262,24 @@ Example:
         <app-header id="ah" slot="header" reveals condenses effects="displace-element waterfall">
           <fortifi-breadcrumb crumbs="[[breadcrumbs]]" category="[[appData.Category]]"></fortifi-breadcrumb>
           <app-toolbar sticky>
-            <fortifi-app-header
-              back-path="[[backPath]]"
-              actions="[[headerActions]]"
-              menu="[[headerMenu]]">
-              <template is="dom-if" if="[[pageData.icon]]">
-                <fort-icon slot="icon" src="[[pageData.icon]]"></fort-icon>
+            <fortifi-app-header actions="[[headerActions]]" menu="[[headerMenu]]">
+
+              <template is="dom-if" if="[[backPath]]" strip-whitespace>
+                <a slot="header" id="app-back" href="[[backPath]]">
+                  <fort-action icon="icons:arrow-back" size="24"></fort-action>
+                </a>
               </template>
-              <h1 slot="header"><a href="[[pagePath]]" id="page-title">[[pageData.title]]</a></h1>
+
+              <template is="dom-if" if="[[pageData.icon]]">
+                <fort-icon slot="header" src="[[pageData.icon]]"></fort-icon>
+              </template>
+
+              <h1 id="app-heading" slot="header"><a href="[[pagePath]]" id="page-title">[[pageData.title]]</a></h1>
+
               <div displace id="hero" slot="hero">
                 <slot name="hero"></slot>
               </div>
+
             </fortifi-app-header>
           </app-toolbar>
         </app-header>
@@ -308,6 +343,7 @@ Example:
             reflectToAttribute: true,
             computed:           '_computeHasSidebar(pageMenu,pageActions,panels)'
           },
+          hasHero:        {type: Boolean, reflectToAttribute: true},
           backPath:       {type: String},
           pagePath:       {type: String},
           narrow:         {type: Boolean, value: true, reflectToAttribute: true, observer: '_updateMaxState'},
