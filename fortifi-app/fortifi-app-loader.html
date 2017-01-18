@@ -488,7 +488,7 @@
                        var div = document.createElement('div');
                        div.append(frag);
                        this._pageDefinitionContent = div.innerHTML;
-                       this._pageDefinitionContentHasHero = div.querySelector('fort-hero');
+                       this._pageDefinitionContentHasHero = !!div.querySelector('fort-hero');
 
                        this.pageData = headers;
                      },
