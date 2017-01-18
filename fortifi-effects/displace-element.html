@@ -40,7 +40,9 @@
                       {
                         var ele = fx.elements[i],
                           oldHeight = ele.element.style.maxHeight,
-                          newHeightFraction = (1 - Math.min(1, p)),
+                          overlap = document.body.scrollHeight - window.innerHeight,
+                          newHeightFraction = (overlap > this.offsetHeight)
+                            ? (1 - Math.min(1, p)) : 1,
                           newHeight = (ele.height * newHeightFraction);
 
                         if(p == 0)
