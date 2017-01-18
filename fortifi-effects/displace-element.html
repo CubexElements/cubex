@@ -38,18 +38,22 @@
                     {
                       if(fx.elements.hasOwnProperty(i))
                       {
-                        var ele = fx.elements[i];
-                        var oldHeight = ele.element.style.maxHeight;
+                        var ele = fx.elements[i],
+                          oldHeight = ele.element.style.maxHeight,
+                          newHeightFraction = (1 - Math.min(1, p)),
+                          newHeight = (ele.height * newHeightFraction);
+
                         if(p == 0)
                         {
                           ele.element.style.maxHeight = '';
                         }
                         else
                         {
-                          ele.element.style.maxHeight = (ele.height * (1 - Math.min(1, p))) + 'px';
+                          ele.element.style.maxHeight = newHeight + 'px';
                         }
                         if(ele.element.style.maxHeight !== oldHeight)
                         {
+                          this.fire('fort-displace-changed', {height: newHeight, fraction: newHeightFraction});
                           changed = true;
                         }
                       }
