@@ -240,11 +240,15 @@ Example:
         color: var(--theme-text);
       }
 
-      :host([has-hero]) #app-back {
+      #app-back, #app-heading a {
+        transition: color 400ms;
+      }
+
+      :host([hero-header]) #app-back {
         color: white;
       }
 
-      :host([has-hero]) #app-heading a {
+      :host([hero-header]) #app-heading a {
         color: white;
       }
     </style>
@@ -338,30 +342,58 @@ Example:
       {
         is:         'fortifi-app',
         properties: {
-          hasSidebar:     {
+          hasSidebar:          {
             type:               Boolean,
             reflectToAttribute: true,
             computed:           '_computeHasSidebar(pageMenu,pageActions,panels)'
           },
-          hasHero:        {type: Boolean, reflectToAttribute: true},
-          backPath:       {type: String},
-          pagePath:       {type: String},
-          narrow:         {type: Boolean, value: true, reflectToAttribute: true, observer: '_updateMaxState'},
-          appData:        {type: Object, observer: '_updateResources'},
-          pageData:       {type: Object, observer: '_resetLayout'},
-          breadcrumbs:    {type: Object, computed: '_updateCrumbs(pageData,organisation)'},
-          drawerDisabled: {
+          hasHero:             {type: Boolean},
+          heroHeader:          {
+            type:               Boolean, computed: '_computeHeroHeader(hasHero,_heroHeaderFraction)',
+            reflectToAttribute: true
+          },
+          _heroHeaderFraction: {type: Boolean, value: 1},
+          backPath:            {type: String},
+          pagePath:            {type: String},
+          narrow:              {type: Boolean, value: true, reflectToAttribute: true, observer: '_updateMaxState'},
+          appData:             {type: Object, observer: '_updateResources'},
+          pageData:            {type: Object, observer: '_resetLayout'},
+          breadcrumbs:         {type: Object, computed: '_updateCrumbs(pageData,organisation)'},
+          drawerDisabled:      {
             type:               Boolean,
             value:              false,
             reflectToAttribute: true
           },
-          _lock:          {type: Boolean, value: false},
-          _peek:          {type: Boolean, value: false}
+          _lock:               {type: Boolean, value: false},
+          _peek:               {type: Boolean, value: false}
         },
         observers:  [
           '_viewChanged(_lock,_peek,narrow)',
           '_updateDrawer(appData)'
         ],
+        listeners:  {'fort-displace-changed': '_displaceChanged'},
+
+        _displaceChanged: function (e)
+                          {
+                            this._heroHeaderFraction = e.detail.fraction;
+                          },
+
+        _computeHeroHeader: function (hasHero, fraction)
+                            {
+                              if(hasHero)
+                              {
+                                if(fraction < 1)
+                                {
+                                  this.updateStyles({'--fort-app-header-background': 'white'});
+                                  return false;
+                                }
+                                else
+                                {
+                                  this.updateStyles({'--fort-app-header-background': null});
+                                }
+                              }
+                              return hasHero;
+                            },
 
         ready: function ()
                {
