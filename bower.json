@@ -7,7 +7,7 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#2.0-preview",
-    "fort-elements": "ssh://git@github.com/CubexElements/cube-elements.git",
+    "cube-elements": "ssh://git@github.com/CubexElements/cube-elements.git",
     "iron-pages": "PolymerElements/iron-pages#2.0-preview",
     "paper-dialog": "PolymerElements/paper-dialog#2.0-preview",
     "iron-menu-behavior": "PolymerElements/iron-menu-behavior#2.0-preview",
