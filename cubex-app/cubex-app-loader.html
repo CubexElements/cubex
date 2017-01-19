@@ -144,11 +144,11 @@
                            var headers = {};
                            if(org)
                            {
-                             headers['X-CUBE-ORG'] = org;
+                             headers['x-cube-project'] = org;
                            }
                            if(resourceType)
                            {
-                             headers['X-CUBE-RESOURCE-TYPE'] = resourceType;
+                             headers['x-cube-resource-type'] = resourceType;
                            }
                            return headers;
                          },
