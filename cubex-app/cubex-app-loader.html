@@ -458,13 +458,13 @@
                      {
                        var frag = document.createRange().createContextualFragment(this._pageData || ''),
                          imports = frag.querySelectorAll('link[rel="import"]'),
-                         fortHeaderRegex = /x-cube-([a-z\-]+): (.*)[\n\r]*/g,
+                         cubeHeaderRegex = /x-cube-([a-z\-]+): (.*)[\n\r]*/g,
                          headers = {};
 
                        if(this._pageXhr)
                        {
                          var fn = function (_, v) { return v.toUpperCase(); };
-                         while(matches = fortHeaderRegex.exec(this._pageXhr.getAllResponseHeaders()))
+                         while(matches = cubeHeaderRegex.exec(this._pageXhr.getAllResponseHeaders()))
                          {
                            headers[matches[1].replace(/-([a-z])/, fn)] = matches[2];
                          }
@@ -521,9 +521,9 @@
                       },
 
         behaviors: [
-          Polymer.FortIteratorBehavior,
-          Polymer.FortServiceBehavior,
-          Polymer.FortHashBehavior
+          Polymer.CubeIteratorBehavior,
+          Polymer.CubeServiceBehavior,
+          Polymer.CubeHashBehavior
         ]
       }
     )
