@@ -57,7 +57,7 @@
         left: 0;
         color: var(--text-color-secondary);
         cursor: pointer;
-        padding: 10px;
+        padding: 7px;
       }
 
       #lockUserDrawer[hidden] {
@@ -74,6 +74,16 @@
         background: var(--theme-100-color);
         color: var(--accent-700-color);
       }
+
+      #pageletContainer {
+        position: absolute;
+        top: 0;
+        right: var(--cubex-drawer-peek-width);
+        left: 0;
+        bottom: 48px;
+        overflow: scroll;
+        border-bottom: 1px solid var(--cube-list-border-color, rgba(0, 0, 0, 0.06));
+      }
     </style>
 
     <cubex-registry user-data="{{_userRegistryData}}"></cubex-registry>
@@ -88,7 +98,10 @@
     </cubex-user-drawer-items>
 
     <div id="contentContainer">
-      <cube-pagelet auto auth id="pagelet" url="[[_getPageletUrl(_selectedApp,_drawerOpen)]]">Loading...</cube-pagelet>
+      <div id="pageletContainer">
+        <cube-pagelet auto auth id="pagelet" url="[[_getPageletUrl(_selectedApp,_drawerOpen)]]">Loading...
+        </cube-pagelet>
+      </div>
       <cube-action icon="icons:chrome-reader-mode" id="lockUserDrawer" on-tap="_lockUserDrawer"></cube-action>
     </div>
   </template>
