@@ -37,7 +37,7 @@
     </cubex-breadcrumb-item>
 
     <template is="dom-if" if="[[category]]">
-      <cubex-repath in="/[[category]]" gaid="" out="{{catPath}}"></cubex-repath>
+      <cubex-repath in="/_[[category]]" gaid="" out="{{catPath}}"></cubex-repath>
       <cubex-breadcrumb-item id="category" href="[[catPath]]">
         <cubex-category key="[[category]]" short></cubex-category>
       </cubex-breadcrumb-item>
