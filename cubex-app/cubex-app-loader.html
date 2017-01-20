@@ -241,13 +241,13 @@
                                      var action = headerActions[j];
                                      newActions.push(
                                        {
-                                         Title:       action.Title,
-                                         Path:        action.Mode == 'dialog'
-                                                        ? '//' + this.getServiceHost('apps') + '/' + action.GlobalAppID + '/' + action.Path
-                                                        : '/' + this.routeData.project + '/' + action.Hook + '/_/' + action.ID,
-                                         Icon:        action.Icon,
-                                         Mode:        action.Mode,
-                                         GlobalAppID: action.GlobalAppID
+                                         Title:   action.Title,
+                                         Path:    action.Mode == 'dialog'
+                                                    ? '//' + this.getServiceHost('apps') + '/' + action.GlobalAppID + '/' + action.Path
+                                                    : '/' + this.routeData.project + '/' + action.Hook + '/_/' + action.ID,
+                                         Icon:    action.Icon,
+                                         Mode:    action.Mode,
+                                         Primary: action.GlobalAppID == 'fortifiplatform/customers'
                                        }
                                      );
                                    }
