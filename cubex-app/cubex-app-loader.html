@@ -145,21 +145,6 @@
                         if(e.detail.action == 'install' || e.detail.action == 'uninstall')
                         {
                           this.$.integrationsResource.update(true);
-                          if(e.detail.action == 'uninstall')
-                          {
-                            if(this._integration && e.detail.payload == this._integration.GlobalAppID)
-                            {
-                              this.set(
-                                'route.path', '/' + this.projectRouteData.project + '/' + this._integration.Hook
-                              );
-                            }
-                            else
-                            {
-                              this.set(
-                                'route.path', '/' + this.projectRouteData.project
-                              );
-                            }
-                          }
                         }
                       },
 
@@ -392,10 +377,10 @@
                             // check project has app installed
                             if(projectData.AppSummary[gaid])
                             {
+                              this._appGaid = gaid;
                               if(this.route.path !== this._loadedPath)
                               {
                                 this._loadedPath = this.route.path;
-                                this._appGaid = gaid;
                                 var self = this,
                                   pathMatches = this._parsePath(this.appPath.path),
                                   fullPath = '/' + gaid + pathMatches.pagePath,
@@ -425,6 +410,12 @@
                             }
                             else
                             {
+                              this._integrationsPath = null;
+                              this._pageDefinitionPath = null;
+                              this._pageContentPath = null;
+                              this._loadedPath = null;
+                              this._appGaid = null;
+
                               if(projectData.Relationships && projectData.Relationships[gaid])
                               {
                                 // no permission? 401
@@ -451,8 +442,6 @@
                             this._pageDefinitionPath = null;
                             this._pageContentPath = null;
                             this._loadedPath = null;
-                            this.appRouteData = {};
-                            this.appData = null;
                             this._appGaid = null;
 
                             if((!this.$.appRoute.active) && this.$.vendorRoute.active && this.vendorRouteData.vendor)
