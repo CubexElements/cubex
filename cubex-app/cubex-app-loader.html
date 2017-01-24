@@ -368,21 +368,21 @@
                       {
                         if(path !== undefined)
                         {
+                          if(this.$.vendorRoute.active && this.vendorRouteData && this.vendorRouteData.vendor
+                            && this.$.appRoute.active && this.appRouteData && this.appRouteData.app)
+                          {
+                            this._appGaid = this.vendorRouteData.vendor + '/' + this.appRouteData.app;
+                          }
+                          else
+                          {
+                            this._appGaid = null;
+                          }
+
                           if(this.$.appRoute.active)
                           {
                             if(this.route.path !== this._loadedPath)
                             {
                               this._loadedPath = this.route.path;
-
-                              if(this.$.vendorRoute.active && this.vendorRouteData && this.vendorRouteData.vendor
-                                && this.$.appRoute.active && this.appRouteData && this.appRouteData.app)
-                              {
-                                this._appGaid = this.vendorRouteData.vendor + '/' + this.appRouteData.app;
-                              }
-                              else
-                              {
-                                this._appGaid = null;
-                              }
 
                               var self = this,
                                 pathMatches = this._parsePath(this.appPath.path),
