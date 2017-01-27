@@ -323,7 +323,8 @@
                               {
                                 if(headerMenu.hasOwnProperty(i))
                                 {
-                                  if(this.projectData.AppSummary[headerMenu[i].GlobalAppID].category == category)
+                                  if(this.projectData.AppSummary[headerMenu[i].GlobalAppID].category == category
+                                    && headerMenu[i].GlobalAppID != this._appGaid)
                                   {
                                     pageMenus.push(
                                       {
