@@ -494,13 +494,13 @@ Example:
                            {
                              this.$.appDrawer.setMaxState(0);
                            }
-                           else if(this._collapse)
-                           {
-                             this.$.appDrawer.setMaxState(1);
-                           }
                            else
                            {
                              this.$.appDrawer.setMaxState(2);
+                             if(this._collapse)
+                             {
+                               this.$.appDrawer.preferredState = 1;
+                             }
                            }
                          },
         _updateCrumbs:   function (pageData)
