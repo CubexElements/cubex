@@ -57,6 +57,9 @@
       }
     </style>
 
+    <app-location route="{{route}}"></app-location>
+    <app-route route="[[route]]" pattern="/:project" data="{{routeData}}"></app-route>
+
     <cubex-notification-definition notification="[[notification]]"
                                    definition="{{definition}}"></cubex-notification-definition>
 
@@ -142,7 +145,7 @@
                        'PUT',
                        '//' + this.getServiceHost('apps') + '/cubex/notifications/' + this.notification.NotificationUid
                      );
-                     xhr.setRequestHeader('x-cube-project', 'blue-org');
+                     xhr.setRequestHeader('x-cube-project', this.routeData.project);
                      xhr.withCredentials = true;
                      xhr.send();
                    },
