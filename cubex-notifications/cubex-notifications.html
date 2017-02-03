@@ -170,8 +170,11 @@
                                   }
                                   else if(e.detail.action == 'read')
                                   {
-                                    this._notifications[e.detail.payload].Read = true;
-                                    this.notifyPath('_notifications');
+                                    if(this._notifications[e.detail.payload])
+                                    {
+                                      this._notifications[e.detail.payload].Read = true;
+                                      this.notifyPath('_notifications');
+                                    }
                                   }
                                 },
 
