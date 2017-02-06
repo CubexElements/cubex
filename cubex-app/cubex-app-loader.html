@@ -5,6 +5,7 @@
 <link rel="import" href="../../cube-behavior/cube-iterator-behavior.html">
 <link rel="import" href="../../cube-behavior/cube-service-behavior.html">
 <link rel="import" href="../../page-title/page-title.html">
+<link rel="import" href="../../cube-websocket/cube-websocket.html">
 <link rel="import" href="../cubex-drawer/cubex-drawer.html">
 <link rel="import" href="../cubex-hash/cubex-hash.html">
 <link rel="import" href="../cubex-category/cubex-category.html">
@@ -55,7 +56,8 @@
 
     <cubex-app-definition gaid="[[_appGaid]]" app-data="{{appData}}"></cubex-app-definition>
 
-    <cube-websocket vendor="cubex" app="registry" auto on-message="_appsChanged"></cube-websocket>
+    <cube-websocket auto project="[[projectId]]" vendor="cubex" app="registry"
+                    on-message="_appsChanged"></cube-websocket>
     <cube-resource id="integrationsResource" auto auth url="[[_integrationsPath]]" data="{{_integrations}}"
                    headers="[[_pageDefinitionHeaders]]" ttl="3600"></cube-resource>
     <cube-resource auto auth url="[[_pageDefinitionPath]]" data="{{_pageDefinitionHtml}}" xhr="{{_pageXhr}}"

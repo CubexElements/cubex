@@ -4,6 +4,7 @@
 <link rel="import" href="../../cube-list/cube-list.html">
 <link rel="import" href="../../cube-icon/cube-icon.html">
 <link rel="import" href="../../cube-behavior/cube-iterator-behavior.html">
+<link rel="import" href="../../cube-websocket/cube-websocket.html">
 <link rel="import" href="../cubex-route/cubex-route.html">
 <link rel="import" href="cubex-notification.html">
 
@@ -99,8 +100,8 @@
 
     <cubex-route project-id="{{projectId}}"></cubex-route>
 
-    <cube-websocket auto vendor="cubex" app="notifications" on-subscribe="_notificationSubscribe"
-                    on-message="_notificationMessage"></cube-websocket>
+    <cube-websocket auto project="[[projectId]]" vendor="cubex" app="notifications"
+                    on-subscribe="_notificationSubscribe" on-message="_notificationMessage"></cube-websocket>
 
     <cube-dropdown id="dd" horizontal-align="right">
       <cube-action id="trigger" slot="trigger" running$="[[_running]]" unread$="[[_unread]]">
