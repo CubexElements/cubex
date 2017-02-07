@@ -281,12 +281,10 @@ Example:
         transition: color 400ms;
       }
 
-      :host([hero-header]) #app-back {
-        color: white;
-      }
-
+      :host([hero-header]) #app-back,
       :host([hero-header]) #app-heading a {
         color: white;
+        text-shadow: 0 0 9px rgba(0, 0, 0, 0.45);
       }
     </style>
 
