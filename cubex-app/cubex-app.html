@@ -53,7 +53,7 @@ Example:
       app-header-layout {
         min-width: 100px;
         @apply --shadow-elevation-2dp;
-        margin: calc(60px + var(--cubex-drawer-offset-top, 0)) 24px 24px;
+        margin: 60px 24px 24px;
         border-radius: 3px;
       }
 
@@ -325,6 +325,7 @@ Example:
             </cubex-app-header>
           </app-toolbar>
         </app-header>
+
         <slot slot="header" name="spinner"></slot>
 
         <div id="app-container">
