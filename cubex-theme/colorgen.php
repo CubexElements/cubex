@@ -413,7 +413,7 @@ foreach($colors as $colorName => $colorGrades)
     $cssVars[$type][] = '--' . $type . '-' . $code . '-text-color:var(--' . ($isWhite ? 'light' : 'dark') . '-text);';
     $cssVars[$type][] = '--' . $type . '-' . $code . '-text-secondary-color:var(--' . ($isWhite ? 'light' : 'dark') . '-text-secondary);';
     $mixins[$type][] = '--' . $type . '-' . $code . ':{'
-      . 'background-color:' . $hex . ';'
+      . 'background-color:var(--' . $type . '-' . $code . '-color);'
       . 'color:var(--' . ($isWhite ? 'light' : 'dark') . '-text);'
       . '};';
     $mixins[$type][] = '--' . $type . '-' . $code . '-text:{'
