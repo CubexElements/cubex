@@ -392,7 +392,6 @@ $accentGrades = [100, 200, 400, 700];
 foreach($colors as $colorName => $colorGrades)
 {
   $cssVars = ['primary' => [], 'accent' => []];
-  $mixins = ['primary' => [], 'accent' => []];
   foreach($colorGrades as $colorKey => list ($hex, $isWhite))
   {
     $type = '';
@@ -412,19 +411,7 @@ foreach($colors as $colorName => $colorGrades)
     $cssVars[$type][] = '--' . $type . '-' . $code . '-color:' . $hex . ';';
     $cssVars[$type][] = '--' . $type . '-' . $code . '-text-color:var(--' . ($isWhite ? 'light' : 'dark') . '-text);';
     $cssVars[$type][] = '--' . $type . '-' . $code . '-text-secondary-color:var(--' . ($isWhite ? 'light' : 'dark') . '-text-secondary);';
-    $mixins[$type][] = '--' . $type . '-' . $code . ':{'
-      . 'background-color:var(--' . $type . '-' . $code . '-color);'
-      . 'color:var(--' . ($isWhite ? 'light' : 'dark') . '-text);'
-      . '};';
-    $mixins[$type][] = '--' . $type . '-' . $code . '-text:{'
-      . 'color:var(--' . $type . '-' . $code . '-text-color);'
-      . '};';
-    $mixins[$type][] = '--' . $type . '-' . $code . '-text-secondary:{'
-      . 'color:var(--' . $type . '-' . $code . '-text-secondary-color);'
-      . '};';
-    $mixins[$type][] = '--' . $type . '-' . $code . '-text-disabled:{'
-      . 'color:var(--' . ($isWhite ? 'light' : 'dark') . '-text-disabled);'
-      . '};';
+    $cssVars[$type][] = '--' . $type . '-' . $code . '-text-disabled-color:var(--' . ($isWhite ? 'light' : 'dark') . '-text-disabled);';
     $cssVars[$type][] = '--' . $type . '-' . $code . '-divider-primary-color:var(--' . (!$isWhite ? 'light' : 'dark') . '-divider-primary-color);';
     $cssVars[$type][] = '--' . $type . '-' . $code . '-divider-secondary-color:var(--' . (!$isWhite ? 'light' : 'dark') . '-divider-secondary-color);';
   }
@@ -437,7 +424,7 @@ foreach($colors as $colorName => $colorGrades)
         $template,
         $type,
         $colorName,
-        implode('', $cssVars[$type]) . implode('', $mixins[$type])
+        implode('', $cssVars[$type])
       )
     );
   }
