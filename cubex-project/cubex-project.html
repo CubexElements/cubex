@@ -47,13 +47,9 @@ Example:
                             },
         _projectChanged:    function ()
                             {
-                              if(this.projects && this.projectId && this.projects[this.projectId])
+                              if(this.projects && this.projectId)
                               {
                                 this._setProject(this.projects[this.projectId]);
-                              }
-                              else
-                              {
-                                this._setProject(undefined);
                               }
                             }
       }
