@@ -51,11 +51,6 @@ Example:
           accent:  {type: String, value: 'cubex-blue', observer: '_updateAccent'},
           theme:   {type: String, value: 'light', observer: '_updateTheme'}
         },
-        _doc:           (function ()
-        {
-          var script = document._currentScript || document.currentScript;
-          return script && script.ownerDocument || document;
-        }()),
         _regex:         /[^a-z0-9\-]/,
         _import:        function (type, name)
                         {
