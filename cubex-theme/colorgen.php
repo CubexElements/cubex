@@ -599,7 +599,7 @@ foreach($colors as $colorName => $colorGrades)
   {
     if($cssVars[$type])
     {
-      $template = '<dom-module id="cubex-theme-%s-%s"><template><style>html{%s}</style></template></dom-module>';
+      $template = '<dom-module id="cubex-theme-%s-%s"><template><style>html,:host{%s}</style></template></dom-module>';
       file_put_contents(
         'styles/' . $type . '/cubex-theme-' . $type . '-' . $colorName . '.html',
         sprintf(
