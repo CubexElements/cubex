@@ -582,29 +582,33 @@ foreach($colors as $colorName => $colorGrades)
     }
 
     $code = substr($colorKey, 1);
-    $cssVars[$type][] = '--' . $type . '-' . $code . '-color:' . $hex . ';';
-    $cssVars[$type][] = '--' . $type . '-' . $code . '-text-color:var(--' . ($isWhite ?
+    $prefix = '--' . $colorName . '-' . $type . '-' . $code;
+    $cssVars[$type][] = $prefix . '-color:' . $hex . ';';
+    $cssVars[$type][] = $prefix . '-text-color:var(--' . ($isWhite ?
         'light' : 'dark') . '-text);';
-    $cssVars[$type][] = '--' . $type . '-' . $code . '-text-secondary-color:var(--' . ($isWhite ?
+    $cssVars[$type][] = $prefix . '-text-secondary-color:var(--' . ($isWhite ?
         'light' : 'dark') . '-text-secondary);';
-    $cssVars[$type][] = '--' . $type . '-' . $code . '-text-disabled-color:var(--' . ($isWhite ?
+    $cssVars[$type][] = $prefix . '-text-disabled-color:var(--' . ($isWhite ?
         'light' : 'dark') . '-text-disabled);';
-    $cssVars[$type][] = '--' . $type . '-' . $code . '-divider-primary-color:var(--' . (!$isWhite ?
+    $cssVars[$type][] = $prefix . '-divider-primary-color:var(--' . (!$isWhite ?
         'light' : 'dark') . '-divider-primary-color);';
-    $cssVars[$type][] = '--' . $type . '-' . $code . '-divider-secondary-color:var(--' . (!$isWhite ?
+    $cssVars[$type][] = $prefix . '-divider-secondary-color:var(--' . (!$isWhite ?
         'light' : 'dark') . '-divider-secondary-color);';
   }
   foreach(['primary', 'accent'] as $type)
   {
-    $template = '<dom-module id="cubex-theme-%s-%s"><template><style>html{%s}</style></template></dom-module>';
-    file_put_contents(
-      'styles/' . $type . '/cubex-theme-' . $type . '-' . $colorName . '.html',
-      sprintf(
-        $template,
-        $type,
-        $colorName,
-        implode('', $cssVars[$type])
-      )
-    );
+    if($cssVars[$type])
+    {
+      $template = '<dom-module id="cubex-theme-%s-%s"><template><style>html{%s}</style></template></dom-module>';
+      file_put_contents(
+        'styles/' . $type . '/cubex-theme-' . $type . '-' . $colorName . '.html',
+        sprintf(
+          $template,
+          $type,
+          $colorName,
+          implode('', $cssVars[$type])
+        )
+      );
+    }
   }
 }
