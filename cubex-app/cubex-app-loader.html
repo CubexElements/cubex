@@ -120,7 +120,7 @@
           appData:                       {type: Object, notify: true},
           _backPath:                     {
             type:     String,
-            computed: '_computedBackPath(_project,appData.GlobalAppID,pageData.backPath)'
+            computed: '_computedBackPath(_project,appData.VendorID,appData.AppID,pageData.backPath)'
           },
 
           _pageContentPath:    {type: String},
@@ -191,11 +191,11 @@
                            return headers;
                          },
 
-        _computedBackPath: function (project, gaid, path)
+        _computedBackPath: function (project, vendor, app, path)
                            {
                              if(project && path && path.length > 0)
                              {
-                               return '/' + project + '/' + gaid + path;
+                               return '/' + project + '/' + vendor + '/' + app + path;
                              }
                              return '';
                            },
@@ -215,7 +215,7 @@
                                function (a, b)
                                {
                                  // if one item is within the current app and one isn't, move the current one up
-                                 if((a.Hook.indexOf(a.GlobalAppID) == 0) !== (b.Hook.indexOf(b.GlobalAppID) == 0))
+                                 if((a.Hook.indexOf(a.GlobalAppID) === 0) !== (b.Hook.indexOf(b.GlobalAppID) === 0))
                                  {
                                    return (a.GlobalAppID === appData.GlobalAppID) ? -1 : 1;
                                  }
@@ -287,7 +287,7 @@
                                                 : '/' + action.Hook + '/_/' + action.ID,
                                      Icon:    action.Icon,
                                      Mode:    action.Mode,
-                                     Primary: action.GlobalAppID === 'fortifiplatform/customers'
+                                     Primary: false
                                    }
                                  );
                                }
