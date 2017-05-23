@@ -124,9 +124,9 @@
     <cubex-route project-id="{{projectId}}"></cubex-route>
 
     <cube-resource id="appResource" auto auth url="//[[getServiceHost('apps')]]/kubex/registry/project.json"
-                   headers="[[_headers]]" data="{{_apps}}" ttl="3600"></cube-resource>
+                   data="{{_apps}}" ttl="3600"></cube-resource>
     <cube-resource id="searchResource" auto auth url="//[[getServiceHost('apps')]]/kubex/search-actions/search.json"
-                   headers="[[_headers]]" data="{{_search}}" ttl="3600"></cube-resource>
+                   data="{{_search}}" ttl="3600"></cube-resource>
 
     <cube-websocket auto project="[[projectId]]" vendor="kubex" app="registry"
                     on-message="_appsChanged"></cube-websocket>
@@ -166,7 +166,6 @@
             value:              false,
             reflectToAttribute: true
           },
-          _headers:    {type: Object, computed: '_refreshHeaders(projectId)'},
           resources:   {
             type:  Object,
             value: {
@@ -262,6 +261,7 @@
                                 weight = 0;
                                 var app = appSummary[appGaid];
                                 tests = [app.name, app.description];
+                                console.log(app);
 
                                 weight = this.__getWeight(matchWords, tests);
                                 if(weight > 0)
@@ -308,15 +308,6 @@
 
                           return filtered.sort(function (a, b) {return a.Weight < b.Weight});
                         },
-
-        _refreshHeaders: function (project)
-                         {
-                           if(project)
-                           {
-                             return {'x-cube-project': project};
-                           }
-                           return undefined;
-                         },
 
         _query:   function ()
                   {
