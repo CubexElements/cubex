@@ -105,7 +105,6 @@
         properties: {
           route: {type: Object, notify: true},
 
-          _project: {type: String},
           _appGaid: {type: String, observer: '_gaidChanged'},
 
           _pageDefinitionPath:           {type: String},
@@ -120,7 +119,7 @@
           appData:                       {type: Object, notify: true},
           _backPath:                     {
             type:     String,
-            computed: '_computedBackPath(_project,appData.VendorID,appData.AppID,pageData.backPath)'
+            computed: '_computedBackPath(appData.VendorID,appData.AppID,pageData.backPath)'
           },
 
           _pageContentPath:    {type: String},
@@ -173,14 +172,6 @@
                                 this.$.integrationsResource.update(true);
                               },
 
-        _updateProject: function (project)
-                        {
-                          if(this._project !== project)
-                          {
-                            this._project = project;
-                          }
-                        },
-
         _computeHeaders: function (resourceType)
                          {
                            var headers = {};
@@ -191,11 +182,11 @@
                            return headers;
                          },
 
-        _computedBackPath: function (project, vendor, app, path)
+        _computedBackPath: function (vendor, app, path)
                            {
-                             if(project && path && path.length > 0)
+                             if(path && path.length > 0)
                              {
-                               return '/' + project + '/' + vendor + '/' + app + path;
+                               return '/' + vendor + '/' + app + path.replace(/\/$/, '');
                              }
                              return '';
                            },
