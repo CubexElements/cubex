@@ -334,7 +334,7 @@ Example:
               <template is="dom-if" if="[[pageActions.length]]">
                 <div id="app-page-actions" class="sidebar-group">
                   <template is="dom-repeat" items="[[pageActions]]">
-                    <cubex-link href="//[[getServiceHost('apps')]][[item.Path]]"
+                    <cubex-link href="[[item.Path]]"
                                 mode="[[item.Mode]]" title="[[item.Description]]">
                       <cube-action icon="[[item.Icon]]">[[item.Title]]</cube-action>
                     </cubex-link>
