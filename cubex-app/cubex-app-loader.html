@@ -273,7 +273,7 @@
                                    {
                                      Title:   action.Title,
                                      Path:    action.Mode === 'dialog'
-                                                ? '//' + this.getServiceHost('apps') + '/' + action.GlobalAppID + '/' + action.Path
+                                                ? '/' + action.GlobalAppID + '/' + action.Path
                                                 : '/' + action.Hook + '/_/' + action.ID,
                                      Icon:    action.Icon,
                                      Mode:    action.Mode,
@@ -363,7 +363,7 @@
                                       {
                                         Title:       items[j].Title,
                                         Description: items[j].Description,
-                                        Href:        '//' + this.getServiceHost('apps') + '/' + items[j].Path,
+                                        Href:        '/' + items[j].GlobalAppID + '/' + items[j].Path,
                                         Mode:        items[j].Mode
                                       }
                                     );
@@ -411,13 +411,13 @@
                                   integrationPath += '/_/' + pathMatches.typeId;
                                 }
 
-                                var ip = '//' + this.getServiceHost('apps') + '/kubex/integrations/integrations.json?hook=' + integrationPath;
+                                var ip = '/kubex/integrations/integrations.json?hook=' + integrationPath;
                                 if(this._integrationsPath !== ip)
                                 {
                                   this._integrationsPath = ip;
                                 }
 
-                                var pdp = '//' + this.getServiceHost('apps') + fullPath;
+                                var pdp = '/' + fullPath;
                                 if(this._pageDefinitionPath !== pdp)
                                 {
                                   this._addPageSpinner = setTimeout(
@@ -560,7 +560,7 @@
                                       )
                                       {
                                         integration = items[i];
-                                        contentPath = '//' + this.getServiceHost('apps') + '/' + items[i].GlobalAppID + '/' + items[i].Path;
+                                        contentPath = '/' + items[i].GlobalAppID + '/' + items[i].Path;
                                         break;
                                       }
                                     }
