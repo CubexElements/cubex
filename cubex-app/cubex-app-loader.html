@@ -371,8 +371,30 @@
                                 }
                               }
 
-                              pageActions = this._integrations.PageActions;
-                              panels = this._integrations.Panels;
+                              if(this._integrations.PageActions)
+                              {
+                                var paItems = this._integrations.PageActions;
+                                for(var pa in paItems)
+                                {
+                                  if(paItems.hasOwnProperty(pa))
+                                  {
+                                    paItems[pa].Path = '/' + paItems[pa].GlobalAppID + '/' + paItems[pa].Path;
+                                    pageActions.push(paItems[pa]);
+                                  }
+                                }
+                              }
+                              if(this._integrations.Panels)
+                              {
+                                var panItems = this._integrations.Panels;
+                                for(var pan in panItems)
+                                {
+                                  if(panItems.hasOwnProperty(pan))
+                                  {
+                                    panItems[pan].Path = '/' + panItems[pan].GlobalAppID + '/' + panItems[pan].Path;
+                                    panels.push(panItems[pan]);
+                                  }
+                                }
+                              }
                             }
                           }
                           this._pageMenus = pageMenus;
@@ -417,13 +439,12 @@
                                   this._integrationsPath = ip;
                                 }
 
-                                var pdp = '/' + fullPath;
-                                if(this._pageDefinitionPath !== pdp)
+                                if(this._pageDefinitionPath !== fullPath)
                                 {
                                   this._addPageSpinner = setTimeout(
                                     function () { self._pageSpinnerVisible = true; }, 50
                                   );
-                                  this._pageDefinitionPath = pdp;
+                                  this._pageDefinitionPath = fullPath;
                                 }
                               }
                             }
