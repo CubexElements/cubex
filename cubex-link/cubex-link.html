@@ -110,14 +110,14 @@
                       {
                         if(!this._pagelet)
                         {
-                          this._pagelet = this.$$('#pagelet');
+                          this._pagelet = this.$$('#dialog').query('#pagelet');
                         }
-                        this.$.dialog.open();
+                        this.$$('#dialog').open();
                         this._pagelet.update();
                       },
         _refitDialog: function ()
                       {
-                        this.$.dialog.refit();
+                        this.$$('#dialog').refit();
                       }
       }
     );
