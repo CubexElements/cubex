@@ -10,6 +10,7 @@
 <link href="../../cube-behavior/cube-i18n-behavior.html" rel="import">
 <link href="../cubex-quick-actions/cubex-quick-actions.html" rel="import">
 <link href="../cubex-notifications/cubex-notifications.html" rel="import">
+<link href="../cubex-project/cubex-project.html" rel="import">
 
 
 <dom-module id="cubex-toolbar">
@@ -51,6 +52,8 @@
 
     <cubex-quick-actions></cubex-quick-actions>
 
+    <cubex-project project="{{_project}}"></cubex-project>
+
     <cube-dropdown id="additional">
       <cube-action icon="icons:more-vert" slot="trigger"></cube-action>
       <cube-list-menu border>
@@ -62,7 +65,9 @@
           <cube-li on-tap="_openCustomerAgreement">{{i18n('cust_agree')}}</cube-li>
         </cube-list-group>
         <cube-list-group>
-          <cube-li on-tap="_openProjectInfo">{{i18n('project_info')}}</cube-li>
+          <template is="dom-if" if="[[_project]]">
+            <cube-li on-tap="_openProjectInfo">{{i18n('project_info')}}</cube-li>
+          </template>
           <cube-li on-tap="_openSupport">{{i18n('support')}}</cube-li>
         </cube-list-group>
         <cube-list-group>
