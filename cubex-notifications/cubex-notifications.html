@@ -97,6 +97,10 @@
       :host #settings {
         margin-right: -5px;
       }
+
+      a[disabled], div[disabled] {
+        @apply --text-disabled;
+      }
     </style>
 
     <cubex-route project-id="{{projectId}}"></cubex-route>
@@ -117,7 +121,7 @@
           </a>
         </cube-li>
 
-        <template is="dom-if" if="[[_notificationsArray]]">
+        <template is="dom-if" if="[[_notificationsArray.length]]">
           <cube-list-menu id="content">
             <template id="notificationList" is="dom-repeat" items="[[_notificationsArray]]">
               <cubex-notification notification="[[item]]"></cubex-notification>
@@ -125,17 +129,21 @@
           </cube-list-menu>
         </template>
 
-        <template is="dom-if" if="[[!_notificationsArray]]">
+        <template is="dom-if" if="[[!_notificationsArray.length]]">
           <cube-list>
             <cube-li multi-line>You have no notifications</cube-li>
           </cube-list>
         </template>
 
         <cube-li class="uc">
-          <a href="/kubex/notify">
+          <a href="/kubex/notify" class="can-disable" disabled$="[[!_notificationsArray.length]]">
             <cube-action>See All</cube-action>
           </a>
-          <cube-action on-tap="_markRead" slot="actions">Mark all As Read</cube-action>
+          <div slot="actions" class="can-disable" disabled$="[[!_notificationsArray.length]]">
+            <cube-action on-tap="_markRead">
+              Mark all As Read
+            </cube-action>
+          </div>
         </cube-li>
       </div>
     </cube-dropdown>
@@ -156,6 +164,28 @@
             observer: '_updateList'
           }
         },
+
+        attached: function ()
+                  {
+                    var
+                      elements = this.root.querySelectorAll('.can-disable'),
+                      fn = function (e)
+                      {
+                        if(this.hasAttribute('disabled'))
+                        {
+                          e.preventDefault();
+                        }
+                      };
+
+                    for(var i in elements)
+                    {
+                      if(elements.hasOwnProperty(i))
+                      {
+                        var ele = elements[i];
+                        ele.addEventListener('tap', fn.bind(ele));
+                      }
+                    }
+                  },
 
         _notificationSubscribe: function (e)
                                 {
