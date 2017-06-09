@@ -653,6 +653,10 @@ Example:
                              },
         _calculatePageTitle: function (pageTitle)
                              {
+                               if(!pageTitle)
+                               {
+                                 return "";
+                               }
                                var title = "<h1 id=\"app-heading\">", closeEm = false, previous = "", current = "";
                                for(var i = 0; i < pageTitle.length; i++)
                                {
