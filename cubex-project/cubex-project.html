@@ -12,10 +12,10 @@ Example:
 @demo demo/index.html
 -->
 
-<dom-module id="cubex-project" attributes="project projects">
+<dom-module id="cubex-project" attributes="project-id project projects">
   <template>
-    <cubex-route project-id="{{_projectId}}"></cubex-route>
-    <cube-websocket auto project="[[_projectId]]" vendor="kubex" app="project"
+    <cubex-route project-id="{{projectId}}"></cubex-route>
+    <cube-websocket auto project="[[projectId]]" vendor="kubex" app="project"
                     on-subscribe="_projectSubscribed" on-message="_projectUpdate"></cube-websocket>
   </template>
   <script>
@@ -23,7 +23,7 @@ Example:
       {
         is:                 'cubex-project',
         properties:         {
-          _projectId:      {type: String},
+          projectId:       {type: String, notify: true},
           project:         {type: Object, notify: true, readOnly: true},
           projects:        {type: Array, notify: true, readOnly: true},
           _projectsObject: {type: Object, value: function () {return {}}}
