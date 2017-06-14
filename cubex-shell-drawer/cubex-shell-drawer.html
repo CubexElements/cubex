@@ -172,8 +172,8 @@
                   </a>
                   <template is="dom-repeat" items="[[__toArray(category.apps)]]" as="app">
                     <a href="/[[app.vendor_id]]/[[app.id]]" on-tap="_toggleParent">
-                      <cube-li compact-icon highlight="[[app.Pinned]]">
-                        <cubex-pinned vendor="[[app.vendor_id]]" app="[[app.id]]" pinned="{{app.Pinned}}"
+                      <cube-li compact-icon highlight="[[app.pinned]]">
+                        <cubex-pinned vendor="[[app.vendor_id]]" app="[[app.id]]" pinned="{{app.pinned}}"
                                       slot="actions"></cubex-pinned>
                         <cube-icon slot="icon" icon="[[app.icon]]"></cube-icon>
                         [[app.name]]
