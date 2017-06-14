@@ -53,14 +53,12 @@
                           if(appSummary.hasOwnProperty(idx) && appSummary[idx].group)
                           {
                             var groupId = appSummary[idx].vendor_id + '/' + appSummary[idx].group;
-                            console.log(appSummary[idx], groupId);
                             if(groupId === this.groupId)
                             {
                               apps.push(appSummary[idx]);
                             }
                           }
                         }
-                        console.log(apps);
                         return apps;
                       },
         _getColor:    function (idx)
