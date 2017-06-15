@@ -2,7 +2,8 @@
 <link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
 <link rel="import" href="../cubex-app/cubex-app-definition.html">
 <link rel="import" href="../../iron-pages/iron-pages.html">
-
+<link rel="import" href="../../cube-action/cube-action.html">
+<link rel="import" href="./cubex-configure-item.html">
 
 <dom-module id="cubex-configure" attributes="gaid">
   <template>
@@ -15,6 +16,10 @@
         display: flex;
         flex-direction: row;
       }
+
+      cubex-configure-item {
+        margin-bottom: 4px;
+      }
     </style>
 
     <cubex-app-definition app-data="{{appData}}" gaid="[[gaid]]"></cubex-app-definition>
@@ -25,7 +30,7 @@
     <div id="wrapper">
       <div>
         <template is="dom-if" if="[[appData.Config]]">
-          <div on-tap="_tapMenu">App Settings</div>
+          <cube-action icon="icons:settings" on-tap="_tapMenu" data-id="0"></cube-action>
         </template>
       </div>
 
@@ -34,9 +39,7 @@
         <template is="dom-if" if="[[appData.Config]]">
           <div>
             <template is="dom-repeat" items="[[appData.Config]]">
-              <div>
-                [[i18nResource(item.Name)]]
-              </div>
+              <cubex-configure-item definition="[[item]]"></cubex-configure-item>
             </template>
           </div>
         </template>
@@ -54,7 +57,7 @@
 
         _tapMenu: function (e)
                   {
-                    console.log(e.target);
+                    this.$.configPages.select(e.target.getAttribute('data-id'));
                   },
 
         behaviors: [Polymer.CubeI18nBehavior]
