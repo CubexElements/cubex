@@ -324,9 +324,7 @@ Example:
         <app-header id="ah" slot="header" reveals condenses effects="displace-element waterfall">
           <div class="configure" hidden="[[!_hasConfig]]">
             <cube-action on-tap="_openCfg" slot="icon" icon="icons:settings"></cube-action>
-            <cube-dialog id="configDlg" with-backdrop="">
-              <cubex-configure app-data="[[appData]]"></cubex-configure>
-            </cube-dialog>
+            <cubex-configure id="configDlg" gaid="[[appData.VendorID]]/[[appData.AppID]]"></cubex-configure>
           </div>
 
           <cubex-breadcrumb crumbs="[[breadcrumbs]]"></cubex-breadcrumb>
