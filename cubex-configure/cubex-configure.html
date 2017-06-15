@@ -1,0 +1,47 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
+<link rel="import" href="../../iron-pages/iron-pages.html">
+
+
+<dom-module id="cubex-configure" attributes="app-data">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <h2>[[i18nResource(appData.Name)]] Settings</h2>
+
+    <!-- menu -->
+    <div>
+      <template is="dom-if" if="[[appData.Config]]">
+        <div on-tap="_tapMenu">App Settings</div>
+      </template>
+    </div>
+
+    <!-- content -->
+    <iron-pages id="configPages" selected="0">
+      <template is="dom-if" if="[[appData.Config]]">
+        <div>
+          <template is="dom-repeat" items="[[appData.Config]]">
+            [[i18nResource(item.Name)]]
+          </template>
+        </div>
+      </template>
+    </iron-pages>
+  </template>
+  <script>
+    Polymer(
+      {
+        is:         'cubex-configure',
+        properties: {
+          appData: {type: Object, value: null}
+        },
+
+        _tapMenu:  function () {},
+        behaviors: [Polymer.CubeI18nBehavior]
+      }
+    );
+  </script>
+</dom-module>

@@ -22,6 +22,7 @@
 <link rel="import" href="../cubex-link/cubex-link.html">
 <link rel="import" href="../cubex-hash/cubex-hash.html">
 <link rel="import" href="../cubex-category/cubex-category.html">
+<link rel="import" href="../cubex-configure/cubex-configure.html">
 
 <!--
 An element providing a solution to no problem in particular.
@@ -322,9 +323,10 @@ Example:
       <app-header-layout id="ahl">
         <app-header id="ah" slot="header" reveals condenses effects="displace-element waterfall">
           <div class="configure" hidden="[[!_configPath]]">
-            <a href="[[_configPath]]">
-              <cube-action slot="icon" icon="icons:settings"></cube-action>
-            </a>
+            <cube-action on-tap="_openCfg" slot="icon" icon="icons:settings"></cube-action>
+            <cube-dialog id="configDlg" with-backdrop="">
+              <cubex-configure app-data="[[appData]]"></cubex-configure>
+            </cube-dialog>
           </div>
 
           <cubex-breadcrumb crumbs="[[breadcrumbs]]"></cubex-breadcrumb>
@@ -422,7 +424,7 @@ Example:
           backPath:            {type: String},
           pagePath:            {type: String},
           narrow:              {type: Boolean, value: true, reflectToAttribute: true, observer: '_updateMaxState'},
-          appData:             {type: Object, value: null, observer: '_updateResources'},
+          appData:             {type: Object, value: null},
           pageData:            {type: Object},
           breadcrumbs:         {type: Array, notify: true, computed: '_updateCrumbs(pageData,project,appData)'},
           drawerDisabled:      {type: Boolean, value: false, reflectToAttribute: true},
@@ -534,7 +536,6 @@ Example:
                          },
         _updateCrumbs:   function (pageData, project, appData)
                          {
-                           this._updateResources(appData);
                            var bc = [];
                            if(pageData && pageData.breadcrumb)
                            {
@@ -559,7 +560,7 @@ Example:
                                // prepend app
                                bc.unshift(
                                  {
-                                   Title: this.i18n('app_name'),
+                                   Title: this.i18nResource(appData.Name),
                                    Url:   prefix
                                  }
                                );
@@ -629,15 +630,6 @@ Example:
                           }
                         },
 
-        _updateResources:    function (appData)
-                             {
-                               var newRes = {};
-                               if(appData)
-                               {
-                                 newRes['app_name'] = appData.Name;
-                               }
-                               this.hydrateResources(newRes, true);
-                             },
         _calculatePageTitle: function (pageTitle)
                              {
                                if(!pageTitle)
@@ -699,6 +691,10 @@ Example:
                                  }
                                }
                                return path;
+                             },
+        _openCfg:            function ()
+                             {
+                               this.$.configDlg.open();
                              },
 
         /**
