@@ -322,7 +322,7 @@ Example:
       <slot slot="drawer-content" name="drawer-content"></slot>
       <app-header-layout id="ahl">
         <app-header id="ah" slot="header" reveals condenses effects="displace-element waterfall">
-          <div class="configure" hidden="[[!_configPath]]">
+          <div class="configure" hidden="[[!_hasConfig]]">
             <cube-action on-tap="_openCfg" slot="icon" icon="icons:settings"></cube-action>
             <cube-dialog id="configDlg" with-backdrop="">
               <cubex-configure app-data="[[appData]]"></cubex-configure>
@@ -429,7 +429,7 @@ Example:
           breadcrumbs:         {type: Array, notify: true, computed: '_updateCrumbs(pageData,project,appData)'},
           drawerDisabled:      {type: Boolean, value: false, reflectToAttribute: true},
           _pageTitle:          {type: String, value: '', computed: '_calculatePageTitle(pageData.title)'},
-          _configPath:         {type: String, value: '', computed: '_calculateConfigure(appData, appData.*)'},
+          _hasConfig:          {type: String, value: '', computed: '_calculateConfigure(appData, appData.*)'},
           _lock:               {type: Boolean, value: false},
           _peek:               {type: Boolean, value: false},
           _collapse:           {type: Boolean, value: false}
@@ -676,21 +676,7 @@ Example:
 
         _calculateConfigure: function (appData)
                              {
-                               var path = '';
-                               if(appData)
-                               {
-                                 if(appData.Config && appData.Config.length > 0)
-                                 {
-                                   path = '/' + appData.VendorID + '/' + appData.AppID
-                                     + '/_configure';
-                                 }
-                                 else if(appData.AdvancedConfigPath)
-                                 {
-                                   path = '/' + appData.VendorID + '/' + appData.AppID
-                                     + '/' + AdvancedConfigPath.replace(/^\/+/, '');
-                                 }
-                               }
-                               return path;
+                               return appData && appData.Config && appData.Config.length > 0;
                              },
         _openCfg:            function ()
                              {
