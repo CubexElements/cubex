@@ -10,19 +10,21 @@
       :host {
         display: block;
       }
+
+      #wrapper {
+        display: flex;
+        flex-direction: row;
+      }
     </style>
 
     <cubex-app-definition app-data="{{appData}}" gaid="[[gaid]]"></cubex-app-definition>
 
-    <cube-dialog id="dlg" with-backdrop>
-      <h2>[[i18nResource(appData.Name)]] Settings</h2>
+    <h2>[[i18nResource(appData.Name)]] Settings</h2>
 
-      <!-- menu -->
+    <!-- menu -->
+    <div id="wrapper">
       <div>
         <template is="dom-if" if="[[appData.Config]]">
-          <div on-tap="_tapMenu">App Settings</div>
-        </template>
-        <template is="dom-if" if="[[appData.AdvancedConfigPath]]">
           <div on-tap="_tapMenu">App Settings</div>
         </template>
       </div>
@@ -32,12 +34,14 @@
         <template is="dom-if" if="[[appData.Config]]">
           <div>
             <template is="dom-repeat" items="[[appData.Config]]">
-              [[i18nResource(item.Name)]]
+              <div>
+                [[i18nResource(item.Name)]]
+              </div>
             </template>
           </div>
         </template>
       </iron-pages>
-    </cube-dialog>
+    </div>
   </template>
   <script>
     Polymer(
@@ -48,12 +52,10 @@
           appData: {type: Object}
         },
 
-        _tapMenu: function () {},
-
-        open: function ()
-              {
-                this.$.dlg.open();
-              },
+        _tapMenu: function (e)
+                  {
+                    console.log(e.target);
+                  },
 
         behaviors: [Polymer.CubeI18nBehavior]
       }
