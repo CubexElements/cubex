@@ -194,11 +194,11 @@
                                if(!appData)
                                {
                                  appData = {};
+                                 appData.AppID = group.id;
+                                 appData.VendorID = group.vendor_id;
+                                 appData.Name = {en: group.name};
+                                 appData.Icon = group.icon;
                                }
-                               appData.Name = {en: group.name};
-                               appData.VendorID = group.vendor_id;
-                               appData.AppID = group.id;
-                               appData.Icon = group.icon;
                                appData.Navigation = navigation;
                              }
                              else if(!appData)
