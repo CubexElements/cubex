@@ -5,6 +5,7 @@
 <link rel="import" href="../../cube-list/cube-list-menu.html">
 <link rel="import" href="../../cube-icon/cube-icon.html">
 <link rel="import" href="../../cube-websocket/cube-websocket.html">
+<link rel="import" href="../../cube-repeat/cube-repeat.html">
 <link rel="import" href="../cubex-configure/cubex-configure-dialog.html">
 <link rel="import" href="../cubex-route/cubex-route.html">
 <link rel="import" href="cubex-notification.html">
@@ -124,9 +125,11 @@
 
         <template is="dom-if" if="[[_notifications.length]]">
           <cube-list-menu id="content">
-            <template is="dom-repeat" items="[[_notifications]]" limit="20" sort="__sortNotifications">
-              <cubex-notification notification="[[item]]"></cubex-notification>
-            </template>
+            <cube-repeat items="[[_notifications]]" limit="20" sort="__sortNotifications">
+              <template>
+                <cubex-notification notification="[[item]]"></cubex-notification>
+              </template>
+            </cube-repeat>
           </cube-list-menu>
         </template>
 
