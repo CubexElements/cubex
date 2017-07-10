@@ -252,20 +252,8 @@
                                if(!idx)
                                {
                                  // no index, push notification
-                                 idx = this._notificationIndexes[newState.notification_uid]
-                                   = this._notifications.push(newState) - 1;
-                                 this.notifySplices(
-                                   '_notifications',
-                                   [
-                                     {
-                                       index:      idx,
-                                       removed:    [],
-                                       addedCount: 1,
-                                       object:     this._notifications,
-                                       type:       'splice'
-                                     }
-                                   ]
-                                 );
+                                 this._notificationIndexes[newState.notification_uid]
+                                   = this.push('_notifications', newState) - 1;
                                }
                                else if((!newState.last_update)
                                  || this._notifications[idx].last_update < newState.last_update)
