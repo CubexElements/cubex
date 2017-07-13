@@ -176,7 +176,7 @@ Example:
             <p>Please choose a project</p>
             <cube-list border double-border>
               <template is="dom-repeat" items="[[_projects]]">
-                <a href="//[[getServiceHost(item.id)]]">
+                <a href="//[[getServiceHost(item.alias)]]">
                   <cube-li>
                     <cube-icon icon="communication:business" slot="icon"></cube-icon>
                     [[item.name]]
