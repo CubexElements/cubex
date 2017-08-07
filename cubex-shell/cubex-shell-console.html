@@ -142,22 +142,20 @@
 
       :host([focus-search]) #search-shortcut,
       :host([focus-search]) #user-panel-action,
-      :host([focus-search]) #app-menu,
       :host([focus-search]) cubex-pinned-apps,
       :host([focus-search]) cubex-toolbar,
       :host([drawer-opened]) #search-shortcut,
       :host([drawer-opened]) #user-panel-action,
-      :host([drawer-opened]) #app-menu,
       :host([drawer-opened]) cubex-search,
       :host([drawer-opened]) cubex-toolbar {
         display: none;
       }
 
       #user-panel-action:hover {
-        @apply --primary-100-text;
+        opacity: 1;
       }
 
-      #user-panel-action, #app-menu {
+      #user-panel-action {
         --cube-icon-color: var(--primary-100-text-color);
         @apply --text-secondary;
       }
