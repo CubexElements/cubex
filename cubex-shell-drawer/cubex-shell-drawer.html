@@ -461,10 +461,13 @@
 
         __parentStateChanged: function (e)
                               {
-                                this._drawerState = e.detail.state;
-                                if(e.detail.state !== 2 && e.detail.isOpen === false)
+                                if(e.detail.drawer === this.parentNode)
                                 {
-                                  this._showAppMenu();
+                                  this._drawerState = e.detail.state;
+                                  if(e.detail.state !== 2 && e.detail.isOpen === false)
+                                  {
+                                    this._showAppMenu();
+                                  }
                                 }
                               },
         _computeBurgerIcon:   function (state)
