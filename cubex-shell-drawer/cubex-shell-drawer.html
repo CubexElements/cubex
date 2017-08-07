@@ -24,7 +24,7 @@
         @apply(--paper-font-body2);
         display: flex;
         flex-direction: column;
-        overflow: auto;
+        overflow: hidden;
         height: 100%;
       }
 
@@ -123,13 +123,6 @@
       :host cube-list-menu {
         --cube-list-filter-color: var(--primary-800-text-secondary-color);
         --cube-list-filter-focus-color: var(--primary-800-text-color);
-        --paper-input-container-focus-color: var(--accent-400-color);
-        --paper-input-container-underline: {
-          display: none;
-        };
-        --cube-list-filter: {
-          @apply --primary-900;
-        }
       }
 
       #drawerPanelContainer cube-li {
@@ -293,7 +286,7 @@
                     <cubex-category key="[[category.name]]"></cubex-category>
                   </a>
                   <template is="dom-repeat" items="[[__toArray(category.apps)]]" as="app">
-                    <a href="/[[app.vendor_id]]/[[app.id]]">
+                    <a href="/[[app.vendor_id]]/[[app.id]]" on-tap="_tapAppLink">
                       <cube-li compact highlight="[[app.pinned]]">
                         <cubex-pinned vendor="[[app.vendor_id]]" app="[[app.id]]" pinned="{{app.pinned}}"
                                       slot="actions"></cubex-pinned>
@@ -468,27 +461,19 @@
 
         __parentStateChanged: function (e)
                               {
-                                if(e.detail.drawer === this.parentNode)
+                                this._drawerState = e.detail.state;
+                                if(e.detail.state !== 2 && e.detail.isOpen === false)
                                 {
-                                  this._drawerState = e.detail.state;
-                                  if(e.detail.state !== 2 && e.detail.isOpen === false)
-                                  {
-                                    this._showAppMenu();
-                                  }
+                                  this._tapAppLink();
                                 }
                               },
         _computeBurgerIcon:   function (state)
                               {
                                 return state === 2 ? 'icons:close' : 'icons:menu';
                               },
-        selectPanel:          function (panel)
-                              {
-                                this.$.drawerPanels.select(panel);
-                                this._openDrawer();
-                              },
         _closeDrawer:         function ()
                               {
-                                this._showAppMenu();
+                                this._tapAppLink();
                                 if(!this._touchEnabled())
                                 {
                                   this.parentNode.setState(1);
@@ -497,7 +482,7 @@
                               },
         _openDrawer:          function ()
                               {
-                                this._showAppMenu();
+                                this._tapAppLink();
                                 if(this._touchEnabled())
                                 {
                                   this.parentNode.open();
@@ -507,7 +492,7 @@
                                   this.parentNode.setState(2);
                                 }
                               },
-        _toggleDrawer:        function ()
+        _toggleDrawer: function ()
                               {
                                 if(this.parentNode.isOpen || (this.parentNode.state === 2))
                                 {
@@ -518,19 +503,20 @@
                                   this._openDrawer();
                                 }
                               },
-        _showAppMenu:         function ()
+        _tapAppLink:   function (e)
                               {
+                                // select the first panel and close the drawer (if transient)
                                 this.$.drawerPanels.select(0);
+                                this.parentNode.close();
+                                if(e)
+                                {
+                                  e.stopPropagation();
+                                }
                               },
-        _openParent:          function ()
+        _openParent:   function ()
                               {
                                 this.parentNode.open();
                               },
-
-        _menuTap: function (e)
-                  {
-                    this.selectPanel(Array.prototype.slice.call(e.target.parentNode.children).indexOf(e.target));
-                  },
 
         __toArray: function (o)
                    {
