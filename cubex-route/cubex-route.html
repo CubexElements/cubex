@@ -134,65 +134,71 @@ specialType
 
         _updateIntegration: function (_integrations, vendor, app, page, pagelet, section)
                             {
+                              var appGaid = '', definitionPath = '', contentPath = '';
                               page = page || '';
-                              var
-                                appGaid = vendor + '/' + app,
-                                definitionPath = '/' + appGaid + page,
+
+                              if(vendor && app)
+                              {
+                                appGaid = vendor + '/' + app;
+                                definitionPath = '/' + appGaid + page;
                                 contentPath = definitionPath;
 
-                              var integration = null;
+                                var integration = null;
 
-                              if(_integrations && page)
-                              {
-                                var items = null;
-
-                                if(pagelet && pagelet[0] === '_')
+                                if(_integrations && page)
                                 {
-                                  items = _integrations.HeaderMenuItems;
-                                }
-                                else
-                                {
-                                  items = _integrations.PageMenuItems;
-                                }
+                                  var items = null;
 
-                                if(items)
-                                {
-                                  items.sort(
-                                    function (a, b)
-                                    {
-                                      if(a.Title === b.Title)
-                                      {
-                                        return 0;
-                                      }
-                                      return (a.Title < b.Title) ? -1 : 1;
-                                    }
-                                  );
-
-                                  for(var i in items)
+                                  if(pagelet && pagelet[0] === '_')
                                   {
-                                    if(items.hasOwnProperty(i))
-                                    {
-                                      // if we have a pageletId, and it matches, use it
-                                      if(
-                                        (items[i].GlobalAppID === appGaid && items[i].ID === pagelet)
-                                        || (this._hash32(items[i].GlobalAppID + '/' + items[i].ID) === section))
+                                    items = _integrations.HeaderMenuItems;
+                                  }
+                                  else
+                                  {
+                                    items = _integrations.PageMenuItems;
+                                  }
+
+                                  if(items)
+                                  {
+                                    items.sort(
+                                      function (a, b)
                                       {
-                                        // if we have a section, and it's "h-" - change the menu - set the integration
-                                        if(section)
+                                        if(a.Title === b.Title)
                                         {
-                                          integration = items[i];
+                                          return 0;
                                         }
-                                        contentPath = '/' + items[i].GlobalAppID + '/' + items[i].Path;
-                                        break;
+                                        return (a.Title < b.Title) ? -1 : 1;
+                                      }
+                                    );
+
+                                    for(var i in items)
+                                    {
+                                      if(items.hasOwnProperty(i))
+                                      {
+                                        // if we have a pageletId, and it matches, use it
+                                        if(
+                                          (items[i].GlobalAppID === appGaid && items[i].ID === pagelet)
+                                          || (this._hash32(items[i].GlobalAppID + '/' + items[i].ID) === section))
+                                        {
+                                          // if we have a section, and it's "h-" - change the menu - set the integration
+                                          if(section)
+                                          {
+                                            integration = items[i];
+                                          }
+                                          contentPath = '/' + items[i].GlobalAppID + '/' + items[i].Path;
+                                          break;
+                                        }
                                       }
                                     }
                                   }
                                 }
                               }
 
-                              this.definitionPath = definitionPath;
-                              this.contentPath = contentPath;
-                              this.integration = integration;
+                              this.setProperties({
+                                definitionPath: definitionPath,
+                                contentPath:    contentPath,
+                                integration:    integration
+                              });
                             }
 
       }
