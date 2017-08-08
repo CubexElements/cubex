@@ -193,24 +193,23 @@
 
       cube-li#kubexMenu {
         @apply --primary-900;
-        color: white;
-        text-transform: uppercase;
-        font-size: 15px;
-        font-weight: bold;
-        letter-spacing: 4px;
       }
 
       #kubexMenu cube-dropdown {
         font-size: 12px;
-        letter-spacing: 2px;
+        letter-spacing: 1px;
       }
 
       #kubexMenu span {
         color: var(--accent-700-color);
       }
 
-      #kubexMenu a {
+      #kubexMenu > a {
         color: white;
+        text-transform: uppercase;
+        font-size: 15px;
+        font-weight: bold;
+        letter-spacing: 4px;
         display: block;
         text-decoration: none;
       }
@@ -340,7 +339,7 @@
         </a>
 
         <cube-dropdown slot="actions" id="additional" vertical-align="bottom">
-          <cube-action icon="icons:more-horiz" slot="trigger"></cube-action>
+          <cube-action icon="icons:more-horiz" slot="trigger" ripple-center ripple-circle></cube-action>
           <cube-list-menu border>
             <cube-list-group>
               <a href="/kubex/project">
@@ -354,7 +353,10 @@
               <cube-li compact on-tap="_openCustomerAgreement">{{i18n('cust_agree')}}</cube-li>
             </cube-list-group>
             <cube-list-group>
-              <cube-li compact on-tap="_logout">{{i18n('logout')}}</cube-li>
+              <cube-li compact on-tap="_logout">
+                <cube-icon slot="icon" icon="icons:exit-to-app" size="18"></cube-icon>
+                {{i18n('logout')}}
+              </cube-li>
             </cube-list-group>
           </cube-list-menu>
         </cube-dropdown>
