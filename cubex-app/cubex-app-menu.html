@@ -145,9 +145,9 @@
     </style>
 
     <div id="content">
-      <template restamp is="dom-if" if="[[appData.Name]]">
+      <template restamp is="dom-if" if="[[appName]]">
         <a href="[[_titleLink]]" on-tap="_collapseDrawer">
-          <cubex-app-title icon="[[_titleIcon]]" title="[[i18n('app_name')]]" vendor="[[appData.VendorID]]"
+          <cubex-app-title icon="[[_titleIcon]]" title="[[i18nResource(appName)]]" vendor="[[appData.VendorID]]"
                            trusted-vendor="[[appData.TrustedVendor]]"></cubex-app-title>
         </a>
       </template>
@@ -158,7 +158,7 @@
             <cubex-link href="[[item.Path]]" on-tap="_collapseDrawer">
               <cube-li compact>
                 <cube-icon slot="icon" icon="[[item.Icon]]"></cube-icon>
-                [[item.i18n_name]]
+                [[i18nResource(item.Name)]]
                 <paper-ripple></paper-ripple>
               </cube-li>
             </cubex-link>
@@ -197,30 +197,25 @@
         is: 'cubex-app-menu',
 
         properties: {
-          appData:     {type: Object, notify: true, observer: '_resetResources'},
-          projectData: {type: Object, notify: true, observer: '_resetResources'},
-          _navigation: {type: Array, computed: '_updateNav(appData.Navigation,resources)'},
+          appName:     {type: Object, computed: '_computeAppName(appData)'},
+          appData:     {type: Object},
+          projectData: {type: Object},
+          _navigation: {type: Array},
           _titleIcon:  {type: String, computed: '_calculateTitleIcon(appData,projectData)'},
           _titleLink:  {type: String, computed: '_calculateTitleLink(appData,projectData)'},
-          _drawerOpen: {type: Boolean, value: false}
+          _drawerOpen: {type: Boolean, value: false},
+          resources:   {
+            type:  Object,
+            value: function ()
+                   {
+                     return {
+                       'configure': {'en': 'Advanced Settings', 'fr': 'Réglages avancés'},
+                       'collapse':  {'en': 'Collapse Menu', 'fr': 'Réduire Menu'},
+                       'keep_out':  {'en': 'Keep Menu Out', 'fr': 'Gardez Menu Out'}
+                     };
+                   }
+          }
         },
-
-        _updateNav: function (nav, resources)
-                    {
-                      if(nav && resources)
-                      {
-                        for(var i in nav)
-                        {
-                          if(nav.hasOwnProperty(i))
-                          {
-                            var i18nKey = 'nav_' + nav[i].ID + '_name';
-                            nav[i].i18n_name = this.i18n(i18nKey);
-                          }
-                        }
-                        return nav;
-                      }
-                      return [];
-                    },
 
         attached: function ()
                   {
@@ -294,36 +289,23 @@
                      return (path || '').replace(/^\/+/, '');
                    },
 
-        _resetResources:     function ()
+        _computeAppName: function (appData, projectData)
+                         {
+                           if(appData && appData.GroupID && projectData)
+                           {
+                             var groupGaid = appData.VendorID + '/' + appData.GroupID;
+                             if(projectData.GroupSummary[groupGaid])
                              {
-                               // reset resources
-                               var newRes = {
-                                 'configure': {'en': 'Advanced Settings', 'fr': 'Réglages avancés'},
-                                 'collapse':  {'en': 'Collapse Menu', 'fr': 'Réduire Menu'},
-                                 'keep_out':  {'en': 'Keep Menu Out', 'fr': 'Gardez Menu Out'}
-                               };
-                               if(this.appData && this.appData.Name)
-                               {
-                                 newRes['app_name'] = this.appData.Name;
-                                 if(this.appData.GroupID)
-                                 {
-                                   var groupGaid = this.appData.VendorID + '/' + this.appData.GroupID;
-                                   if(this.projectData.GroupSummary[groupGaid])
-                                   {
-                                     var groupData = this.projectData.GroupSummary[groupGaid];
-                                     newRes['app_name'] = groupData.name;
-                                   }
-                                 }
-                                 this.iterate(
-                                   this.appData.Navigation, function (nav)
-                                   {
-                                     newRes['nav_' + nav.ID + '_name'] = nav.Name;
-                                     newRes['nav_' + nav.ID + '_description'] = nav.Description;
-                                   }
-                                 );
-                               }
-                               this.hydrateResources(newRes, true);
-                             },
+                               return projectData.GroupSummary[groupGaid].name;
+                             }
+                           }
+                           if(appData && appData.Name)
+                           {
+                             return appData.Name;
+                           }
+                           return {};
+                         },
+
         _calculateTitleIcon: function (appData, projectData)
                              {
                                var icon = '';
