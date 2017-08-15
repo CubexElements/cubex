@@ -176,12 +176,12 @@
         top: 18px;
       }
 
-      #user-panel-action[is-open]:before {
+      #user-panel-action:not([is-open]):before {
         border-right-color: var(--primary-100-text-color);
         left: -2px;
       }
 
-      #user-panel-action:not([is-open]):after {
+      #user-panel-action[is-open]:after {
         border-left-color: var(--primary-100-text-color);
         right: -2px;
       }
