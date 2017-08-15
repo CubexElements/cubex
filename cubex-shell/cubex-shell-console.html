@@ -176,12 +176,12 @@
         top: 18px;
       }
 
-       :host([user-drawer-state="0"]) #user-panel-action:before {
+      #user-panel-action[is-open]:before {
         border-right-color: var(--primary-100-text-color);
         left: -2px;
       }
 
-       :host(:not([user-drawer-state="0"])) #user-panel-action:after {
+      #user-panel-action:not([is-open]):after {
         border-left-color: var(--primary-100-text-color);
         right: -2px;
       }
@@ -202,6 +202,10 @@
       #flex-toolbar {
         @apply --shadow-elevation-2dp;
       }
+
+      cubex-drawer[peek-open] {
+        --cubex-drawer-width: var(--cubex-drawer-peek-width);
+      }
     </style>
 
     <app-location route="{{route}}"></app-location>
@@ -209,8 +213,7 @@
     <iron-media-query query="(max-width: 375px)" query-matches="{{_narrow}}"></iron-media-query>
 
     <cube-preferences name="shellDrawerState" value="{{shellDrawerState}}" live-update></cube-preferences>
-    <cubex-drawer id="shellDrawer" min-state="1" preferred-state="[[shellDrawerState]]"
-        state="{{shellDrawerState}}">
+    <cubex-drawer id="shellDrawer" min-state="1" preferred-state="{{shellDrawerState}}">
       <cubex-shell-drawer id="shellDrawerContent" slot="drawer-content" app-nav="[[_appNav]]"></cubex-shell-drawer>
 
       <div id="flex-toolbar">
@@ -228,16 +231,17 @@
           <cubex-notifications></cubex-notifications>
           <cubex-quick-actions></cubex-quick-actions>
           <cube-action icon="icons:chrome-reader-mode" hidden="[[_narrow]]" id="user-panel-action"
-              size="24" on-tap="_toggleUserDrawer" ripple-center ripple-circle></cube-action>
+              is-open$="[[_userPanelOpen]]" size="24" on-tap="_toggleUserDrawer" ripple-center
+              ripple-circle></cube-action>
         </div>
       </div>
 
       <div id="contentContainer">
         <cube-preferences name="userDrawerState" value="{{userDrawerState}}" live-update></cube-preferences>
-        <cubex-drawer id="userDrawer" swipe-open="[[_touchEnabled()]]" position="right" state="{{userDrawerState}}"
-            preferred-state="[[userDrawerState]]">
+        <cubex-drawer id="userDrawer" position="right" preferred-state="{{userDrawerState}}"
+            state="{{_actualUserDrawerState}}" peek-open$="[[!_selectedUserApp]]" is-open="{{_userDrawerOpen}}">
           <cubex-drawer-content slot="drawer-content">
-            <cubex-user-drawer></cubex-user-drawer>
+            <cubex-user-drawer selected-app="{{_selectedUserApp}}"></cubex-user-drawer>
           </cubex-drawer-content>
 
           <cubex-shell-content app-nav="{{_appNav}}"></cubex-shell-content>
@@ -254,6 +258,10 @@
       {
         drawerOpened: { type: Boolean, reflectToAttribute: true },
         focusSearch: { type: Boolean, reflectToAttribute: true },
+        _selectedUserApp: { type: String },
+        _actualUserDrawerState: { type: Number },
+        _userDrawerOpen: { type: Boolean },
+        _userPanelOpen: { type: Boolean, computed: '_computeUserPanelOpen(_actualUserDrawerState,_userDrawerOpen)' },
         userDrawerState:
         {
           type: Number,
@@ -384,23 +392,33 @@
         }
         return true;
       },
-      _toggleUserDrawer: function()
+      _toggleUserDrawer: function(e)
       {
-        if(this.$.userDrawer.maxState === 0 || this.$.userDrawer.state ===
-          0)
+        if((this.$.userDrawer.state > 0) || (this.$.userDrawer.isOpen))
         {
-          this.$.userDrawer.setMaxState(2);
-          this.$.userDrawer.setState(1);
+          this.$.userDrawer.setMaxState(0);
+          this.$.userDrawer.close();
         }
         else
         {
-          this.$.userDrawer.setMaxState(0);
+          if(!this._isTouchDevice)
+          {
+            this.$.userDrawer.setMaxState(2);
+          }
+          this.$.userDrawer.open();
         }
+        e.preventDefault();
+        e.stopPropagation();
+      },
+
+      _computeUserPanelOpen: function(userDrawerState, userDrawerOpen)
+      {
+        return userDrawerState !== 0 || userDrawerOpen;
       },
 
       _userDrawerStateChanged: function(newState)
       {
-        if(newState > this.$.userDrawer.state)
+        if(newState > this.$.userDrawer.state && !this._isTouchDevice)
         {
           this.$.userDrawer.setMaxState(2);
         }
