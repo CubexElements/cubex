@@ -220,7 +220,7 @@
       },
       _appChange: function()
       {
-        if(this.selectedApp)
+        if(this.selectedApp && (this._getDrawer().state > 0 || this._isTouchDevice))
         {
           this._getDrawer().open();
         }
