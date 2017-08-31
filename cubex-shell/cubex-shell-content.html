@@ -391,7 +391,7 @@
           {
             if(pmItems.hasOwnProperty(j))
             {
-              pageMenus.push(
+              pageMenu.push(
               {
                 Title: pmItems[j].Title,
                 Description: pmItems[j].Description,
@@ -418,7 +418,7 @@
                 headerMenu[i].GlobalAppID !== appGaid)
               {
                 categoryPush++;
-                pageMenus.push(
+                pageMenu.push(
                 {
                   Title: headerMenu[i].Title,
                   Description: headerMenu[i].Description,
@@ -432,7 +432,7 @@
             }
           }
           //If there is only one page menu, and its a category app, then hide the page menu
-          if(categoryPush === 1 && pageMenus.length === 1)
+          if(categoryPush === 1 && pageMenu.length === 1)
           {
             pageMenu = [];
           }
