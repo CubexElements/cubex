@@ -260,6 +260,7 @@
         _selectedUserApp: { type: String },
         _actualUserDrawerState: { type: Number, observer: '_userDrawerStateChanged' },
         _userDrawerOpen: { type: Boolean },
+        _peek: { type: Boolean },
         _userPanelOpen: { type: Boolean, computed: '_computeUserPanelOpen(_actualUserDrawerState,_userDrawerOpen)' },
         shellDrawerState: { type: Number, value: 1, observer: '_shellDrawerStateChanged' }
       },
